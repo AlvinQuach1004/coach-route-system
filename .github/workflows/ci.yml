@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  scan_gems:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Scan for security vulnerabilities in Ruby dependencies
+        run: bundle exec bundle-audit check --update -v
+
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      TEST_DATABASE: rails_boilerplate_test
+      TEST_DATABASE_USERNAME: postgres
+      TEST_DATABASE_PASSWORD: postgres
+      TEST_DATABASE_HOST: localhost
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+
+      - name: Install Yarn packages
+        run: npx --yes ci
+
+      - name: Set up database.yml
+        run: |
+          echo "test:" > config/database.yml
+          echo "  adapter: postgresql" >> config/database.yml
+          echo "  encoding: unicode" >> config/database.yml
+          echo "  database: ${TEST_DATABASE}" >> config/database.yml
+          echo "  pool: 5" >> config/database.yml
+          echo "  username: ${TEST_DATABASE_USERNAME}" >> config/database.yml
+          echo "  password: ${TEST_DATABASE_PASSWORD}" >> config/database.yml
+          echo "  host: ${TEST_DATABASE_HOST:-localhost}" >> config/database.yml
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432
+        run: bin/rails db:test:prepare && bin/rspec
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Lint code for consistent style
+        run: bin/rubocop -f github
+
+      - name: Install Yarn packages
+        run: npx --yes ci
+
+      - name: Lint JavaScript files with eslint
+        run: yarn lint
