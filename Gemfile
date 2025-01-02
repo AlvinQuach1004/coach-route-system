@@ -35,7 +35,7 @@ gem 'seedbank'
 gem 'faker'
 
 # Front-end
-gem 'slim-rails', '~> 3.6', '>= 3.6.3'
+gem 'slim-rails', '~> 3.7'
 gem 'simple_form'
 
 # Pagination
