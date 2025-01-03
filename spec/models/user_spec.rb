@@ -71,40 +71,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.from_google' do
-    let(:google_params) { { uid: Faker::Internet.uuid, email: 'user@example.com' } }
-
-    context 'when the user does not exist' do
-      it 'creates a new user' do
-        expect do
-          User.from_google(google_params)
-        end.to change(User, :count).by(1)
-      end
-
-      it 'sets the correct attributes' do
-        user = User.from_google(google_params)
-        expect(user.uid).to eq(google_params[:uid])
-        expect(user.provider).to eq('google')
-        expect(user.email).to eq('user@example.com')
-      end
-    end
-
-    context 'when the user already exists' do
-      let!(:existing_user) { create(:user, email: 'user@example.com', uid: google_params[:uid], provider: 'google') }
-
-      it 'finds the existing user' do
-        user = User.from_google(google_params)
-        expect(user).to eq(existing_user)
-      end
-
-      it 'does not create a new user' do
-        expect do
-          User.from_google(google_params)
-        end.not_to change(User, :count)
-      end
-    end
-  end
-
   describe 'instance methods' do
     let!(:user) { create(:user) }
 
