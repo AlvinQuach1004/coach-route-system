@@ -21,7 +21,6 @@ Rails.application.configure do
 
   # Store files locally.
   config.active_storage.service = :local
-  
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
