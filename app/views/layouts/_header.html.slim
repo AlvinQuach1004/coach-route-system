@@ -2,7 +2,7 @@ div class='bg-base-100 header_container justify-around text-base-content sticky 
   .container.flex.justify-between.items-center.w-full
     .navbar.w-full.ml-6
       = link_to root_path, class: 'h-24 w-24' do
-        = image_tag 'coach_icon.png', class: 'coach_icon_img', alt: 'Coach Icon'
+        = image_tag './app/frontend/images/icons/coach_icon.png', class: 'coach_icon_img', alt: 'Coach Icon'
       div class='flex flex-1 px-2 mx-2 gap-4'
         = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn' do
           | Routes
@@ -21,10 +21,10 @@ div class='bg-base-100 header_container justify-around text-base-content sticky 
         .dropdown.dropdown-end
           div class='btn btn-ghost btn-circle avatar' tabindex='0'
             div class='w-10 rounded-full'
-              img alt='Avatar' src='https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+              = image_tag 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp', alt: 'Avatar'
           ul class='mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52' tabindex='0'
             li
-              a.justify-between
+              = link_to '#', class: 'justify-between' do
                 |  Profile
                 span.badge
                   | New

@@ -5,8 +5,8 @@ html.h-full.bg-base[lang="en"]
   body.h-full.drawer.drawer-end data-controller="icons"
     input#my-drawer.drawer-toggle[type="checkbox"]
     div class="flex min-h-full drawer-content"
-      div class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
-        div class="mx-auto w-full max-w-sm lg:w-96"
+      div class="flex flex-1 flex-col lg:flex-row justify-center items-center py-12 sm:px-6 lg:flex-none lg:px-20 xl:pl-48"
+        div class="mx-auto w-full max-w-sm lg:w-96 lg:max-w-md"
           div class="absolute top-2 right-2" title="Change Theme"
             = render 'shared/switch_theme'
           div class="flex justify-start items-end"
@@ -14,17 +14,18 @@ html.h-full.bg-base[lang="en"]
               = image_tag 'coach_icon.png', class: 'w-24 h-24'
           .mt-0
             = yield
-      div class="flex flex-1 flex-col my-auto justify-center items-center h-full md:h-60 w-full md:w-60 bg-base-100 rounded-full"
-        = image_tag 'signup-signin.png',class: "w-96 h-80", alt: ""
+      div class="hidden sm:flex flex-1 flex-col my-auto justify-center items-center h-full md:h-60 w-full md:w-60 bg-base-100 rounded-full"
         div class=""
-          h2.text-3xl.font-bold.text-primary.mt-6.opacity-90
-            | Welcome Customer
-          ul.list-disc.mt-4.px-8.opacity-80
-            li.mt-2
-              | Book cheapest tickets
-            li.mt-2
-              | Variety of routes in Vietnam
-            li.mt-2
-              | Enjoy our great services
-            li.mt-2
-              | Be our member to try new services
+          = image_tag 'signup-signin.png',class: "w-96 h-80", alt: ""
+          div class=""
+            h2.text-3xl.font-bold.text-primary.mt-6.opacity-90
+              | Welcome Customer
+            ul.list-disc.mt-4.px-8.opacity-80
+              li.mt-2
+                | Book cheapest tickets
+              li.mt-2
+                | Variety of routes in Vietnam
+              li.mt-2
+                | Enjoy our great services
+              li.mt-2
+                | Be our member to try new services
