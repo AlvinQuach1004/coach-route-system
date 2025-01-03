@@ -6,8 +6,7 @@ module Authentication
     protected
 
     def assign_role
-      @number_of_users = User.count
-      if @number_of_users.zero?
+      if User.count.zero?
         resource.add_role(:admin)
       else
         resource.add_role(:customer)
