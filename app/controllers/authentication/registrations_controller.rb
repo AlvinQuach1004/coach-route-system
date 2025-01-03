@@ -9,7 +9,8 @@ module Authentication
     end
 
     def configure_permitted_parameters
-      devise_parameter_sanitizer.permit(:account_update, keys: [:avatar])
+      devise_parameter_sanitizer.permit(:account_update, keys: [:avatar, :phone_number])
+      devise_parameter_sanitizer.permit(:sign_up, keys: [:phone_number])
     end
 
     def update_resource(resource, params)

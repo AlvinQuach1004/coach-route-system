@@ -21,6 +21,7 @@ Rails.application.configure do
 
   # Store files locally.
   config.active_storage.service = :local
+  
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
@@ -71,7 +72,7 @@ Rails.application.configure do
   config.action_view.preload_links_header = false
 
   # Action mailer default url
-  config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
+  config.action_mailer.default_url_options = { host: ENV['APP_HOST'], protocol: 'http' }
 
   # Bullet enable
   config.after_initialize do

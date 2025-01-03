@@ -7,6 +7,9 @@ en:
           attributes:
             avatar:
               size: File size must be less than %{size} MB
+            password:
+              confirmation: Password confirmation doesn't match Password
+              too_short: Password is too short (minimum is %{count} characters)
   common:
     create:
       exists: "%{model} already existed"

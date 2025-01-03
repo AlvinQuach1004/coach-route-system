@@ -2,6 +2,7 @@ class UserPolicy < ApplicationPolicy
   def permitted_attributes
     [
       :email,
+      :phone_number,
       :password,
       :password_confirmation,
       {
