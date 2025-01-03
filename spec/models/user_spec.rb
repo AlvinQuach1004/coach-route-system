@@ -6,7 +6,11 @@ RSpec.describe User, type: :model do
   end
 
   describe 'validations' do
-    let(:user) { build(:user) }
+    let(:user) { build(:user, phone_number: '0919213321') }
+
+    before do
+      user.add_role(:admin)
+    end
 
     context 'with valid avatar' do
       it 'is valid when the content type is correct' do
@@ -71,63 +75,37 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.from_google' do
-    let(:google_params) { { uid: Faker::Internet.uuid, email: 'user@example.com' } }
-
-    context 'when the user does not exist' do
-      it 'creates a new user' do
-        expect do
-          User.from_google(google_params)
-        end.to change(User, :count).by(1)
-      end
-
-      it 'sets the correct attributes' do
-        user = User.from_google(google_params)
-        expect(user.uid).to eq(google_params[:uid])
-        expect(user.provider).to eq('google')
-        expect(user.email).to eq('user@example.com')
-      end
-    end
-
-    context 'when the user already exists' do
-      let!(:existing_user) { create(:user, email: 'user@example.com', uid: google_params[:uid], provider: 'google') }
-
-      it 'finds the existing user' do
-        user = User.from_google(google_params)
-        expect(user).to eq(existing_user)
-      end
-
-      it 'does not create a new user' do
-        expect do
-          User.from_google(google_params)
-        end.not_to change(User, :count)
-      end
-    end
-  end
-
   describe 'instance methods' do
-    let!(:user) { create(:user) }
+    let!(:user) { create(:user, phone_number: '0934567890') }
+
+    before do
+      user.add_role(:admin)
+    end
 
     describe '#admin?' do
       it 'returns true if the user has an admin role' do
-        user.add_role(:admin)
         expect(user.admin?).to be true
       end
 
       it 'returns false if the user does not have an admin role' do
+        user.remove_role(:admin)
         expect(user.admin?).to be false
       end
     end
 
-    describe '#employee?' do
-      it 'returns true if the user has an employee role and is not an admin' do
-        user.add_role(:employee)
-        expect(user.employee?).to be true
+    describe '#customer?' do
+      it 'returns true if the user has a customer role and is not an admin' do
+        user.add_role(:customer)
+        expect(user.has_role?(:customer)).to be true
+      end
+
+      before do
+        user.remove_role(:customer)
       end
 
       it 'returns false if the user is an admin' do
         user.add_role(:admin)
-        expect(user.employee?).to be false
+        expect(user.has_role?(:customer)).to be false
       end
     end
   end

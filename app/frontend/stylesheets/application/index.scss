@@ -2,3 +2,19 @@
 @import "../shared/reset";
 @import "../shared/base";
 @import "../shared/pagy";
+
+.navbar-history-margin{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.header-container{
+    padding-left: 48px;
+    padding-right: 48px;
+}
+
+.thumbnail-ticket-terminal-img{
+    width: 600px;
+    height: 550px;
+    padding-right: 20px;
+}

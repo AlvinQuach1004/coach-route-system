@@ -2,9 +2,15 @@ require 'rails_helper'
 
 RSpec.describe Users::FetchUsersQuery, type: :query do
   describe '#call' do
-    let!(:user1) { create(:user) }
-    let!(:user2) { create(:user, email: 'test2@example.com', created_at: 1.day.ago) }
-    let!(:user3) { create(:user, created_at: 2.weeks.ago) }
+    let!(:user1) { create(:user, email: 'test1@example.com', created_at: Time.current, phone_number: '0934567890') }
+    let!(:user2) { create(:user, email: 'test2@example.com', created_at: 1.day.ago, phone_number: '0934567891') }
+    let!(:user3) { create(:user, email: 'test3@example.com', created_at: 2.weeks.ago, phone_number: '0934567892') }
+
+    before do
+      user1.add_role(:customer)
+      user2.add_role(:customer)
+      user3.add_role(:customer)
+    end
 
     context 'when filtering by created_at' do
       it 'returns users created after a specific date' do
@@ -32,7 +38,7 @@ RSpec.describe Users::FetchUsersQuery, type: :query do
 
     context 'when using both filters' do
       it 'returns users matching both conditions' do
-        result = described_class.call(date: 1.day.ago, email: user2.email)
+        result = described_class.call(date: 1.day.ago, email: 'test2@example.com')
 
         expect(result).to include(user2)
         expect(result).not_to include(user1, user3)
@@ -43,7 +49,7 @@ RSpec.describe Users::FetchUsersQuery, type: :query do
       it 'returns users in the specified order' do
         result = described_class.call(order_by: 'created_at', order_direction: 'desc')
 
-        expect(result).to eq([user1, user2, user3])
+        expect(result).to eq([user1, user2, user3].sort_by(&:created_at).reverse)
       end
     end
   end

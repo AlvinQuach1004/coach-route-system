@@ -1,10 +1,15 @@
 - provide(:title, "Home")
-.hero.bg-base-200.min-h-screen
-  .hero-content.text-center
-    .max-w-lg
-      h1.text-5xl.font-bold
-        | Illuminating Excellence in Golden Owl Solutions IT Services
-      p.py-6
-        |  We've honed our IT expertise over 9 years, serving clients across 21+ nations. Leveraging this experience, our dedicated team crafts top-notch solutions to streamline your operations and fuel your growth. With a focus on your specific needs, we deliver comprehensive IT services that are built to make a difference.
-      button.btn.btn-primary
-        | Get Started
+.container.mx-auto.bg-base-200
+  div class='flex flex-row justify-between h-fit-content'
+    div class='flex flex-col justify-center introduction_container'
+      h1.text-6xl.text-center.text-primary-500.font-bold.px-24.flex.pt-28
+        | Welcome to the
+        br
+        | Ticket Terminal
+      p.text-center.text-lg.text-primary-500.font-semibold.pb-6.pt-4.pr-24
+        | The best place to book your coach tickets
+      div class='float-start pl-24'
+        button class='btn btn-accent btn-lg rounded-btn mx-auto mt-4 ml-2'
+          | View Routes
+    = image_tag 'ticket_terminal_thumbnail.png', class: 'thumbnail-ticket-terminal-img mr-20', alt: 'Coach Image'
+= render 'home/shared/search_routes'

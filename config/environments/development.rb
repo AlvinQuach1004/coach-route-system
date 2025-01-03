@@ -71,7 +71,7 @@ Rails.application.configure do
   config.action_view.preload_links_header = false
 
   # Action mailer default url
-  config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
+  config.action_mailer.default_url_options = { host: ENV['APP_HOST'], protocol: 'http' }
 
   # Bullet enable
   config.after_initialize do

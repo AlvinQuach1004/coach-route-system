@@ -8,6 +8,7 @@
 #  confirmed_at           :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  phone_number           :string           default(""), not null
 #  provider               :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
@@ -47,6 +48,16 @@ class User < ApplicationRecord
       less_than: 10.megabytes,
       message: I18n.t('activerecord.errors.models.user.attributes.avatar.size', size: 10)
     }
+  validates :email,
+    presence: true,
+    uniqueness: true,
+    format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :phone_number, format: { with: /\A(03|05|07|08|09)\d{8}\z/ }
+  validates :password,
+    presence: true,
+    confirmation: { message: I18n.t('activerecord.errors.models.user.attributes.password.confirmation') },
+    format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+\z/ },
+    length: { minimum: 8, message: I18n.t('activerecord.errors.models.user.attributes.password.too_short') }
 
   def self.from_google(google_params)
     create_with(

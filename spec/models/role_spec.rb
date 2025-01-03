@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Role, type: :model do
   describe 'constants' do
     it 'defines the correct role names' do
-      expect(Role::NAMES).to eq(%w[super_admin admin employee].freeze)
+      expect(Role::NAMES).to eq(%w[admin customer].freeze)
     end
   end
 
