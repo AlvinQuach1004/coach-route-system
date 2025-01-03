@@ -1,9 +1,9 @@
-h2.mt-0.text-2xl.font-bold.leading-9.tracking-tight.text-primary.text-center.md:text-left
+h2.mt-0.text-2xl.font-bold.leading-9.tracking-tight.text-primary
   | Sign in to your account
-p.mb-4.mt-2.text-sm.leading-6.text-center.md:text-left
+p.mt-2.text-sm.leading-6
   | Not a member?
   = link_to 'Sign up', new_user_registration_path, class: 'font-semibold text-primary hover:text-secondary ml-2'
-= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'max-w-md mx-auto md:mx-0' }) do |f|
+= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'max-w-md mx-auto md:mx-0 mt-4' }) do |f|
   .form-inputs.mt-2
     = f.input :email,
               required: false,

@@ -1,0 +1,24 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  <% if ENV["DB_HOST"] %>
+  host: <%= ENV["DB_HOST"] %>
+  username: postgres
+  password: postgres
+  <% end %>
+
+
+development:
+  <<: *default
+  database: rails_boilerplate_development
+
+test:
+  <<: *default
+  database: rails_boilerplate_test
+
+production:
+  <<: *default
+  database: rails_boilerplate_production
+  username: rails_boilerplate
+  password: <%= ENV["RAILS_BOILERPLATE_DATABASE_PASSWORD"] %>
