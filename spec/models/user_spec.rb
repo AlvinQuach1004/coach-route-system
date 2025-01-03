@@ -6,7 +6,11 @@ RSpec.describe User, type: :model do
   end
 
   describe 'validations' do
-    let(:user) { build(:user) }
+    let(:user) { build(:user, phone_number: '0919213321') }
+
+    before do
+      user.add_role(:admin)
+    end
 
     context 'with valid avatar' do
       it 'is valid when the content type is correct' do
@@ -72,28 +76,36 @@ RSpec.describe User, type: :model do
   end
 
   describe 'instance methods' do
-    let!(:user) { create(:user) }
+    let!(:user) { create(:user, phone_number: '0934567890') }
+
+    before do
+      user.add_role(:admin)
+    end
 
     describe '#admin?' do
       it 'returns true if the user has an admin role' do
-        user.add_role(:admin)
         expect(user.admin?).to be true
       end
 
       it 'returns false if the user does not have an admin role' do
+        user.remove_role(:admin)
         expect(user.admin?).to be false
       end
     end
 
     describe '#customer?' do
-      it 'returns true if the user has an customer role and is not an admin' do
+      it 'returns true if the user has a customer role and is not an admin' do
         user.add_role(:customer)
-        expect(user.customer?).to be true
+        expect(user.has_role?(:customer)).to be true
+      end
+
+      before do
+        user.remove_role(:customer)
       end
 
       it 'returns false if the user is an admin' do
         user.add_role(:admin)
-        expect(user.customer?).to be false
+        expect(user.has_role?(:customer)).to be false
       end
     end
   end

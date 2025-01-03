@@ -2,9 +2,15 @@ require 'rails_helper'
 
 RSpec.describe Users::FetchUsersQuery, type: :query do
   describe '#call' do
-    let!(:user1) { create(:user, email: 'test1@example.com', created_at: Time.current) }
-    let!(:user2) { create(:user, email: 'test2@example.com', created_at: 1.day.ago) }
-    let!(:user3) { create(:user, email: 'test3@example.com', created_at: 2.weeks.ago) }
+    let!(:user1) { create(:user, email: 'test1@example.com', created_at: Time.current, phone_number: '0934567890') }
+    let!(:user2) { create(:user, email: 'test2@example.com', created_at: 1.day.ago, phone_number: '0934567891') }
+    let!(:user3) { create(:user, email: 'test3@example.com', created_at: 2.weeks.ago, phone_number: '0934567892') }
+
+    before do
+      user1.add_role(:customer)
+      user2.add_role(:customer)
+      user3.add_role(:customer)
+    end
 
     context 'when filtering by created_at' do
       it 'returns users created after a specific date' do

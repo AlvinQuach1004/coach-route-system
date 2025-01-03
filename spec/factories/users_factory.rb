@@ -3,12 +3,12 @@ FactoryBot.define do
     sequence(:email) { |n| "user#{n}@rails.boilerplate.com" }
     password { 'Password123!' }
     confirmed_at { Time.current }
-    after(:build) { |user| user.add_role(:employee) }
+    after(:build) { |user| user.add_role(:customer) }
 
     trait :admin do
       sequence(:email) { |n| "admin#{n}@rails.boilerplate.com" }
       after(:create) do |user|
-        user.remove_role(:employee)
+        user.remove_role(:customer)
         user.add_role(:admin)
       end
     end
