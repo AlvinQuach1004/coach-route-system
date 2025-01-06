@@ -1,0 +1,46 @@
+- provide(:title, 'Routes')
+= render 'route_pages/shared/search_routes'
+.container.mx-auto.px-32.pt-16
+  .flex
+    .w-1/4.p-4.border-r.px-8.py-8
+      h2.text-lg.font-semibold.mb-4 Keywords
+      .space-y-2
+        = render 'route_pages/shared/checkbox', label: 'Cà Mau'
+        = render 'route_pages/shared/checkbox', label: 'Đà Lạt'
+        = render 'route_pages/shared/checkbox', label: 'Sài Gòn'
+
+      h2.text-lg.font-semibold.mt-6.mb-4 Filter
+      .space-y-2
+        = render 'route_pages/shared/checkbox', label: 'Popular'
+        = render 'route_pages/shared/checkbox', label: 'Latest'
+        = render 'route_pages/shared/checkbox', label: 'Seat available'
+
+      .flex.items-center.justify-between.mt-6.mb-4
+        h2.text-lg.font-semibold.my-auto Price
+        span.text-md.my-auto 500,000 đ
+      .flex.items-center.space-x-2.px-2
+        input[type="range" name="price" min="0" max="800000" class="range"]
+
+      h2.text-lg.font-semibold.mt-6.mb-4 Category
+      .space-y-2
+        = render 'route_pages/shared/checkbox', label: 'Giường nằm'
+        = render 'route_pages/shared/checkbox', label: 'Limousine giường nằm'
+        = render 'route_pages/shared/checkbox', label: 'Giường phòng'
+
+    .w-3/4.px-10.py-6
+      .flex.justify-between.items-center.mb-4
+        h2.font-bold.text-2xl 
+          | Search results: 
+          = @routes.size
+        .flex.items-center.space-x-2
+          span Sort:
+          select.select.select-bordered
+            option Default
+            option Price Low to High
+            option Price High to Low
+      - if @routes.present?
+        = render partial: 'route_pages/shared/route_card', collection: @routes, as: :route
+        .mt-10.text-center
+          = pagy_nav(@pagy)
+      - else
+        = render 'route_pages/shared/error_not_found'

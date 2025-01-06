@@ -3,9 +3,15 @@ h2.mt-0.text-2xl.font-bold.leading-9.tracking-tight.text-primary
 p.mt-2.text-sm.leading-6
   | Not a member?
   = link_to 'Sign up', new_user_registration_path, class: 'font-semibold text-primary hover:text-secondary ml-2'
+- if flash[:alert]
+  #flash-message.mt-2.bg-red-100.border.border-red-400.text-red-700.px-4.py-3.rounded.relative(role="alert")
+    span.block.sm:inline
+      = flash[:alert]
+    button.absolute.top-0.right-0.mr-2.text-red-500.hover:text-red-700(type="button" aria-label="Close" onclick="this.parentElement.remove();")
+      | x
 = simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'max-w-md mx-auto md:mx-0 mt-4' }) do |f|
   .form-inputs.mt-2
-    = f.input :email,
+    = f.input  :email, 
               required: false,
               autofocus: true,
               label: false,

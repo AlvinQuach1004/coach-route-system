@@ -11,13 +11,13 @@ html.h-full.bg-base[lang="en"]
             = render 'shared/switch_theme'
           div class="flex justify-start items-end"
             = link_to root_path do
-              = image_tag 'coach_icon.png', class: 'w-24 h-24'
+              = image_tag vite_asset_path('images/icons/coach_icon.png'), class: 'w-24 h-24'
           .mt-0
             = yield
       div class="hidden sm:flex flex-1 flex-col my-auto justify-center items-center h-full md:h-60 w-full md:w-60 bg-base-100 rounded-full"
-        div class=""
-          = image_tag 'signup-signin.png',class: "w-96 h-80", alt: ""
-          div class=""
+        div
+          = image_tag vite_asset_path('images/signup-signin.png'),class: "w-96 h-80", alt: ""
+          div
             h2.text-3xl.font-bold.text-primary.mt-6.opacity-90
               | Welcome Customer
             ul.list-disc.mt-4.px-8.opacity-80

@@ -11,4 +11,9 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      '@images': '/app/frontend/images',
+    }
+  }
 })

@@ -170,6 +170,9 @@ GEM
       railties (>= 3.1)
     hashdiff (1.1.2)
     hashie (5.0.0)
+    heroicons-rails (1.2.0)
+      actionpack (>= 6.0.0)
+      railties (>= 6.0.0)
     highline (3.1.1)
       reline
     i18n (1.14.6)
@@ -538,6 +541,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   good_migrations
+  heroicons-rails (~> 1.2)
   i18n-tasks
   image_processing
   lefthook

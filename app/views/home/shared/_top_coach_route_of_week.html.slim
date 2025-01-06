@@ -1,0 +1,22 @@
+.text-center.mt-24.mb-11.max-w-2xl.w-full.mx-auto
+  h2.text-4xl.font-bold.bg-base-100.p-4.rounded.underline.underline-offset-8.decoration-green-500
+    | The Most Popular Routes Of Week
+.container.mx-auto.px-4.my-10.max-w-7xl.shadow-xl.bg-base-200.rounded-md
+  .grid.grid-cols-1.p-14.rounded-md.sm:grid-cols-2.md:grid-cols-3.gap-6
+    .card.bg-base-100.shadow-xl
+      .card-image.aspect-video.overflow-hidden
+        = image_tag vite_asset_path('images/signup-signin.png'), alt: "Cà Mau → Sài Gòn", class: "object-cover w-full h-full"
+      .card-body.p-4
+        h3.text-white.text-center.font-medium.text-lg.bg-black.bg-opacity-50.p-2.rounded Cà Mau → Sài Gòn
+
+    .card.bg-base-100.shadow-xl
+      .card-image.aspect-video.overflow-hidden
+        = image_tag vite_asset_path('images/signup-signin.png'), alt: "Bạc Liêu → Sài Gòn", class: "object-cover w-full h-full"
+      .card-body.p-4
+        h3.text-white.text-center.font-medium.text-lg.bg-black.bg-opacity-50.p-2.rounded Bạc Liêu → Sài Gòn
+
+    .card.bg-base-100.shadow-xl
+      .card-image.aspect-video.overflow-hidden
+        = image_tag vite_asset_path('images/signup-signin.png'), alt: "Cần Thơ → Sài Gòn", class: "object-cover w-full h-full"
+      .card-body.p-4
+        h3.text-white.text-center.font-medium.text-lg.bg-black.bg-opacity-50.p-2.rounded Cần Thơ → Sài Gòn

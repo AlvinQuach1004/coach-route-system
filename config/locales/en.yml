@@ -9,6 +9,7 @@ en:
               size: File size must be less than %{size} MB
             password:
               confirmation: Password confirmation doesn't match Password
+              format: Password must contain at least one letter and one number
               too_short: Password is too short (minimum is %{count} characters)
   common:
     create:

@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :user do
     sequence(:email) { |n| "user#{n}@rails.boilerplate.com" }
     password { 'Password123!' }
+    phone_number { '0912345678' }
     confirmed_at { Time.current }
     after(:build) { |user| user.add_role(:customer) }
 

@@ -2,7 +2,7 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
   .container.flex.justify-between.items-center.w-full
     .navbar.w-full.ml-6
       = link_to root_path, class: 'h-24 w-24' do
-        = image_tag 'coach_icon.png', class: '', alt: 'Coach Icon'
+        = image_tag vite_asset_path('images/icons/coach_icon.png'), class: '', alt: 'Coach Icon'
       div class='flex flex-1 px-2 mx-2 gap-4'
         = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn' do
           | Routes
@@ -32,4 +32,3 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
               a Settings
             li
               = button_to 'Log out', destroy_user_session_path, method: :delete, data: { turbo: false }
-
