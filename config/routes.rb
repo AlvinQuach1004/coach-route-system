@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'route_pages/index'
   if Rails.env.development?
     get '/erd', to: 'docs#erd'
   end
@@ -16,7 +17,8 @@ Rails.application.routes.draw do
     controllers: {
       sessions: 'authentication/sessions',
       registrations: 'authentication/registrations',
-      omniauth_callbacks: 'authentication/omniauth_callbacks'
+      omniauth_callbacks: 'authentication/omniauth_callbacks',
+      passwords: 'authentication/passwords'
     }
 
   namespace :admin do
@@ -25,7 +27,7 @@ Rails.application.routes.draw do
     root to: 'users#index'
   end
 
-  namespace :employees do
+  namespace :customers do
     # Add employee routes here
   end
 

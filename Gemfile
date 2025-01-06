@@ -37,6 +37,7 @@ gem 'faker'
 # Front-end
 gem 'slim-rails', '~> 3.6', '>= 3.6.3'
 gem 'simple_form'
+gem 'heroicons-rails', '~> 1.2'
 
 # Pagination
 gem 'pagy'

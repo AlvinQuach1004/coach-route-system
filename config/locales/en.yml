@@ -10,6 +10,7 @@ en:
             password:
               confirmation: Password confirmation doesn't match Password
               too_short: Password is too short (minimum is %{count} characters)
+              format: Password must contain at least one letter and one number
   common:
     create:
       exists: "%{model} already existed"

@@ -1,5 +1,5 @@
 .container.mt-16.rounded-box.max-w-6xl.bg-base-200.mx-auto
-  = form_with url: route_pages_index_url, method: :get, class: 'form-search flex flex-row w-full form-control relative justify-center items-center gap-6 p-16', local: true do |f|
+  = form_with url: route_pages_index_path, method: :get, class: 'form-search flex flex-row w-full form-control relative justify-center items-center gap-6 p-16', local: true do |f|
     div
       label.form-control.w-full.max-w-xs
       .label
@@ -9,6 +9,7 @@
         = f.text_field :departure,
           class: 'input input-bordered w-full max-w-md relative focus:outline-none focus:ring-2 focus:ring-gray-400',
           id: 'departure',
+          value: params[:departure],
           placeholder: 'From'
         svg.w-6.h-6.text-gray-500.absolute.bottom-3.right-3 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
           path(stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z")
@@ -29,6 +30,7 @@
         = f.text_field :destination,
           class: 'input input-bordered w-full max-w-md relative focus:outline-none focus:ring-2 focus:ring-gray-400',
           id: 'destination',
+          value: params[:destination],
           placeholder: 'To'
         svg.w-6.h-6.text-gray-500.absolute.bottom-3.right-3 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
           path(stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z")
@@ -41,6 +43,7 @@
         = f.date_field :date, 
           class: 'input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-gray-400',
           id: 'datepicker',
+          value: params[:date],
           placeholder: 'Select date'
         .absolute.right-3.top-3.-z-4.cursor-pointer
           svg.w-6.h-6.text-gray-500.datepicker-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"

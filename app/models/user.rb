@@ -40,6 +40,7 @@ class User < ApplicationRecord
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [200, 200]
   end
+  has_many :bookings, dependent: :destroy
 
   # validations
   validates :avatar,
@@ -52,11 +53,11 @@ class User < ApplicationRecord
     presence: true,
     uniqueness: true,
     format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :phone_number, format: { with: /\A(03|05|07|08|09)\d{8}\z/ }
+  validates :phone_number, format: { with: /\A(03|05|07|08|09)\d{8}\z/ }, unless: -> { reset_password_token.present? }
   validates :password,
     presence: true,
     confirmation: { message: I18n.t('activerecord.errors.models.user.attributes.password.confirmation') },
-    format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+\z/ },
+    format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+\z/, message: I18n.t('activerecord.errors.models.user.attributes.password.format') },
     length: { minimum: 8, message: I18n.t('activerecord.errors.models.user.attributes.password.too_short') }
 
   def self.from_google(google_params)
