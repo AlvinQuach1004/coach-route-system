@@ -13,4 +13,3 @@ RSpec.describe Ticket, type: :model do
     end
   end
 end
-
