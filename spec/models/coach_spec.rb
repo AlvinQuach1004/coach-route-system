@@ -9,4 +9,3 @@ RSpec.describe Coach, type: :model do
     expect(coach.capacity).to be_between(30, 50)
   end
 end
-
