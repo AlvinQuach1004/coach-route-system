@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Ticket, type: :model do
   describe 'validations and associations' do
-    it 'creates a valid ticket with associated booking and schedule' do
+    it 'creates a valid ticket' do
       ticket = create(:ticket)
       expect(ticket).to be_valid
       expect(ticket.booking).to be_present
