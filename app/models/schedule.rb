@@ -28,6 +28,13 @@ class Schedule < ApplicationRecord
   validates :departure_date, presence: true
   validates :departure_time, presence: true
   validate :departure_date_cannot_be_in_the_past
+  def formatted_departure_date
+    departure_date.strftime('%d/%m/%Y') if departure_date.present?
+  end
+
+  def formatted_departure_time
+    departure_time.strftime('%H:%M:%S') if departure_time.present?
+  end
 
   private
 

@@ -1,9 +1,9 @@
-# FactoryBot.define do
-#   factory :ticket do
-#     booking { nil }
-#     schedule { nil }
-#     price { '9.99' }
-#     seat_number { 'MyString' }
-#     status { 'MyString' }
-#   end
-# end
+FactoryBot.define do
+  factory :ticket do
+    booking
+    schedule
+    price { 9.99 }
+    status { 'booked' }
+    seat_number { 'MyString' }
+  end
+end

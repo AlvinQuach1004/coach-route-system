@@ -1,7 +1,7 @@
-# FactoryBot.define do
-#   factory :coach do
-#     license_plate { 'MyString' }
-#     type { '' }
-#     capacity { 1 }
-#   end
-# end
+FactoryBot.define do
+  factory :coach do
+    license_plate { 'MyString' }
+    type { 'available' }
+    capacity { 41 }
+  end
+end

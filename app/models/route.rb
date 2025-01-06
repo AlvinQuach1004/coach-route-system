@@ -19,6 +19,7 @@
 #  fk_rails_...  (start_location_id => locations.id)
 #
 class Route < ApplicationRecord
+  has_many :stops, dependent: :destroy, inverse_of: :route
   belongs_to :start_location, class_name: 'Location', inverse_of: :start_routes
   belongs_to :end_location, class_name: 'Location', inverse_of: :end_routes
   has_many :schedules, dependent: :destroy, inverse_of: :route

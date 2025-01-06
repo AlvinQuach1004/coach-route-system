@@ -1,5 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Stop, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'Validations' do
+    it 'is valid with valid attributes' do
+      stop = build(:stop)
+      expect(stop).to be_valid
+    end
+  end
 end
