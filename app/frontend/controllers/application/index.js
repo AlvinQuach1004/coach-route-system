@@ -29,7 +29,6 @@ document.addEventListener('turbo:load', () => {
       datepicker.focus();
     });
   }
-
   // Exchange button logic
   const departureInput = document.getElementById('departure');
   const destinationInput = document.getElementById('destination');
@@ -43,7 +42,6 @@ document.addEventListener('turbo:load', () => {
       destinationInput.value = tempValue;
     });
   }
-
   // Carousel logic
   const carousel = document.getElementById('carousel');
   const prevButton = document.getElementById('prev');
@@ -72,9 +70,7 @@ document.addEventListener('turbo:load', () => {
     });
   }
 });
-
 // Get page load (in case Turbo isn't enabled)
 document.addEventListener('DOMContentLoaded', () => {
   document.dispatchEvent(new Event('turbo:load'));
 });
-
