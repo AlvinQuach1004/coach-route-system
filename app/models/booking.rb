@@ -24,12 +24,16 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Booking < ApplicationRecord
+  # Associations
   belongs_to :user, inverse_of: :bookings
   has_many :tickets, dependent: :destroy, inverse_of: :booking
   belongs_to :start_stop, class_name: 'Stop', inverse_of: :start_stops
   belongs_to :end_stop, class_name: 'Stop', inverse_of: :end_stops
+
+  # Validations
   validate :start_and_stop_cannot_be_the_same
 
+  # Enumerize
   enum :payment_method, { online: 'online', cash: 'cash' }, default: :cash
   enum :payment_status, { pending: 'pending', completed: 'completed', failed: 'failed' }, default: :pending
 

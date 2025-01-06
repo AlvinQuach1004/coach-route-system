@@ -23,9 +23,14 @@
 #  fk_rails_...  (schedule_id => schedules.id)
 #
 class Ticket < ApplicationRecord
+  # Associations
   belongs_to :booking, inverse_of: :tickets
   belongs_to :schedule, inverse_of: :tickets
-  enum :status, { booked: 'booked', checked_in: 'checked_in', canceled: 'canceled' }, default: :booked
+
+  # Enumerize
+  enum :status, { booked: 'booked', paid: 'paid', cancelled: 'cancelled' }, default: :booked
+
+  # Validations
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :seat_number, presence: true, uniqueness: { scope: :schedule_id, message: 'is already booked for this schedule' }
 end

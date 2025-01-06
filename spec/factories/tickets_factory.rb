@@ -2,8 +2,8 @@ FactoryBot.define do
   factory :ticket do
     booking
     schedule
-    price { 9.99 }
-    status { 'booked' }
-    seat_number { 'MyString' }
+    price { Faker::Number.decimal(l_digits: 2) }
+    status { ['booked', 'paid', 'cancelled'].sample }
+    seat_number { Faker::String.random(length: 3) }
   end
 end

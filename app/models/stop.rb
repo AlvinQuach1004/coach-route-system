@@ -21,8 +21,13 @@
 #  fk_rails_...  (route_id => routes.id)
 #
 class Stop < ApplicationRecord
+  # Associations
   belongs_to :route, inverse_of: :stops
   belongs_to :location, inverse_of: :stops
   has_many :start_stops, class_name: 'Booking', foreign_key: :start_stop_id, dependent: :destroy, inverse_of: :start_stop
   has_many :end_stops, class_name: 'Booking', foreign_key: :end_stop_id, dependent: :destroy, inverse_of: :end_stop
+
+  # Validations
+  validates :stop_order, presence: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 10 }
+  validates :time_range, presence: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 12 }
 end

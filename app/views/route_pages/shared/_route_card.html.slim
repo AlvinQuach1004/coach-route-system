@@ -16,7 +16,7 @@
             circle(cx="12" cy="12" r="3")
           span.text-lg.ml-6 
             |17:00: 
-            = route.start_location.location_name
+            = route.start_location.name
         .relative
           svg.absolute xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical"
             circle(cx="12" cy="12" r="1")
@@ -29,7 +29,7 @@
             circle(cx="12" cy="10" r="3")
           span.text-lg.ml-6 
             | 01:00: 
-            = route.end_location.location_name
+            = route.end_location.name
     .flex.flex-col.items-end.justify-between
       span.text-2xl.text-primary.font-semibold 270.000 đ
       div

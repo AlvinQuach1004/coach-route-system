@@ -21,13 +21,17 @@
 #  fk_rails_...  (route_id => routes.id)
 #
 class Schedule < ApplicationRecord
+  # Associations
   belongs_to :route, inverse_of: :schedules
   belongs_to :coach, inverse_of: :schedules
   has_many :tickets, dependent: :destroy
 
+  # Validations
   validates :departure_date, presence: true
   validates :departure_time, presence: true
   validate :departure_date_cannot_be_in_the_past
+
+  # Public methods
   def formatted_departure_date
     departure_date.strftime('%d/%m/%Y') if departure_date.present?
   end

@@ -4,8 +4,8 @@ FactoryBot.define do
       same_location { false }
     end
 
-    start_location factory: %i[location]
-    end_location factory: %i[location]
+    start_location { create(:location) } # rubocop:disable FactoryBot/FactoryAssociationWithStrategy
+    end_location { create(:location) } # rubocop:disable FactoryBot/FactoryAssociationWithStrategy
 
     after(:build) do |route, evaluator|
       if evaluator.same_location

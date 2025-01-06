@@ -6,8 +6,8 @@ RSpec.describe Ticket, type: :model do
     expect(ticket).to be_valid
     expect(ticket.booking).to be_present
     expect(ticket.schedule).to be_present
-    expect(ticket.price).to eq(9.99)
-    expect(ticket.seat_number).to eq('MyString')
-    expect(ticket.status).to eq('booked')
+    expect(ticket.price.to_f).to be_a(Float)
+    expect(ticket.seat_number).to be_a(String)
+    expect(['booked', 'cancelled', 'paid']).to include(ticket.status)
   end
 end

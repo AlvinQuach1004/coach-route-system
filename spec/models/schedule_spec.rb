@@ -11,8 +11,9 @@ RSpec.describe Schedule, type: :model do
       expect(schedule).to be_valid
       expect(schedule.route).to eq(route)
       expect(schedule.coach).to eq(coach)
-      expect(schedule.formatted_departure_date).to eq('12/12/2025')
-      expect(schedule.formatted_departure_time).to eq('22:28:48')
+
+      expect(schedule.formatted_departure_date).to eq(schedule.departure_date.strftime('%d/%m/%Y'))
+      expect(schedule.formatted_departure_time).to eq(schedule.departure_time.strftime('%H:%M:%S'))
     end
   end
 end

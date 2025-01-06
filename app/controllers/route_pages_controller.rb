@@ -3,12 +3,12 @@ class RoutePagesController < ApplicationController
     @routes = Route.all
 
     if params[:departure].present?
-      location = Location.find_by('LOWER(location_name) = ?', params[:departure].downcase)
+      location = Location.find_by('LOWER(name) = ?', params[:departure].downcase)
       @routes = @routes.where(start_location: location.id) if location
     end
 
     if params[:destination].present?
-      location = Location.find_by('LOWER(location_name) = ?', params[:destination].downcase)
+      location = Location.find_by('LOWER(name) = ?', params[:destination].downcase)
       @routes = @routes.where(end_location: location.id) if location
     end
 
