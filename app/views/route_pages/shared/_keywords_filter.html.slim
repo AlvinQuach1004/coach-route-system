@@ -1,0 +1,5 @@
+.space-y-3
+  - @keywords.each do |label|
+    label.flex.items-center.space-x-2
+      = check_box_tag "keywords[]", label.start_location_name, params[:keywords]&.include?(label.start_location_name), class: 'checkbox checkbox-primary', data: { filter: 'keywords' }
+      span #{label.start_location_name} → #{label.end_location_name}

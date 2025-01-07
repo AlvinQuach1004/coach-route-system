@@ -3,7 +3,7 @@
 # Table name: tickets
 #
 #  id          :uuid             not null, primary key
-#  price       :decimal(, )
+#  paid_amount :decimal(, )
 #  seat_number :string
 #  status      :string
 #  created_at  :datetime         not null
@@ -31,6 +31,6 @@ class Ticket < ApplicationRecord
   enum :status, { booked: 'booked', paid: 'paid', cancelled: 'cancelled' }, default: :booked
 
   # Validations
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :paid_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :seat_number, presence: true, uniqueness: { scope: :schedule_id, message: 'is already booked for this schedule' }
 end

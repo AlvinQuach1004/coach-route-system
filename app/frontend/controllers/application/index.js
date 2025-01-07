@@ -69,6 +69,15 @@ document.addEventListener('turbo:load', () => {
       carousel.style.transform = `translateX(${currentPosition}px)`;
     });
   }
+
+  const form = document.getElementById('filter-form');
+  const filterElements = form.querySelectorAll('[data-filter]');
+
+  filterElements.forEach((element) => {
+    element.addEventListener('change', function () {
+      form.submit();
+    });
+  });
 });
 // Get page load (in case Turbo isn't enabled)
 document.addEventListener('DOMContentLoaded', () => {

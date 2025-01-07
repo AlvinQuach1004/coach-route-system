@@ -1,3 +1,5 @@
-label.flex.items-center.space-x-2
-  input[type="checkbox" class="checkbox checkbox-primary"]
-  span = label
+.space-y-3
+  - %w[Latest Seat\ available].each do |label|  
+    label.flex.items-center.space-x-2
+      = check_box_tag "trends[]", label, params[:trends]&.include?(label), class: 'checkbox checkbox-primary', data: { filter: 'trends' }
+      span = label
