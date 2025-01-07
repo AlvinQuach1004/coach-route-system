@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_06_153609) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_07_064016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -98,6 +98,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_153609) do
     t.uuid "coach_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "price"
     t.index ["coach_id"], name: "index_schedules_on_coach_id"
     t.index ["route_id"], name: "index_schedules_on_route_id"
   end
@@ -116,7 +117,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_153609) do
   create_table "tickets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "booking_id", null: false
     t.uuid "schedule_id", null: false
-    t.decimal "price"
+    t.decimal "paid_amount"
     t.string "seat_number"
     t.string "status"
     t.datetime "created_at", null: false

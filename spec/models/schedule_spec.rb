@@ -11,6 +11,7 @@ RSpec.describe Schedule, type: :model do
       expect(schedule).to be_valid
       expect(schedule.route).to eq(route)
       expect(schedule.coach).to eq(coach)
+      expect(schedule.price.to_f).to be_a(Float)
 
       expect(schedule.formatted_departure_date).to eq(schedule.departure_date.strftime('%d/%m/%Y'))
       expect(schedule.formatted_departure_time).to eq(schedule.departure_time.strftime('%H:%M:%S'))

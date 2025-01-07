@@ -1,7 +1,7 @@
 - provide(:title, 'Routes')
 = render 'route_pages/shared/search_routes'
 
-= form_with(url: route_pages_index_path, method: :get, data: { turbo_action: 'replace' }, id: "filter-form", class: 'px-4 pt-16') do
+= form_with(url: route_pages_index_path, method: :get, data: { turbo_action: 'replace' }, id: "filter-form", class: 'px-4 pt-16') do |f|
   .flex.flex-col.md:flex-row.px-32.pb-16
     .w-full.pt-0.pb-8.md:w-1/4.p-6.md:px-8.md:py-8.border-r
       h2.text-lg.font-semibold.mb-4 Keywords
@@ -20,7 +20,7 @@
   
       h2.text-lg.font-semibold.mt-6.mb-4 Category
       .space-y-3
-        = render 'route_pages/shared/category_filter', label: 'Economy'
+        = render 'route_pages/shared/category_filter'
     
     .w-full.md:w-3/4.px-4.md:px-10.py-6
       .flex.justify-between.items-center.mb-4
@@ -29,11 +29,7 @@
           = @total_schedules
         .flex.items-center.space-x-2
           span Sort:
-          select.select.select-bordered
-            option Default
-            option Price Low to High
-            option Price High to Low
-
+          = f.select :sort_by, options_for_select([['Default', 'default'], ['Price Low to High', 'price_low_to_high'], ['Price High to Low', 'price_high_to_low']], selected: params[:sort_by]), {}, { class: 'select select-bordered', onchange: 'this.form.submit()' }
       <!-- Wrap the schedule list in a turbo_frame_tag -->
       = turbo_frame_tag 'schedules' do
         - if @schedules.present?

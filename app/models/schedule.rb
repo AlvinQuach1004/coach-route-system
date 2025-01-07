@@ -5,6 +5,7 @@
 #  id             :uuid             not null, primary key
 #  departure_date :date
 #  departure_time :time
+#  price          :decimal(, )
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  coach_id       :uuid             not null

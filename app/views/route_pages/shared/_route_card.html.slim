@@ -4,7 +4,7 @@
     .flex-1
       .flex.flex-col.justify-center.mb-2
         h3.font-bold.text-xl Xe Tuấn Hưng
-        h3.text-gray-600.text-md.mt-2.opacity-80 #{schedule.coach.coach_type} #{schedule.coach.capacity} chỗ
+        h3.text-gray-600.text-md.mt-2.opacity-80 #{schedule.coach.coach_type.capitalize} #{schedule.coach.capacity} seats
       .flex.flex-col.justify-start.text-sm.text-gray-600.mt-6.gap-2
         .relative 
           svg.absolute.top-1 xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-locate-fixed"
@@ -32,7 +32,8 @@
             = schedule.route.end_location.name
     .flex.flex-col.items-end.justify-between.md:items-start.md:text-right.mt-4.md:mt-0
       .w-full.text-end
-        span.text-2xl.text-primary.font-semibold.text-end.md:pr-2 270.000 đ
+        span.text-2xl.text-primary.font-semibold.text-end.md:pr-2 
+          | #{format_currency_vnd(schedule.price)}
       div.flex.flex-col.md:flex-row.justify-between.md:justify-start.items-center.md:items-end.w-full
       .flex.items-center.justify-end.mb-4.mt-4.md:mt-6.md:mb-0
         span.text-gray-500.md:ml-4 Available: 37 empty seats

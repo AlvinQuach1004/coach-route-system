@@ -8,6 +8,8 @@ class RoutePagesController < ApplicationController
     apply_keywords_filter
     apply_trends_filter
     apply_search
+    apply_sort_by_price
+    apply_price_range
 
     @total_schedules = @schedules.size
     # Pagination
@@ -44,9 +46,9 @@ class RoutePagesController < ApplicationController
     }
 
     if params[:category].present?
-      mapped_category = category_mapping[params[:category]]
+      mapped_category = category_mapping[params[:category]] || params[:category]
       if mapped_category
-        @schedules = @schedules.joins(:coach).where(coaches: { coach_type: mapped_category })
+        @schedules = @schedules.joins(:coach).where(coaches: { coach_type: mapped_category.downcase })
       end
     end
   end
@@ -96,6 +98,24 @@ class RoutePagesController < ApplicationController
         nil
       end
       @schedules = @schedules.where(departure_date: date) if date
+    end
+  end
+
+  def apply_price_range
+    max_price = params[:price].to_i if params[:price].present?
+    @schedules = @schedules.where(price: ..max_price) if max_price
+  end
+
+  def apply_sort_by_price
+    if params[:sort_by].present?
+      sort_by = params[:sort_by]
+      if sort_by.include?('price_high_to_low')
+        @schedules = @schedules.order('price DESC')
+      elsif sort_by.include?('price_low_to_high')
+        @schedules = @schedules.order('price ASC')
+      else
+        @schedules
+      end
     end
   end
 end
