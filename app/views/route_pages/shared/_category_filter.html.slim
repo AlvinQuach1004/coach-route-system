@@ -1,0 +1,5 @@
+.space-y-3
+  - %w[Giường\ nằm Limousine\ giường\ nằm Giường\ phòng].each do |label|
+    label.flex.items-center.space-x-2
+      = radio_button_tag "category", label, params[:category] == label, class: 'radio radio-primary', data: { filter: 'category' }
+      span = label

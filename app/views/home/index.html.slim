@@ -13,5 +13,7 @@
           | View Routes
     = image_tag vite_asset_path('images/ticket_terminal_thumbnail.png'), class: 'thumbnail-ticket-terminal-img mr-20', alt: 'Coach Image'
 = render 'home/shared/search_routes'
-= render 'home/shared/top_coach_route_of_week'
-= render 'home/shared/most_popular_route'
+- if @top_routes_of_week.present?
+  = render partial: 'home/shared/top_coach_route_of_week', locals: { routes: @top_routes_of_week }
+- if @most_popular_routes.present?
+  = render partial: 'home/shared/most_popular_route', locals: { routes: @most_popular_routes }

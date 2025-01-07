@@ -1,46 +1,44 @@
 - provide(:title, 'Routes')
 = render 'route_pages/shared/search_routes'
-.container.mx-auto.px-32.pt-16
-  .flex
-    .w-1/4.p-4.border-r.px-8.py-8
+
+= form_with(url: route_pages_index_path, method: :get, data: { turbo_action: 'replace' }, id: "filter-form", class: 'px-4 pt-16') do
+  .flex.flex-col.md:flex-row.px-32.pb-16
+    .w-full.pt-0.pb-8.md:w-1/4.p-6.md:px-8.md:py-8.border-r
       h2.text-lg.font-semibold.mb-4 Keywords
-      .space-y-2
-        = render 'route_pages/shared/checkbox', label: 'Cà Mau'
-        = render 'route_pages/shared/checkbox', label: 'Đà Lạt'
-        = render 'route_pages/shared/checkbox', label: 'Sài Gòn'
-
+      .space-y-3
+        - if @keywords.present?
+          = render 'route_pages/shared/keywords_filter', locals: @keywords
       h2.text-lg.font-semibold.mt-6.mb-4 Filter
-      .space-y-2
-        = render 'route_pages/shared/checkbox', label: 'Popular'
-        = render 'route_pages/shared/checkbox', label: 'Latest'
-        = render 'route_pages/shared/checkbox', label: 'Seat available'
-
+      .space-y-3
+        = render 'route_pages/shared/checkbox'
       .flex.items-center.justify-between.mt-6.mb-4
         h2.text-lg.font-semibold.my-auto Price
-        span.text-md.my-auto 500,000 đ
+        span.text-md.my-auto.font-bold = "#{number_to_currency(params[:price] || 500000, unit: 'đ', precision: 0)}"
+  
       .flex.items-center.space-x-2.px-2
-        input[type="range" name="price" min="0" max="800000" class="range"]
-
+        = range_field_tag :price, params[:price] || 500000, min: 0, max: 800000, step: 5000, class: "range w-full"
+  
       h2.text-lg.font-semibold.mt-6.mb-4 Category
-      .space-y-2
-        = render 'route_pages/shared/checkbox', label: 'Giường nằm'
-        = render 'route_pages/shared/checkbox', label: 'Limousine giường nằm'
-        = render 'route_pages/shared/checkbox', label: 'Giường phòng'
-
-    .w-3/4.px-10.py-6
+      .space-y-3
+        = render 'route_pages/shared/category_filter', label: 'Economy'
+    
+    .w-full.md:w-3/4.px-4.md:px-10.py-6
       .flex.justify-between.items-center.mb-4
-        h2.font-bold.text-2xl 
+        h2.font-bold.text-2xl
           | Search results: 
-          = @routes.size
+          = @total_schedules
         .flex.items-center.space-x-2
           span Sort:
           select.select.select-bordered
             option Default
             option Price Low to High
             option Price High to Low
-      - if @routes.present?
-        = render partial: 'route_pages/shared/route_card', collection: @routes, as: :route
-        .mt-10.text-center
-          = pagy_nav(@pagy)
-      - else
-        = render 'route_pages/shared/error_not_found'
+
+      <!-- Wrap the schedule list in a turbo_frame_tag -->
+      = turbo_frame_tag 'schedules' do
+        - if @schedules.present?
+          = render partial: 'route_pages/shared/route_card', collection: @schedules, as: :schedule
+          .mt-10.text-center
+            = pagy_nav(@pagy)
+        - else
+          = render 'route_pages/shared/error_not_found'
