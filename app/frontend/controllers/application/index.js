@@ -73,8 +73,8 @@ document.addEventListener('turbo:load', () => {
   const form = document.getElementById('filter-form');
   const filterElements = form.querySelectorAll('[data-filter]');
 
-  filterElements.forEach(element => {
-    element.addEventListener('change', function() {
+  filterElements.forEach((element) => {
+    element.addEventListener('change', function () {
       form.submit();
     });
   });
