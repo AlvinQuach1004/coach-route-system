@@ -1,0 +1,202 @@
+= form_with model: booking, url: create_booking_route_pages_path, method: :post do |f|
+  .dropdown-content.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 id="dropdown-book-#{schedule.id}"
+    .container.bg-base-100.w-full.max-w-4xl.mt-8.dropdown-book-container
+      .progress-container.mx-auto
+        #progress.progress
+        .circle-step.active 1
+        .circle-step 2
+        .circle-step 3
+        .circle-step 4
+  
+      .step-tab.container.mx-auto.p-6.bg-base-100.w-full.max-w-6xl
+        .flex.justify-between.bg-none
+          .w-1/4.mt-4.max-w-xl.mr-10
+            h2.text-lg.font-bold.text-left.pl-4 Chú thích
+            ul.pt-4
+              li.flex.items-center
+                .grid.grid-cols-3.gap-x-12.gap-y-4
+                  .w-8.h-14.bg-white.border.border-gray-400.rounded.inline-block
+                    svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                      rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
+                  span.whitespace-nowrap Ghế trống
+              li.flex.items-center
+                .grid.grid-cols-3.gap-x-12.gap-y-4
+                  .w-8.h-14.bg-gray-400.border.border-gray-400.rounded.inline-block
+                    svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                      rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
+                  span.whitespace-nowrap Ghế đã đặt
+              li.flex.items-center
+                .grid.grid-cols-3.gap-x-12.gap-y-4
+                  .w-8.h-14.bg-green-400.border.border-gray-400.rounded.inline-block
+                    svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                      rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
+                  span.whitespace-nowrap Ghế đang chọn
+  
+          .w-3/4.flex.justify-between
+            // Lower Floor
+            .w-1/2.bg-slate-300.mr-4.rounded-md.relative
+              h2.text-center.font-bold.mb-8.pt-4.text-lg Tầng dưới
+              svg.absolute.left-8.top-16 xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-life-buoy"
+                circle cx="12" cy="12" r="10"
+                path d="m4.93 4.93 4.24 4.24"
+                path d="m14.83 9.17 4.24-4.24"
+                path d="m14.83 14.83 4.24 4.24"
+                path d="m9.17 14.83-4.24 4.24"
+                circle cx="12" cy="12" r="4"
+              .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-10
+                - (1..18).each do |seat|
+                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip data-id="A#{seat}" data-status="available" data-tip="A#{seat} - 270,000đ"
+                    svg.relative.h-10.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                      rect.absolute width="20" height="8" x="2" y="20" rx="2" ry="2"
+            // Upper Floor
+            .w-1/2.bg-slate-300.mr-4.rounded-md
+              h2.text-center.font-bold.mb-4.pt-4.text-lg Tầng trên
+              .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-10
+                - (1..18).each do |seat|
+                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip data-id="B#{seat}" data-status="available" data-tip="B#{seat} - 270,000đ"
+                    svg.relative.h-10.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                      rect.absolute width="20" height="8" x="2" y="20" rx="2" ry="2"
+          
+        .divider.mt-10
+        .flex.justify-between.items-center
+          .flex.justify-start.items-center
+            p.text-semibold.text-lg Ghế 
+            span#selected-seats.text-blue-500.font-bold.ml-4
+          .flex.items-center.justify-between
+            p.text-lg.mr-8 Tổng cộng: 
+            span#total-price.font-bold.text-green-500.text-lg
+              | 270,000₫
+  
+      .step-tab.hidden
+        / app/views/tickets/checkout.html.slim
+  
+        .container.mx-auto.p-4.max-w-3xl
+          .grid.grid-cols-1.md:grid-cols-2.gap-6
+            / Pickup Location Card
+            .card.bg-base-200.shadow-xl
+              .card-body
+                h2.card-title Điểm trả
+                p.text-sm.mb-2.mr-auto
+                  | Xem điểm trả gần điểm đón nhất ?
+                  br
+                  span.text-primary.ml-1 Đường Lý Văn Lâm, khóm ...
+                  a.text-blue-500.hover:underline.ml-1 href="#" Thay đổi
+                
+                .mt-4
+                  .flex.items-center.gap-2
+                    span.text-xl.font-bold 17:00
+                    span •
+                    span.text-gray-600 Bến xe miền Tây
+                  
+                  .mt-2.flex.items-start.justify-end.gap-2
+                    i.fas.fa-map-marker-alt.mt-1.text-gray-500
+                    p.text-gray-600
+                      | 395 D. Kinh Dương Vương, An Lạc, Bình Tân,
+                      br
+                      | Hồ Chí Minh 700000,
+                      br
+                      | Vietnam
+                      a.text-blue-500.hover:underline.ml-1 href="#" Wi-fi
+        
+            / Drop-off Location Card
+            .card.bg-base-200.shadow-xl
+              .card-body
+                h2.card-title Điểm trả
+                p.text-sm.mb-2.mr-auto
+                  | Xem điểm trả gần điểm đón nhất ?
+                  br
+                  span.text-primary.ml-1 Đường Lý Văn Lâm, khóm ...
+                  a.text-blue-500.hover:underline.ml-1 href="#" Thay đổi
+                
+                .mt-4
+                  .flex.items-center.gap-2
+                    span.text-xl.font-bold 01:00
+                    span •
+                    span.text-gray-600 Bến xe Tuấn Hưng
+            
+                  .mt-2.flex.items-start.gap-2
+                    i.fas.fa-map-marker-alt.mt-1.text-gray-500
+                    p.text-gray-600
+                      | 119 B. Lý Thường Kiệt,
+                      br
+                      | Phường 6, Cà Mau,
+                      br
+                      | Vietnam
+                      a.text-blue-500.hover:underline.ml-1 href="#" Wi-fi
+        
+          / Bottom Navigation
+          .flex.justify-end.items-center.mt-8.border-t.pt-4
+              p.text-lg
+                | Tổng cộng 3 vé: 
+                span.text-primary.font-bold 570,000đ
+  
+      .step-tab.hidden.h-full
+        / app/views/payments/checkout.html.slim
+  
+        .container.mx-auto.p-4.max-w-4xl
+          .grid.grid-cols-1.lg:grid-cols-2.gap-8
+            / Payment Method Section
+            .space-y-4
+              h2.text-xl.font-medium Payment Method
+  
+              .space-y-2
+                / Stripe Option
+                label.flex.items-center.p-4.border.rounded-lg.cursor-pointer.hover:bg-gray-50
+                  = f.radio_button :payment_method, 'stripe', checked: true, id: 'stripe-option', class: 'radio radio-primary'
+                  .flex.items-center.ml-3.gap-2
+                    = image_tag vite_asset_path('images/icons/Stripe.png'), class: "h-6 w-auto", alt: "Stripe"
+                    span.text-gray-700 •••• 4242
+  
+                / Cash Option
+                label.flex.items-center.p-4.border.rounded-lg.cursor-pointer.hover:bg-gray-50
+                  = f.radio_button :payment_method, 'cash', id: 'cash-option', class: 'radio radio-primary'
+                  span.ml-3.text-gray-700 Cash
+  
+            / Summary Section
+            .card.bg-base-100.shadow-sm.border
+              .card-body
+                h2.card-title.mb-6 Summary
+  
+                .space-y-4
+                  / Price Row
+                  .flex.justify-between.items-center
+                    span.text-gray-600 Price
+                    span.text-gray-900 190,000đ
+  
+                  / Quantity Row
+                  .flex.justify-between.items-center
+                    span.text-gray-600 Quantity
+                    span.text-gray-900 x3
+  
+                  / From Row
+                  .flex.justify-between.items-center
+                    span.text-gray-600 From
+                    span.text-gray-900 Sai Gon
+  
+                  / To Row
+                  .flex.justify-between.items-center
+                    span.text-gray-600 To
+                    span.text-gray-900 Ca Mau
+  
+                  / Departure Time Row
+                  .flex.justify-between.items-center
+                    span.text-gray-600 Departure Time
+                    span.text-gray-900 17:00
+  
+                  / Pay Before Row
+                  .flex.justify-between.items-center
+                    span.text-gray-600 Pay ticket before
+                    span.text-gray-900 17 January, 2025
+  
+                  / Total Row
+                  .flex.justify-between.items-center.pt-4.border-t.mt-4
+                    span.font-medium.text-gray-900 TOTAL
+                    span.font-bold.text-gray-900 570,000đ
+                = f.submit 'Submit', class: 'btn btn-success w-full mt-6'
+      .flex.w-full.justify-between.items-end.px-4.mt-auto
+        button#prev.btn type="button" Back
+        button#next.btn type="button" Next
+  = f.hidden_field :start_stop_id, value: schedule.route.start_location.stops.first.id
+  = f.hidden_field :end_stop_id, value: schedule.route.end_location.stops.last.id
+  = f.hidden_field :payment_method, value: params[:payment_method] || "cash"
+  = f.hidden_field :payment_status, value: "pending"

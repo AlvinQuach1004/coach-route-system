@@ -1,7 +1,14 @@
 - provide(:title, 'Routes')
 = render 'route_pages/shared/search_routes'
 
-= form_with(url: route_pages_index_path, method: :get, data: { turbo_action: 'replace' }, id: "filter-form", class: 'px-4 pt-16') do |f|
+- if flash[:alert]
+  .alert.alert-danger.text-lg.px-2.py-4.max-w-lg.mx-auto.mt-8
+    = flash[:alert]
+- elsif flash[:notice]
+  .alert.alert-success.text-lg.px-2.py-4.max-w-lg.mx-auto.mt-8
+    = flash[:notice]
+
+= form_with(url: route_pages_path, method: :get, data: { turbo: true }, local: false, id: "filter-form", class: 'px-4 pt-16') do |f|
   .flex.flex-col.md:flex-row.px-32.pb-16
     .w-full.pt-0.pb-8.md:w-1/4.p-6.md:px-8.md:py-8.border-r
       h2.text-lg.font-semibold.mb-4 Keywords
@@ -22,7 +29,7 @@
       .space-y-3
         = render 'route_pages/shared/category_filter'
     
-    .w-full.md:w-3/4.px-4.md:px-10.py-6
+    .w-full.routes-container.md:w-3/4.px-4.md:px-10.py-6
       .flex.justify-between.items-center.mb-4
         h2.font-bold.text-2xl
           | Search results: 
@@ -32,8 +39,8 @@
           = f.select :sort_by, options_for_select([['Default', 'default'], ['Price Low to High', 'price_low_to_high'], ['Price High to Low', 'price_high_to_low']], selected: params[:sort_by]), {}, { class: 'select select-bordered', onchange: 'this.form.submit()' }
       <!-- Wrap the schedule list in a turbo_frame_tag -->
       = turbo_frame_tag 'schedules' do
-        - if @schedules.present?
-          = render partial: 'route_pages/shared/route_card', collection: @schedules, as: :schedule
+        - if @schedules.present? && @booking.present?
+          = render partial: 'route_pages/shared/route_card', locals: { schedules: @schedules, booking: @booking }
           .mt-10.text-center
             = pagy_nav(@pagy)
         - else

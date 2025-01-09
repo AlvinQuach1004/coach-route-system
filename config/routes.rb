@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get 'route_pages/index'
+  resources :route_pages, only: [:index] do
+    post :create_booking, on: :collection
+  end
+
   if Rails.env.development?
     get '/erd', to: 'docs#erd'
   end

@@ -17,7 +17,7 @@ module Authentication
 
     def after_sign_in_path_for(resource)
       return admin_root_path if resource.admin?
-      return customer_root_path if resource.customer?
+      return route_pages_path if resource.has_role?(:customer)
 
       stored_location_for(resource) || root_path
     end

@@ -1,0 +1,86 @@
+.dropdown-content.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 id="dropdown-#{schedule.id}"
+  .w-full.p-4.bg-base-100.rounded-lg.text-center
+    div(role="tablist" class="tabs tabs-bordered")
+      a(role="tab" class="tab tab-active" onclick="showTab('pickup-#{schedule.id.gsub('-', '')}')") Đón trả
+      a(role="tab" class="tab" onclick="showTab('images-#{schedule.id.gsub('-', '')}')") Hình ảnh
+      a(role="tab" class="tab" onclick="showTab('policies-#{schedule.id.gsub('-', '')}')") Chính sách
+      a(role="tab" class="tab" onclick="showTab('services-#{schedule.id.gsub('-', '')}')") Tiện ích
+
+  // Tab Content: Drop/Pickup
+  .hidden.mt-10 id="pickup-#{schedule.id.gsub('-', '')}" role="tabpanel"
+    .flex.justify-between.text-center
+      .flex-1
+        h4.font-bold.text-lg Điểm đón
+        p.text-gray-600.mt-2 17:00: Bến xe miền Tây
+      .divider.divider-horizontal
+      .flex-1
+        h4.font-bold.text-lg Điểm trả
+        p.text-gray-600.mt-2 01:00: Bến xe Tuấn Hưng
+
+  // Tab Content: Images (Carousel)
+  .mx-auto.relative.hidden.mt-4 id="images-#{schedule.id.gsub('-', '')}" role="tabpanel"
+    section.max-w-2xl
+      .carousel-container
+        .carousel
+          - (1..6).each do |i|
+            input type="radio" name="slides-#{schedule.id}" id="slide-#{i}-#{schedule.id}"
+          ul.carousel__slides
+            - (1..6).each do |i|
+              li.carousel__slide
+                figure
+                  div
+                    img src="https://picsum.photos/id/#{1040 + i}/800/450" alt="Picture #{1040 + i}"
+                  figcaption
+                    | Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    span.credit Photo: Example #{i}
+          ul.carousel__thumbnails.max-h-dhv
+            - (1..6).each do |i|
+              li
+                label for="slide-#{i}-#{schedule.id}"
+                  img src="https://picsum.photos/id/#{1040 + i}/150/150" alt=""
+  
+  // Policy tab
+  .hidden id="policies-#{schedule.id.gsub('-', '')}" role="tabpanel" class="bg-base-100"
+    .rounded-lg.p-6.text-start.pl-14
+      h3.text-xl.font-bold.mb-4 Chính sách
+      ul.list-disc.list-inside
+        li Đổi vé giấy trước khi lên xe
+        li Không mang đồ ăn, thức ăn có mùi lên xe
+        li Không hút thuốc, uống rượu, sử dụng chất kích thích trên xe
+        li Không mang các vật dễ cháy nổ lên xe
+        li Không vứt rác trên xe
+        li Không làm ồn, gây mất trật tự trên xe
+        li Không mang giày, dép trên xe
+      .divider
+      h4.text-lg.font-bold.mt-6.mb-2 Hành lý xách tay
+      ul.list-disc.list-inside
+        li Tổng trọng lượng hành lý không vượt quá 20 kg
+        li Không vận chuyển hàng hóa cồng kềnh
+        li Không hoàn tiền trong trường hợp hủy đơn hàng do vi phạm các quy định về hành lý
+      .divider
+      h4.text-lg.font-bold.mt-6.mb-2 Trẻ em và phụ nữ có thai
+      ul.list-disc.list-inside
+        li Trẻ em dưới 3 tuổi hoặc dưới 100 cm được miễn phí vé nếu ngồi chung ghế/giường với bố mẹ
+        li Trẻ em từ 3 tuổi hoặc cao từ 100 cm trở lên mua vé như người lớn
+      .divider
+      h4.text-lg.font-bold.mt-6.mb-2 Gửi xe đạp/xe máy
+      ul.list-disc.list-inside
+        li Quý khách vui lòng liên hệ tổng đài Alvin Coach để được hỗ trợ bằng giá cước gửi xe và xác nhận còn chỗ trống để gửi kèm xe (trong trường hợp nhà xe không còn hầm trống sẽ không hỗ trợ nhận gửi kèm xe đạp/xe máy)
+
+  // Policy tab
+  .hidden id="services-#{schedule.id.gsub('-', '')}" role="tabpanel" class="pb-12 bg-base-100"
+    .rounded-lg.p-6.text-start.pl-14.pt-10
+      h4.text-xl.font-bold.mb-3 Dây đai an toàn
+      span Trên xe có trang bị dây đai an toàn cho hành khách khi ngồi trên xe
+      .divider
+      h4.text-lg.font-bold.mt-6.mb-2 Gửi kèm xe máy
+      span Nhà xe cho khách gửi kèm theo xe máy
+      .divider
+      h4.text-lg.font-bold.mt-6.mb-2 Nước uống
+      span Nhà xe có phục vụ nước cho hành khách
+      .divider
+      h4.text-lg.font-bold.mt-6.mb-2 Gối nằm và chăn
+      span Trên xe có trang bị gối nằm và chăn
+      .divider
+      h4.text-lg.font-bold.mt-6.mb-2 Búa phá kính
+      span Dùng để phá kính ô tô thoát hiểm trong trường hợp khẩn cấp

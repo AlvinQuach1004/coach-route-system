@@ -1,0 +1,6 @@
+- if schedules.any?
+  = turbo_stream.replace 'schedules' do
+    = render partial: 'route_pages/shared/route_card', locals: { schedules: schedules, booking: booking }
+- else
+  = turbo_stream.replace 'schedules' do
+    = render partial: 'route_pages/shared/error_not_found'
