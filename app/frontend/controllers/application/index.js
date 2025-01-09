@@ -175,7 +175,7 @@ document.querySelectorAll('.dropdown-book-container').forEach((card) => {
 
   seats.forEach((seat) => {
     const seatId = seat.getAttribute('data-id');
-    
+
     // Cannot choose gray seat (chosen)
     if (chosenSeats.includes(seatId)) {
       seat.classList.remove('bg-white');
