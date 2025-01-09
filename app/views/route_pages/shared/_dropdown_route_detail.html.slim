@@ -1,20 +1,20 @@
 .dropdown-content.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 id="dropdown-#{schedule.id}"
   .w-full.p-4.bg-base-100.rounded-lg.text-center
     div(role="tablist" class="tabs tabs-bordered")
-      a(role="tab" class="tab tab-active" onclick="showTab('pickup-#{schedule.id.gsub('-', '')}')") Đón trả
-      a(role="tab" class="tab" onclick="showTab('images-#{schedule.id.gsub('-', '')}')") Hình ảnh
-      a(role="tab" class="tab" onclick="showTab('policies-#{schedule.id.gsub('-', '')}')") Chính sách
-      a(role="tab" class="tab" onclick="showTab('services-#{schedule.id.gsub('-', '')}')") Tiện ích
+      a(role="tab" class="tab tab-active" onclick="showTab('pickup-#{schedule.id.gsub('-', '')}')") Pickup/Dropoff
+      a(role="tab" class="tab" onclick="showTab('images-#{schedule.id.gsub('-', '')}')") Images
+      a(role="tab" class="tab" onclick="showTab('policies-#{schedule.id.gsub('-', '')}')") Policies
+      a(role="tab" class="tab" onclick="showTab('services-#{schedule.id.gsub('-', '')}')") Services
 
   // Tab Content: Drop/Pickup
   .hidden.mt-10 id="pickup-#{schedule.id.gsub('-', '')}" role="tabpanel"
     .flex.justify-between.text-center
       .flex-1
-        h4.font-bold.text-lg Điểm đón
+        h4.font-bold.text-lg Pick up
         p.text-gray-600.mt-2 17:00: Bến xe miền Tây
       .divider.divider-horizontal
       .flex-1
-        h4.font-bold.text-lg Điểm trả
+        h4.font-bold.text-lg Drop off
         p.text-gray-600.mt-2 01:00: Bến xe Tuấn Hưng
 
   // Tab Content: Images (Carousel)

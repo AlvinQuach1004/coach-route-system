@@ -43,23 +43,9 @@
             button.text-blue-500.pr-4.underline.w-full.md:max-w-52.hidden.md:mr-5.md:block type="button" onclick="toggleDropdown('dropdown-#{schedule.id}', this)" View details
           = render partial: 'route_pages/shared/dropdown_route_detail', locals: { schedule: schedule }
           = render partial: 'route_pages/shared/dropdown_book', locals: { schedule: schedule, booking: booking }
-          button.btn.btn-accent.w-full.md:w-24.mt-4.md:mt-0 data-action="book" onclick="checkAuthenticationAndBook('#{schedule.id}', this)" type="button" Book
+          button.btn.btn-accent.w-full.md:w-24.mt-4.md:mt-0 data-action="book" onclick="toggleDropdown('#{schedule.id}', this)" type="button" Book
 
 javascript:
-  function checkAuthenticationAndBook(scheduleId, button) {
-    // Check if the user is signed in using Devise's helper
-    // const userSignedIn = document.body.getAttribute('data-user-signed-in') === 'true';
-
-    // // If the user is not signed in, alert them and redirect to the login page
-    // if (!userSignedIn) {
-    //   window.location.href = "/users/sign_in";  // Redirect to Devise login page
-    //   return;  // Stop the rest of the logic
-    // }
-
-    // If the user is signed in, proceed to toggle the dropdown for booking
-    toggleDropdown(`dropdown-book-${scheduleId}`, button);
-  }
-
   function toggleDropdown(dropdownId, button) {
     const dropdownMenu = document.getElementById(dropdownId);
     const cardContainer = button.closest('.card-container');
