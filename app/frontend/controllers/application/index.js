@@ -161,25 +161,22 @@ document.addEventListener('turbo:load', () => {
       }
     }
 
-    // Initial update to set the correct state on page load
     update();
   });
   // Seat selection logic
 });
 
 document.querySelectorAll('.dropdown-book-container').forEach((card) => {
-  const seats = card.querySelectorAll('.seat'); // Restrict to seats within the current card
+  const seats = card.querySelectorAll('.seat');
   console.log(seats.length);
 
-  // Mock data of chosen seats (this would come from the server)
   const chosenSeats = ['A1', 'A5', 'A7']; // Example chosen seats
   let selectedSeats = []; // To track seats selected by the current user
 
-  // Initialize the seats with their appropriate colors
   seats.forEach((seat) => {
     const seatId = seat.getAttribute('data-id');
-
-    // Mark seats as chosen (gray) or available (white)
+    
+    // Cannot choose gray seat (chosen)
     if (chosenSeats.includes(seatId)) {
       seat.classList.remove('bg-white');
       seat.classList.add('bg-gray-400');

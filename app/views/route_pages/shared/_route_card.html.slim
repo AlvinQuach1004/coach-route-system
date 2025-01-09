@@ -43,7 +43,7 @@
             button.text-blue-500.pr-4.underline.w-full.md:max-w-52.hidden.md:mr-5.md:block type="button" onclick="toggleDropdown('dropdown-#{schedule.id}', this)" View details
           = render partial: 'route_pages/shared/dropdown_route_detail', locals: { schedule: schedule }
           = render partial: 'route_pages/shared/dropdown_book', locals: { schedule: schedule, booking: booking }
-          button.btn.btn-accent.w-full.md:w-24.mt-4.md:mt-0 data-action="book" onclick="toggleDropdown('#{schedule.id}', this)" type="button" Book
+          button.btn.btn-accent.w-full.md:w-24.mt-4.md:mt-0 data-action="book" onclick="toggleDropdown('dropdown-book-#{schedule.id}', this)" type="button" Book
 
 javascript:
   function toggleDropdown(dropdownId, button) {
