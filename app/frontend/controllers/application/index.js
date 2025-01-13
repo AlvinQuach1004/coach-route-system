@@ -1,7 +1,6 @@
 import { registerControllers } from 'stimulus-vite-helpers';
 import { Application } from '@hotwired/stimulus';
 import 'flatpickr/dist/flatpickr.min.css';
-import flatpickr from 'flatpickr';
 
 const application = Application.start();
 

@@ -1,15 +1,8 @@
 // app/javascript/controllers/progress_controller.js
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = [
-    "progress",
-    "prev",
-    "next",
-    "progressContainer",
-    "stepTab",
-    "circleStep",
-  ];
+  static targets = ['progress', 'prev', 'next', 'progressContainer', 'stepTab', 'circleStep'];
 
   connect() {
     this.currentActive = 1; // Set initial active step
@@ -34,7 +27,7 @@ export default class extends Controller {
 
   update() {
     this.circleStepTargets.forEach((circle, idx) => {
-      circle.classList.toggle("active", idx < this.currentActive);
+      circle.classList.toggle('active', idx < this.currentActive);
     });
 
     // Update progress bar
@@ -43,13 +36,13 @@ export default class extends Controller {
 
     // Update step tabs visibility
     this.stepTabTargets.forEach((step, idx) => {
-      step.classList.toggle("hidden", idx !== this.currentActive - 1);
+      step.classList.toggle('hidden', idx !== this.currentActive - 1);
     });
 
     // Enable prev when current active = 1
     this.prevTarget.disabled = this.currentActive === 1;
     this.nextTarget.disabled = this.currentActive === this.circleStepTargets.length;
 
-    this.nextTarget.classList.toggle("hidden", this.currentActive === 3);
+    this.nextTarget.classList.toggle('hidden', this.currentActive === 3);
   }
 }
