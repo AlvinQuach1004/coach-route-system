@@ -3,7 +3,9 @@
 # Table name: tickets
 #
 #  id          :uuid             not null, primary key
+#  drop_off    :string
 #  paid_amount :decimal(, )
+#  pick_up     :string
 #  seat_number :string
 #  status      :string
 #  created_at  :datetime         not null

@@ -1,5 +1,15 @@
-= form_with model: booking, url: create_booking_route_pages_path, method: :post do |f|
-  .dropdown-content.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 id="dropdown-book-#{schedule.id}"
+= form_with model: booking, url: bookings_path, data: { turbo: false }, method: :post do |f|
+  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection" data-dropdown-target="content" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}"
+    / Hidden fields for booking params
+    = f.hidden_field :payment_status, value: "pending"
+    = f.hidden_field :payment_method, value: "cash", data: { seat_selection_target: "paymentMethod" }
+    = f.hidden_field :selected_seats, data: { seat_selection_target: "selectedSeatsInput" }
+    = f.hidden_field :start_stop_id, 
+      value: departure_search.present? ? schedule.route.stops.find_by(location_id: departure_search.id, is_pickup: true)&.id : schedule.route.stops.first&.id
+    = f.hidden_field :end_stop_id,
+      value: destination_search.present? ? schedule.route.stops.find_by(location_id: destination_search.id, is_dropoff: true)&.id : schedule.route.stops.last&.id
+    = hidden_field_tag :schedule_id, schedule.id
+
     .container.bg-base-100.w-full.max-w-4xl.mt-8.dropdown-book-container
       .progress-container.mx-auto
         #progress.progress
@@ -7,7 +17,6 @@
         .circle-step 2
         .circle-step 3
         .circle-step 4
-  
       .step-tab.container.mx-auto.p-6.bg-base-100.w-full.max-w-6xl
         .flex.justify-between.bg-none
           .w-1/4.mt-4.max-w-xl.mr-10
@@ -31,7 +40,7 @@
                     svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                       rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
                   span.whitespace-nowrap Ghế đang chọn
-  
+
           .w-3/4.flex.justify-between
             // Lower Floor
             .w-1/2.bg-slate-300.mr-4.rounded-md.relative
@@ -45,7 +54,14 @@
                 circle cx="12" cy="12" r="4"
               .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-10
                 - (1..18).each do |seat|
-                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip data-id="A#{seat}" data-status="available" data-tip="A#{seat} - 270,000đ"
+                  .seat#selected-seats.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
+                    data-seat-selection-target="seat"
+                    data-id="A#{seat}"
+                    data-action="click->seat-selection#toggleSeat"
+                    data-status="#{schedule.seat_available?("A#{seat}") ? 'available' : 'chosen'}"
+                    class="w-8 h-14 #{schedule.seat_available?("A#{seat}") ? 'bg-white' : 'bg-gray-400'}"
+                    data-tip="A#{seat} - #{format_currency_vnd(schedule.price)}"
+                  ]
                     svg.relative.h-10.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                       rect.absolute width="20" height="8" x="2" y="20" rx="2" ry="2"
             // Upper Floor
@@ -53,150 +69,210 @@
               h2.text-center.font-bold.mb-4.pt-4.text-lg Tầng trên
               .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-10
                 - (1..18).each do |seat|
-                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip data-id="B#{seat}" data-status="available" data-tip="B#{seat} - 270,000đ"
+                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
+                    data-seat-selection-target="seat"
+                    data-id="B#{seat}"
+                    data-action="click->seat-selection#toggleSeat"
+                    data-status="#{schedule.seat_available?("B#{seat}") ? 'available' : 'chosen'}"
+                    class="w-8 h-14 #{schedule.seat_available?("B#{seat}") ? 'bg-white' : 'bg-gray-400'}"
+                    data-tip="B#{seat} - #{format_currency_vnd(schedule.price)}"
+                  ]
                     svg.relative.h-10.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                       rect.absolute width="20" height="8" x="2" y="20" rx="2" ry="2"
-          
+
         .divider.mt-10
         .flex.justify-between.items-center
           .flex.justify-start.items-center
             p.text-semibold.text-lg Ghế 
-            span#selected-seats.text-blue-500.font-bold.ml-4
+            span#selected-seats.text-blue-500.font-bold.ml-4 data-seat-selection-target="selectedSeats"
           .flex.items-center.justify-between
             p.text-lg.mr-8 Tổng cộng: 
-            span#total-price.font-bold.text-green-500.text-lg
-              | 270,000₫
-  
-      .step-tab.hidden
-        / app/views/tickets/checkout.html.slim
-  
-        .container.mx-auto.p-4.max-w-3xl
+            span#total-price.font-bold.text-green-500.text-lg data-seat-selection-target="totalPrice"
+              | 0₫
+
+      .step-tab.hidden.h-full
+        .container.mx-auto.p-4.max-w-3xl.my-auto.h-full
           .grid.grid-cols-1.md:grid-cols-2.gap-6
             / Pickup Location Card
             .card.bg-base-200.shadow-xl
               .card-body
                 h2.card-title Pick up 
-                p.text-sm.mb-2.mr-auto
+                p.text-sm.mb-2.mr-auto.text-start
                   | View the closest pickup point ?
                   br
-                  span.text-primary.ml-1 Đường Lý Văn Lâm, khóm ...
-                  a.text-blue-500.hover:underline.ml-1 href="#" Thay đổi
-                
-                .mt-4
-                  .flex.items-center.gap-2
-                    span.text-xl.font-bold 17:00
-                    span •
-                    span.text-gray-600 Bến xe miền Tây
-                  
-                  .mt-2.flex.items-start.justify-end.gap-2
-                    i.fas.fa-map-marker-alt.mt-1.text-gray-500
-                    p.text-gray-600
-                      | 395 D. Kinh Dương Vương, An Lạc, Bình Tân,
-                      br
-                      | Hồ Chí Minh 700000,
-                      br
-                      | Vietnam
-                      a.text-blue-500.hover:underline.ml-1 href="#" Position
-        
-            / Drop-off Location Card
-            .card.bg-base-200.shadow-xl
-              .card-body
-                h2.card-title Drop off
-                p.text-sm.mb-2.mr-auto
-                  | View the closest dropoff point ?
-                  br
-                  span.text-primary.ml-1 Đường Lý Văn Lâm, khóm ...
+                  - if schedule.route.stops.any? && departure_search.blank?
+                     span.text-gray-600 = schedule.route.stops.first.address
+                  - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
+                    - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
+                    - if stop.present?
+                      span.text-gray-600 = stop.address
                   a.text-blue-500.hover:underline.ml-1 href="#" Change
                 
                 .mt-4
                   .flex.items-center.gap-2
-                    span.text-xl.font-bold 01:00
+                    span.text-xl.font-bold = schedule.departure_time.strftime("%H:%M")
                     span •
-                    span.text-gray-600 Bến xe Tuấn Hưng
-            
+                    - if schedule.route.stops.any? && departure_search.blank?
+                     span.text-gray-600 = schedule.route.stops.first.address
+                    - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
+                      - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
+                      - if stop.present?
+                        span.text-gray-600 = stop.address
+
                   .mt-2.flex.items-start.gap-2
                     i.fas.fa-map-marker-alt.mt-1.text-gray-500
-                    p.text-gray-600
-                      | 119 B. Lý Thường Kiệt,
-                      br
-                      | Phường 6, Cà Mau,
-                      br
-                      | Vietnam
+                    p.text-gray-600.text-start
+                      | 119 B. Lý Thường Kiệt, Phường 6, Cà Mau, Vietnam
+                      a.text-blue-500.hover:underline.ml-1 href="#" Position
+                  
+
+            / Drop-off Location Card
+            .card.bg-base-200.shadow-xl
+              .card-body
+                h2.card-title Drop off
+                p.text-sm.mb-2.mr-auto.text-start
+                  | View the closest dropoff point ?
+                  br
+                  - if schedule.route.stops.any? && destination_search.blank?
+                    span.text-gray-600.ml-1 = schedule.route.stops.last.address
+                  - elsif departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
+                    - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
+                    - if stop.present?
+                      span.text-gray-600 = stop.address
+                  a.text-blue-500.hover:underline.ml-1 href="#" Change
+                
+                .mt-4
+                  .flex.items-center.gap-2
+                    span.text-lg.font-bold
+                      - if schedule.route.stops.any? && destination_search.blank?
+                        - last_stop = schedule.route.stops.order(:stop_order).last
+                        - if last_stop
+                          - # Add time_range (in minutes) to schedule.departure_time
+                          - adjusted_time = schedule.departure_time + (10 * last_stop.time_range * 60)
+                          - adjusted_date = schedule.departure_date
+                          - # Check if adjusted_time is earlier than departure_time and adjust the date accordingly
+                          - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
+                            - adjusted_date = adjusted_date + 1.day
+                          | #{adjusted_time.strftime("%H:%M")} (#{adjusted_date.strftime("%d/%m/%Y")})
+                        - else
+                          | No stops available
+                      - elsif departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
+                        - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
+                        - if stop
+                          - # Add time_range (in minutes) to schedule.departure_time
+                          - adjusted_time = schedule.departure_time + (10 * stop.time_range * 60)
+                          - adjusted_date = schedule.departure_date
+                          - # Check if adjusted_time is earlier than departure_time and adjust the date accordingly
+                          - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
+                            - adjusted_date = adjusted_date + 1.day
+                          | #{adjusted_time.strftime("%H:%M")} (#{adjusted_date.strftime("%d/%m/%Y")})
+                        - else
+                          | No stops available - #{stop.address}
+                    span •
+                    - if schedule.route.stops.any? && destination_search.blank?
+                      span.text-primary.ml-1 = schedule.route.stops.last.address
+                    - if departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
+                      - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
+                      - if stop.present?
+                        span.text-gray-600 = stop.address
+
+                  .mt-2.flex.items-start.gap-2
+                    i.fas.fa-map-marker-alt.mt-1.text-gray-500
+                    p.text-gray-600.text-start
+                      | 119 B. Lý Thường Kiệt, Phường 6, Cà Mau, Vietnam
                       a.text-blue-500.hover:underline.ml-1 href="#" Position
         
           / Bottom Navigation
-          .flex.justify-end.items-center.mt-8.border-t.pt-4
-              p.text-lg
-                | Total 1 ticket: 
-                span.text-primary.font-bold 270,000đ
-  
+          .flex.flex-col.items-end.justify-center.mt-8.border-t.pt-4
+            p.text-lg
+              | Total tickets: 
+              span.text-primary.font-bold.ml-2 data-seat-selection-target="totalQuantity"
+            p.text-lg.ml-4.mt-2
+              | Total price: 
+              span.text-primary.font-bold.ml-2 data-seat-selection-target="totalPriceStep2"
+                | 0đ
+
+
       .step-tab.hidden.h-full
         / app/views/payments/checkout.html.slim
-  
-        .container.mx-auto.p-4.max-w-4xl
+
+        .container.mx-auto.p-4.max-w-4xl.h-full.my-auto
           .grid.grid-cols-1.lg:grid-cols-2.gap-8
             / Payment Method Section
             .space-y-4
               h2.text-xl.font-medium Payment Method
-  
+
               .space-y-2
                 / Stripe Option
                 label.flex.items-center.p-4.border.rounded-lg.cursor-pointer.hover:bg-gray-50
-                  = f.radio_button :payment_method, 'stripe', checked: true, id: 'stripe-option', class: 'radio radio-primary'
+                  = f.radio_button :payment_method, 'stripe', checked: true, id: 'stripe-option', class: 'radio radio-primary', data: { action: 'change->seat-selection#updatePaymentMethod' }
                   .flex.items-center.ml-3.gap-2
                     = image_tag vite_asset_path('images/icons/Stripe.png'), class: "h-6 w-auto", alt: "Stripe"
                     span.text-gray-700 •••• 4242
-  
+
                 / Cash Option
                 label.flex.items-center.p-4.border.rounded-lg.cursor-pointer.hover:bg-gray-50
-                  = f.radio_button :payment_method, 'cash', id: 'cash-option', class: 'radio radio-primary'
+                  = f.radio_button :payment_method, 'cash', id: 'cash-option', class: 'radio radio-primary', data: { action: 'change->seat-selection#updatePaymentMethod' }
                   span.ml-3.text-gray-700 Cash
-  
+
             / Summary Section
             .card.bg-base-100.shadow-sm.border
               .card-body
                 h2.card-title.mb-6 Summary
-  
+
                 .space-y-4
                   / Price Row
                   .flex.justify-between.items-center
                     span.text-gray-600 Price
-                    span.text-gray-900 190,000đ
-  
+                    span.text-gray-900 data-seat-selection-target="priceStep3" 0đ
+
                   / Quantity Row
                   .flex.justify-between.items-center
                     span.text-gray-600 Quantity
-                    span.text-gray-900 x3
-  
+                    span.text-gray-900 data-seat-selection-target="totalQuantityStep3"
+
                   / From Row
                   .flex.justify-between.items-center
                     span.text-gray-600 From
-                    span.text-gray-900 Sai Gon
-  
+                    span.text-gray-900
+                    - if schedule.route.stops.any? && departure_search.blank?
+                      = schedule.route.stops.first.location.name
+                    - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
+                      - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
+                      - if stop.present?
+                        span.text-gray-600 = stop.location.name
+
                   / To Row
                   .flex.justify-between.items-center
                     span.text-gray-600 To
-                    span.text-gray-900 Ca Mau
-  
+                    span.text-gray-900
+                    - if schedule.route.stops.any? && destination_search.blank?
+                      = schedule.route.stops.last.location.name
+                    - if departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
+                      - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
+                      - if stop.present?
+                        span.text-gray-600 = stop.location.name
+
                   / Departure Time Row
                   .flex.justify-between.items-center
                     span.text-gray-600 Departure Time
-                    span.text-gray-900 17:00
-  
+                    span.text-gray-900 = schedule.departure_time.strftime("%H:%M")
+                  
+                  .flex.justify-between.items-center
+                    span.text-gray-600 Departure Date
+                    span.text-gray-900 = schedule.departure_date.strftime("%d/%m/%Y")
+
                   / Pay Before Row
                   .flex.justify-between.items-center
                     span.text-gray-600 Pay ticket before
-                    span.text-gray-900 17 January, 2025
-  
+                    span.text-gray-900 =  (schedule.departure_date - 1).strftime("%d/%m/%Y")
+
                   / Total Row
                   .flex.justify-between.items-center.pt-4.border-t.mt-4
                     span.font-medium.text-gray-900 TOTAL
-                    span.font-bold.text-gray-900 570,000đ
-                = f.submit 'Submit', class: 'btn btn-success w-full mt-6'
+                    span.font-bold.text-gray-900 data-seat-selection-target="totalPriceStep3"
+                = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', data: { action: 'click->seat-selection#submitForm', turbo: false }
+
       .flex.w-full.justify-between.items-end.px-4.mt-auto
         button#prev.btn type="button" Back
         button#next.btn type="button" Next
-  = f.hidden_field :start_stop_id, value: schedule.route.start_location.stops.first.id
-  = f.hidden_field :end_stop_id, value: schedule.route.end_location.stops.last.id
-  = f.hidden_field :payment_method, value: params[:payment_method] || "cash"
-  = f.hidden_field :payment_status, value: "pending"

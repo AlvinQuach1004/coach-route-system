@@ -1,0 +1,70 @@
+.min-h-screen.bg-base-100.p-8
+  .max-w-3xl.mx-auto.bg-base-200.rounded-lg.shadow-lg.p-8
+    .flex.justify-between.items-center
+      div
+        h1.text-4xl.font-bold.text-gray-800 INVOICE
+        p.text-gray-600.mt-1 = @booking.id
+      
+      .text-slate-600.h-28.w-28
+        = image_tag vite_asset_path('images/icons/coach_icon.png'), alt: 'Coach Icon'
+
+    .grid.grid-cols-4.gap-8.mt-8.border-b.border-gray-200.pb-8
+      .space-y-2
+        p.text-gray-600 Issued
+        p.font-medium = @booking.created_at.strftime('%d %b, %Y')
+      
+      .space-y-2
+        p.text-gray-600 Due
+        p.font-medium = @booking.tickets.first.created_at.strftime('%d %b, %Y')
+
+      .space-y-2
+        p.text-gray-600 From
+        .font-medium
+          p = "#{@booking.start_stop.address} - "
+          p = @booking.start_stop.location.name 
+          p.mt-6 = @booking.start_stop.is_pickup ? current_user.phone_number : ''
+      
+      .space-y-2
+        p.text-gray-600 To
+        .font-medium
+          p = "#{@booking.end_stop.address} - "
+          p = @booking.end_stop.location.name 
+    
+    .mt-8
+      table.w-full
+        thead
+          tr.text-left
+            th.py-2.font-medium.text-gray-600 Ticket
+            th.py-2.font-medium.text-gray-600 Quantity
+            th.py-2.font-medium.text-gray-600 Seat Number
+            th.py-2.font-medium.text-gray-600 Payment method
+            th.py-2.font-medium.text-gray-600.text-right Total
+        
+        tbody
+          - @booking.tickets.each do |ticket|
+            tr
+              td.py-4
+                p.font-medium = "#{@booking.start_stop.location.name} - #{@booking.end_stop.location.name}"
+                p.text-gray-600.text-sm = "#{ticket.pick_up} - #{ticket.drop_off}"
+              td.py-4.text-center = 1
+              td.py-4.text-center = ticket.seat_number
+              td.py-4.text-center = @booking.payment_method
+              td.py-4.text-right = "#{ticket.paid_amount}đ"
+    .mt-8.space-y-3
+      .flex.justify-between.py-2
+          span.font-medium Total Quantity
+          span.font-medium = @booking.tickets.count
+      .flex.justify-between.py-2
+        span.font-medium Total
+        span.font-medium = @booking.tickets.sum(&:paid_amount).to_s + "đ"
+    
+      .flex.justify-between.py-2.border-t.border-gray-200
+        span.font-medium Paid
+        span.font-medium = @booking.tickets.sum(&:paid_amount).to_s + "đ"
+    
+      .flex.justify-between.py-2.border-t.border-purple-500
+        span.font-medium.text-purple-600 Rest
+        span.font-medium.text-purple-600 = "#{@booking.tickets.sum(&:paid_amount) - @booking.tickets.sum(&:paid_amount)}đ"
+
+    .mt-8.flex.justify-end
+      button.btn.btn-success.text-white Confirm

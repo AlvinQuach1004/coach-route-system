@@ -32,7 +32,7 @@
   transition: margin-bottom 0.3s ease;
 }
 
-.dropdown-content {
+.dropdown-content-card {
   width: 845.4px;
   height: 900px;
   transition:
@@ -296,7 +296,7 @@ section {
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
-  z-index: 0; /* Ensure this is below circles */
+  z-index: 0;
 }
 
 .progress {

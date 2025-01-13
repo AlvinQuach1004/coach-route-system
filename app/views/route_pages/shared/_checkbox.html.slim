@@ -1,5 +1,5 @@
 .space-y-3
   - %w[Latest Seat\ available].each do |label|  
-    label.flex.items-center.space-x-2
-      = check_box_tag "trends[]", label, params[:trends]&.include?(label), class: 'checkbox checkbox-primary', data: { filter: 'trends' }
+    .flex.items-center.space-x-2
+      = check_box_tag "trends[]", label, params[:trends]&.include?(label), class: 'checkbox checkbox-primary', data: { filter: 'trends', turbo_frame: 'schedules', turbo_action: 'replace' }
       span = label

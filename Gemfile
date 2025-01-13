@@ -14,6 +14,7 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 gem 'vite_rails', '~> 3.0'
 gem 'image_processing'
 gem 'enumerize'
+gem 'geocoder'
 
 # Auth
 gem 'devise'

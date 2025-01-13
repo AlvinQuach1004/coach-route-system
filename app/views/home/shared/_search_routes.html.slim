@@ -1,7 +1,7 @@
 .container.mt-8.rounded-box.bg-base-200.mx-auto.max-w-7xl.sm:max-w-5xl.md:max-w-6xl.px-4.sm:px-8.md:px-16.mt-20
   = form_with url: route_pages_path, method: :get, class: 'form-search flex flex-col md:flex-row w-full form-control relative justify-center items-center gap-6 p-8 sm:p-12 md:p-16', local: true do |f|
     
-    .flex.flex-col.sm:flex-row.sm:gap-6
+    .flex.flex-col.sm:flex-row.sm:gap-6 data-controller="exchange"
       div
         label.form-control.w-full.max-w-xs
           .label
@@ -9,15 +9,17 @@
               | Type your departure point
         .relative
           = f.text_field :departure,
-            class: 'input input-bordered w-full max-w-md relative focus:outline-none focus:ring-2 focus:ring-gray-400',
-            id: 'departure',
-            value: params[:departure],
-            placeholder: 'From'
+              data: { exchange_target: "departure" },
+              class: "input input-bordered w-full max-w-md relative focus:outline-none focus:ring-2 focus:ring-gray-400",
+              id: "departure",
+              value: params[:departure],
+              placeholder: "From"
+
           svg.w-6.h-6.text-gray-500.absolute.bottom-3.right-3 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
             path(stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z")
       div.hidden.md:block
         .flex.items-center.justify-center.relative.pt-8
-          button#exchange-btn.btn.btn-ghost.p-0.z-10 type='button'
+          button#exchange-btn.btn.btn-ghost.p-0.z-10 type='button' data-action="exchange#exchange"
             svg.cursor-pointer xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-left"
               path(d="m16 3 4 4-4 4")
               path(d="M20 7H4")
@@ -30,6 +32,7 @@
               | Type your destination point
         .relative
           = f.text_field :destination,
+            data: { exchange_target: "destination" },
             class: 'input input-bordered w-full max-w-md relative focus:outline-none focus:ring-2 focus:ring-gray-400',
             id: 'destination',
             value: params[:destination],

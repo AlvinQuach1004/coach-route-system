@@ -1,24 +1,41 @@
-.dropdown-content.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 id="dropdown-#{schedule.id}"
+.dropdown-content-card.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown" id="dropdown-#{schedule.id}" data-dropdown-target="content"
   .w-full.p-4.bg-base-100.rounded-lg.text-center
-    div(role="tablist" class="tabs tabs-bordered")
-      a(role="tab" class="tab tab-active" onclick="showTab('pickup-#{schedule.id.gsub('-', '')}')") Pickup/Dropoff
-      a(role="tab" class="tab" onclick="showTab('images-#{schedule.id.gsub('-', '')}')") Images
-      a(role="tab" class="tab" onclick="showTab('policies-#{schedule.id.gsub('-', '')}')") Policies
-      a(role="tab" class="tab" onclick="showTab('services-#{schedule.id.gsub('-', '')}')") Services
+    div.tabs.tabs-bordered[role="tablist"]
+      - %w(pickup images policies services).each do |tab|
+        a.tab[role="tab"
+          data-dropdown-target="tab"
+          data-action="click->dropdown#showDetailTab"
+          data-dropdown-id-param="#{tab}-#{schedule.id.gsub('-', '')}"
+          class="#{'tab-active' if tab == 'pickup'}"]
+          = tab.titleize
 
   // Tab Content: Drop/Pickup
-  .hidden.mt-10 id="pickup-#{schedule.id.gsub('-', '')}" role="tabpanel"
-    .flex.justify-between.text-center
-      .flex-1
-        h4.font-bold.text-lg Pick up
-        p.text-gray-600.mt-2 17:00: Bến xe miền Tây
+  div[
+    data-dropdown-target="tabPanel"
+    id="pickup-#{schedule.id.gsub('-', '')}"
+    role="tabpanel"
+    class="#{'hidden' unless 'pickup' == 'pickup'}"]
+    .flex.flex-col.mt-6
+      span.text-lg.font-semibold.text-gray-800.mb-4.text-center Provinces
       .divider.divider-horizontal
-      .flex-1
-        h4.font-bold.text-lg Drop off
-        p.text-gray-600.mt-2 01:00: Bến xe Tuấn Hưng
+      - schedule.route.stops.each do |stop|
+        .flex.items-center.mt-4.ml-8
+          .w-4.h-4.rounded-full.bg-blue-600
+          .ml-4.text-lg.text-gray-700
+            - if stop.is_pickup
+              = stop.address + ' (pick up)'
+            - elsif stop.is_dropoff
+              = stop.address + ' (drop off)'
+            - else 
+              = stop.address
+      .divider.divider-horizontal.mt-4
 
   // Tab Content: Images (Carousel)
-  .mx-auto.relative.hidden.mt-4 id="images-#{schedule.id.gsub('-', '')}" role="tabpanel"
+  div[
+    data-dropdown-target="tabPanel"
+    id="images-#{schedule.id.gsub('-', '')}"
+    role="tabpanel"
+    class="mx-auto relative hidden mt-4"]
     section.max-w-2xl
       .carousel-container
         .carousel
@@ -38,9 +55,13 @@
               li
                 label for="slide-#{i}-#{schedule.id}"
                   img src="https://picsum.photos/id/#{1040 + i}/150/150" alt=""
-  
+
   // Policy tab
-  .hidden id="policies-#{schedule.id.gsub('-', '')}" role="tabpanel" class="bg-base-100"
+  div[
+    data-dropdown-target="tabPanel"
+    id="policies-#{schedule.id.gsub('-', '')}"
+    role="tabpanel"
+    class="hidden bg-base-100"]
     .rounded-lg.p-6.text-start.pl-14
       h3.text-xl.font-bold.mb-4 Chính sách
       ul.list-disc.list-inside
@@ -67,8 +88,12 @@
       ul.list-disc.list-inside
         li Quý khách vui lòng liên hệ tổng đài Alvin Coach để được hỗ trợ bằng giá cước gửi xe và xác nhận còn chỗ trống để gửi kèm xe (trong trường hợp nhà xe không còn hầm trống sẽ không hỗ trợ nhận gửi kèm xe đạp/xe máy)
 
-  // Policy tab
-  .hidden id="services-#{schedule.id.gsub('-', '')}" role="tabpanel" class="pb-12 bg-base-100"
+  // Services tab
+  div[
+    data-dropdown-target="tabPanel"
+    id="services-#{schedule.id.gsub('-', '')}"
+    role="tabpanel"
+    class="hidden pb-12 bg-base-100"]
     .rounded-lg.p-6.text-start.pl-14.pt-10
       h4.text-xl.font-bold.mb-3 Dây đai an toàn
       span Trên xe có trang bị dây đai an toàn cho hành khách khi ngồi trên xe

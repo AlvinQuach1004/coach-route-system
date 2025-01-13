@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_07_064016) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_13_020941) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -110,6 +110,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_07_064016) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "location_id", null: false
+    t.boolean "is_pickup", default: false
+    t.boolean "is_dropoff", default: false
+    t.string "address"
+    t.decimal "latitude_address", precision: 9, scale: 6
+    t.decimal "longitude_address", precision: 9, scale: 6
     t.index ["location_id"], name: "index_stops_on_location_id"
     t.index ["route_id"], name: "index_stops_on_route_id"
   end
@@ -122,6 +127,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_07_064016) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "pick_up"
+    t.string "drop_off"
     t.index ["booking_id"], name: "index_tickets_on_booking_id"
     t.index ["schedule_id", "seat_number"], name: "index_tickets_on_schedule_id_and_seat_number", unique: true
     t.index ["schedule_id"], name: "index_tickets_on_schedule_id"

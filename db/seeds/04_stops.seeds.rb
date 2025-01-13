@@ -1,32 +1,86 @@
-routes = Route.all
+# Ví dụ về cách tạo stops cho các tuyến đường đã liệt kê
 
-routes.each do |route|
-  total_stops = rand(3..5) # Randomly decide the total number of stops for the route
-  total_stops.times do |i|
-    if i == 0
-      # First stop: use the route's start location ID
-      Stop.create!(
-        route_id: route.id,
-        stop_order: i + 1,
-        time_range: rand(1..12),
-        location_id: route.start_location_id
-      )
-    elsif i == total_stops - 1
-      # Last stop: use the route's end location ID
-      Stop.create!(
-        route_id: route.id,
-        stop_order: i + 1,
-        time_range: rand(1..4),
-        location_id: route.end_location_id
-      )
-    else
-      location_id = (Location.pluck(:id) - [route.start_location_id, route.end_location_id]).sample
-      Stop.create!(
-        route_id: route.id,
-        stop_order: i + 1,
-        time_range: rand(1..4),
-        location_id: location_id
-      )
-    end
-  end
-end
+route_1 = Route.find_by(start_location_id: Location.find_by(name: 'Cà Mau').id, end_location_id: Location.find_by(name: 'TP. Hồ Chí Minh').id)
+route_2 = Route.find_by(start_location_id: Location.find_by(name: 'TP. Hồ Chí Minh').id, end_location_id: Location.find_by(name: 'Cà Mau').id)
+route_3 = Route.find_by(start_location_id: Location.find_by(name: 'Đà Nẵng').id, end_location_id: Location.find_by(name: 'Hà Nội').id)
+route_4 = Route.find_by(start_location_id: Location.find_by(name: 'Hà Nội').id, end_location_id: Location.find_by(name: 'Đà Nẵng').id)
+route_5 = Route.find_by(start_location_id: Location.find_by(name: 'Hà Nội').id, end_location_id: Location.find_by(name: 'Hải Phòng').id)
+route_6 = Route.find_by(start_location_id: Location.find_by(name: 'Hải Phòng').id, end_location_id: Location.find_by(name: 'Hà Nội').id)
+
+# Tạo stops cho tuyến TP.HCM -> Bạc Liêu -> Sóc Trăng -> Cần Thơ -> Sài Gòn
+Stop.create!(route_id: route_1.id, stop_order: 1, location_id: Location.find_by(name: 'Cà Mau').id, is_pickup: true, address: 'Bến xe Cà Mau', latitude_address: 9.175, longitude_address: 105.145, time_range: 0)
+Stop.create!(route_id: route_1.id, stop_order: 2, location_id: Location.find_by(name: 'Bạc Liêu').id, is_pickup: false, address: 'Bến xe Bạc Liêu', latitude_address: 9.287, longitude_address: 105.349, time_range: 60)
+Stop.create!(route_id: route_1.id, stop_order: 3, location_id: Location.find_by(name: 'Sóc Trăng').id, is_pickup: false, address: 'Bến xe Sóc Trăng', latitude_address: 9.596, longitude_address: 105.965, time_range: 80)
+Stop.create!(route_id: route_1.id, stop_order: 4, location_id: Location.find_by(name: 'Cần Thơ').id, is_pickup: true, is_dropoff: true, address: 'Bến xe Cần Thơ', latitude_address: 10.045, longitude_address: 105.746, time_range: 125)
+Stop.create!(route_id: route_1.id, stop_order: 5, location_id: Location.find_by(name: 'Hậu Giang').id, is_pickup: false, address: 'Bến xe Hậu Giang', latitude_address: 9.781, longitude_address: 105.477, time_range: 200)
+Stop.create!(route_id: route_1.id, stop_order: 6, location_id: Location.find_by(name: 'TP. Hồ Chí Minh').id, is_dropoff: true, address: 'Bến xe Miền Tây', latitude_address: 10.755, longitude_address: 106.659, time_range: 360)
+
+# Tạo stops cho tuyến TP.HCM -> Cần Thơ -> Sóc Trăng -> Bạc Liêu -> Cà Mau
+Stop.create!(route_id: route_2.id, stop_order: 1, location_id: Location.find_by(name: 'TP. Hồ Chí Minh').id, is_pickup: true, address: 'Bến xe Miền Tây', latitude_address: 10.755, longitude_address: 106.659, time_range: 0)
+Stop.create!(route_id: route_2.id, stop_order: 2, location_id: Location.find_by(name: 'Cần Thơ').id, is_pickup: true, is_dropoff: true, address: 'Bến xe Cần Thơ', latitude_address: 10.045, longitude_address: 105.746, time_range: 70)
+Stop.create!(route_id: route_2.id, stop_order: 3, location_id: Location.find_by(name: 'Sóc Trăng').id, is_pickup: false, address: 'Bến xe Sóc Trăng', latitude_address: 9.596, longitude_address: 105.965, time_range: 100)
+Stop.create!(route_id: route_2.id, stop_order: 4, location_id: Location.find_by(name: 'Bạc Liêu').id, is_dropoff: true, address: 'Bến xe Bạc Liêu', latitude_address: 9.287, longitude_address: 105.349, time_range: 190)
+Stop.create!(route_id: route_2.id, stop_order: 5, location_id: Location.find_by(name: 'Cà Mau').id, is_dropoff: true, address: 'Bến xe Cà Mau', latitude_address: 9.175, longitude_address: 105.145, time_range: 360)
+
+# Tạo stops cho tuyến Đà Nẵng -> Quảng Nam -> Bình Định -> Khánh Hòa -> Hà Nội
+Stop.create!(route_id: route_3.id, stop_order: 1, location_id: Location.find_by(name: 'Đà Nẵng').id, is_pickup: true, address: 'Bến xe Đà Nẵng', latitude_address: 16.067, longitude_address: 108.221, time_range: 0)
+Stop.create!(route_id: route_3.id, stop_order: 2, location_id: Location.find_by(name: 'Quảng Nam').id, is_pickup: false, address: 'Bến xe Quảng Nam', latitude_address: 15.607, longitude_address: 108.475, time_range: 65)
+Stop.create!(route_id: route_3.id, stop_order: 3, location_id: Location.find_by(name: 'Bình Định').id, is_pickup: false, address: 'Bến xe Bình Định', latitude_address: 13.782, longitude_address: 109.185, time_range: 90)
+Stop.create!(route_id: route_3.id, stop_order: 4, location_id: Location.find_by(name: 'Khánh Hòa').id, is_pickup: true, is_dropoff: true, address: 'Bến xe Khánh Hòa', latitude_address: 12.241, longitude_address: 109.196, time_range: 120)
+Stop.create!(route_id: route_3.id, stop_order: 5, location_id: Location.find_by(name: 'Hà Nội').id, is_dropoff: true, address: 'Bến xe Mỹ Đình', latitude_address: 21.027, longitude_address: 105.801, time_range: 200)
+
+Stop.create!(route_id: route_4.id, stop_order: 1, location_id: Location.find_by(name: 'Hà Nội').id, is_pickup: true, time_range: 0, address: 'Bến xe Mỹ Đình', latitude_address: 21.027, longitude_address: 105.801)
+Stop.create!(route_id: route_4.id, stop_order: 2, location_id: Location.find_by(name: 'Nam Định').id, is_pickup: false, time_range: 90, address: 'Bến xe Nam Định', latitude_address: 20.405, longitude_address: 106.159)
+Stop.create!(route_id: route_4.id, stop_order: 3, location_id: Location.find_by(name: 'Ninh Bình').id, is_dropoff: true, time_range: 120, address: 'Bến xe Ninh Bình', latitude_address: 20.252, longitude_address: 105.976)
+
+Stop.create!(route_id: route_5.id, stop_order: 1, location_id: Location.find_by(name: 'Ninh Bình').id, is_pickup: true, time_range: 0, address: 'Bến xe Ninh Bình', latitude_address: 20.252, longitude_address: 105.976)
+Stop.create!(route_id: route_5.id, stop_order: 2, location_id: Location.find_by(name: 'Nam Định').id, is_pickup: true, time_range: 90, address: 'Bến xe Nam Định', latitude_address: 20.405, longitude_address: 106.159)
+Stop.create!(route_id: route_5.id, stop_order: 3, location_id: Location.find_by(name: 'Hà Nội').id, is_dropoff: true, time_range: 180, address: 'Bến xe Mỹ Đình', latitude_address: 21.027, longitude_address: 105.801)
+
+Stop.create!(route_id: route_5.id, stop_order: 1, location_id: Location.find_by(name: 'Hà Nội').id, is_pickup: true, time_range: 0, address: 'Bến xe Mỹ Đình', latitude_address: 21.027, longitude_address: 105.801)
+Stop.create!(route_id: route_5.id, stop_order: 2, location_id: Location.find_by(name: 'Hải Phòng').id, is_dropoff: true, time_range: 180, address: 'Bến xe Hải Phòng', latitude_address: 20.844, longitude_address: 106.691)
+
+Stop.create!(route_id: route_6.id, stop_order: 1, location_id: Location.find_by(name: 'Hải Phòng').id, is_pickup: true, time_range: 0, address: 'Bến xe Hải Phòng', latitude_address: 20.844, longitude_address: 106.691)
+Stop.create!(route_id: route_6.id, stop_order: 2, location_id: Location.find_by(name: 'Hà Nội').id, is_dropoff: true, time_range: 180, address: 'Bến xe Mỹ Đình', latitude_address: 21.027, longitude_address: 105.801)
+
+# Tạo stops cho tuyến Hà Nội -> Nghệ An -> Thanh Hóa
+route_7 = Route.find_by(start_location_id: Location.find_by(name: 'Hà Nội').id, end_location_id: Location.find_by(name: 'Thanh Hóa').id)
+route_8 = Route.find_by(start_location_id: Location.find_by(name: 'Thanh Hóa').id, end_location_id: Location.find_by(name: 'Hà Nội').id)
+
+Stop.create!(route_id: route_7.id, stop_order: 1, location_id: Location.find_by(name: 'Hà Nội').id, is_pickup: true, time_range: 0, address: 'Bến xe Mỹ Đình', latitude_address: 21.027, longitude_address: 105.801)
+Stop.create!(route_id: route_7.id, stop_order: 2, location_id: Location.find_by(name: 'Nghệ An').id, is_pickup: false, time_range: 120, address: 'Bến xe Nghệ An', latitude_address: 19.281, longitude_address: 105.831)
+Stop.create!(route_id: route_7.id, stop_order: 3, location_id: Location.find_by(name: 'Thanh Hóa').id, is_dropoff: true, time_range: 180, address: 'Bến xe Thanh Hóa', latitude_address: 19.806, longitude_address: 105.779)
+
+Stop.create!(route_id: route_8.id, stop_order: 1, location_id: Location.find_by(name: 'Thanh Hóa').id, is_pickup: true, time_range: 0, address: 'Bến xe Thanh Hóa', latitude_address: 19.806, longitude_address: 105.779)
+Stop.create!(route_id: route_8.id, stop_order: 2, location_id: Location.find_by(name: 'Nghệ An').id, is_pickup: true, time_range: 120, address: 'Bến xe Nghệ An', latitude_address: 19.281, longitude_address: 105.831)
+Stop.create!(route_id: route_8.id, stop_order: 3, location_id: Location.find_by(name: 'Hà Nội').id, is_dropoff: true, time_range: 240, address: 'Bến xe Mỹ Đình', latitude_address: 21.027, longitude_address: 105.801)
+
+# Tạo stops cho tuyến Đà Nẵng -> Quảng Nam -> Quảng Ngãi -> Bình Định -> Khánh Hòa
+route_9 = Route.find_by(start_location_id: Location.find_by(name: 'Đà Nẵng').id, end_location_id: Location.find_by(name: 'Khánh Hòa').id)
+route_10 = Route.find_by(start_location_id: Location.find_by(name: 'Khánh Hòa').id, end_location_id: Location.find_by(name: 'Đà Nẵng').id)
+
+Stop.create!(route_id: route_9.id, stop_order: 1, location_id: Location.find_by(name: 'Đà Nẵng').id, is_pickup: true, time_range: 0, address: 'Bến xe Đà Nẵng', latitude_address: 16.067, longitude_address: 108.221)
+Stop.create!(route_id: route_9.id, stop_order: 2, location_id: Location.find_by(name: 'Quảng Nam').id, is_pickup: false, time_range: 60, address: 'Bến xe Quảng Nam', latitude_address: 15.607, longitude_address: 108.475)
+Stop.create!(route_id: route_9.id, stop_order: 3, location_id: Location.find_by(name: 'Quảng Ngãi').id, is_pickup: false, time_range: 120, address: 'Bến xe Quảng Ngãi', latitude_address: 14.902, longitude_address: 108.803)
+Stop.create!(route_id: route_9.id, stop_order: 4, location_id: Location.find_by(name: 'Bình Định').id, is_pickup: false, time_range: 180, address: 'Bến xe Bình Định', latitude_address: 13.782, longitude_address: 109.185)
+Stop.create!(route_id: route_9.id, stop_order: 5, location_id: Location.find_by(name: 'Khánh Hòa').id, is_dropoff: true, time_range: 240, address: 'Bến xe Khánh Hòa', latitude_address: 12.241, longitude_address: 109.196)
+
+Stop.create!(route_id: route_10.id, stop_order: 1, location_id: Location.find_by(name: 'Khánh Hòa').id, is_pickup: true, time_range: 0, address: 'Bến xe Khánh Hòa', latitude_address: 12.241, longitude_address: 109.196)
+Stop.create!(route_id: route_10.id, stop_order: 2, location_id: Location.find_by(name: 'Bình Định').id, is_pickup: true, time_range: 60, address: 'Bến xe Bình Định', latitude_address: 13.782, longitude_address: 109.185)
+Stop.create!(route_id: route_10.id, stop_order: 3, location_id: Location.find_by(name: 'Quảng Ngãi').id, is_pickup: true, time_range: 120, address: 'Bến xe Quảng Ngãi', latitude_address: 14.902, longitude_address: 108.803)
+Stop.create!(route_id: route_10.id, stop_order: 4, location_id: Location.find_by(name: 'Quảng Nam').id, is_pickup: true, time_range: 180, address: 'Bến xe Quảng Nam', latitude_address: 15.607, longitude_address: 108.475)
+Stop.create!(route_id: route_10.id, stop_order: 5, location_id: Location.find_by(name: 'Đà Nẵng').id, is_dropoff: true, time_range: 240, address: 'Bến xe Đà Nẵng', latitude_address: 16.067, longitude_address: 108.221)
+
+# Tạo stops cho tuyến Cần Thơ -> Sóc Trăng -> Bạc Liêu -> Cà Mau
+route_11 = Route.find_by(start_location_id: Location.find_by(name: 'Cần Thơ').id, end_location_id: Location.find_by(name: 'Cà Mau').id)
+route_12 = Route.find_by(start_location_id: Location.find_by(name: 'Cà Mau').id, end_location_id: Location.find_by(name: 'Cần Thơ').id)
+
+Stop.create!(route_id: route_11.id, stop_order: 1, location_id: Location.find_by(name: 'Cần Thơ').id, is_pickup: true, time_range: 0, address: 'Bến xe Cần Thơ', latitude_address: 10.045, longitude_address: 105.746)
+Stop.create!(route_id: route_11.id, stop_order: 2, location_id: Location.find_by(name: 'Sóc Trăng').id, is_pickup: false, time_range: 60, address: 'Bến xe Sóc Trăng', latitude_address: 9.596, longitude_address: 105.965)
+Stop.create!(route_id: route_11.id, stop_order: 3, location_id: Location.find_by(name: 'Bạc Liêu').id, is_pickup: false, time_range: 120, address: 'Bến xe Bạc Liêu', latitude_address: 9.292, longitude_address: 105.719)
+Stop.create!(route_id: route_11.id, stop_order: 4, location_id: Location.find_by(name: 'Cà Mau').id, is_dropoff: true, time_range: 180, address: 'Bến xe Cà Mau', latitude_address: 9.191, longitude_address: 105.159)
+
+Stop.create!(route_id: route_12.id, stop_order: 1, location_id: Location.find_by(name: 'Cà Mau').id, is_pickup: true, time_range: 0, address: 'Bến xe Cà Mau', latitude_address: 9.191, longitude_address: 105.159)
+Stop.create!(route_id: route_12.id, stop_order: 2, location_id: Location.find_by(name: 'Bạc Liêu').id, is_pickup: true, time_range: 60, address: 'Bến xe Bạc Liêu', latitude_address: 9.292, longitude_address: 105.719)
+Stop.create!(route_id: route_12.id, stop_order: 3, location_id: Location.find_by(name: 'Sóc Trăng').id, is_pickup: true, time_range: 120, address: 'Bến xe Sóc Trăng', latitude_address: 9.596, longitude_address: 105.965)
+Stop.create!(route_id: route_12.id, stop_order: 4, location_id: Location.find_by(name: 'Cần Thơ').id, is_dropoff: true, time_range: 180, address: 'Bến xe Cần Thơ', latitude_address: 10.045, longitude_address: 105.746)

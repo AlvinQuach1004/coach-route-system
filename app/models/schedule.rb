@@ -41,6 +41,10 @@ class Schedule < ApplicationRecord
     departure_time.strftime('%H:%M:%S') if departure_time.present?
   end
 
+  def seat_available?(seat_number)
+    !tickets.exists?(seat_number: seat_number)
+  end
+
   private
 
   def departure_date_cannot_be_in_the_past

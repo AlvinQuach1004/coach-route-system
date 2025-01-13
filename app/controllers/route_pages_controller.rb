@@ -10,30 +10,22 @@ class RoutePagesController < ApplicationController
     @total_schedules = @schedules.size
     # Pagination
     @pagy, @schedules = pagy(@schedules)
-    respond_to do |format|
-      format.html { render :index }
-      format.turbo_stream do
-        if @schedules.any?
-          render turbo_stream: turbo_stream.replace('schedules', partial: 'route_pages/shared/route_card', locals: { schedules: @schedules, booking: @booking })
-        else
-          render turbo_stream: turbo_stream.replace('schedules', partial: 'route_pages/shared/error_not_found')
-        end
-      end
+    if params[:departure].present?
+      @departure_search = Location.find_by('LOWER(name) = ?', params[:departure].downcase)
     end
-  end
+    if params[:destination].present?
+      @destination_search = Location.find_by('LOWER(name) = ?', params[:destination].downcase)
+    end
 
-  def create_booking
-    @booking = Booking.new(booking_params)
-    if current_user.nil?
-      flash[:alert] = 'You must log in before booking.'
-      return redirect_to new_user_session_path
-    end
-    @booking.user_id = current_user.id
-    if @booking.save
-      redirect_to route_pages_path, notice: 'Booking was successfully created.'
-    else
-      flash[:alert] = 'Failed to create booking.'
-      render :index
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          'schedules',
+          partial: 'route_pages/shared/route_card',
+          locals: { schedules: @schedules, booking: @booking, departure_search: @departure_search, destination_search: @destination_search }
+        )
+      end
     end
   end
 
@@ -132,30 +124,42 @@ class RoutePagesController < ApplicationController
 
   # Apply search for departure point, destination point and date
   def apply_search
-    if params[:departure].present?
-      departure_location = Location.find_by('LOWER(name) = ?', params[:departure].downcase)
-      if departure_location
-        @schedules = @schedules.joins(route: :start_location).where(routes: { start_location_id: departure_location.id })
-      end
-    end
+    filter_by_departure if params[:departure].present?
+    filter_by_destination if params[:destination].present?
+    filter_by_date if params[:date].present?
+  end
 
-    # Filter by destination location
-    if params[:destination].present?
-      destination_location = Location.find_by('LOWER(name) = ?', params[:destination].downcase)
-      if destination_location
-        @schedules = @schedules.joins(route: :end_location).where(routes: { end_location_id: destination_location.id })
-      end
-    end
+  def filter_by_departure
+    departure_location = find_location(params[:departure])
+    return unless departure_location
 
-    # Filter by departure date
-    if params[:date].present?
-      date = begin
-        Date.parse(params[:date])
-      rescue StandardError
-        nil
-      end
-      @schedules = @schedules.where(departure_date: date) if date
-    end
+    route_ids_for_departure = Stop.where(location_id: departure_location.id, is_pickup: true).pluck(:route_id)
+    @schedules = @schedules.joins(:route).where(route_id: route_ids_for_departure)
+  end
+
+  def filter_by_destination
+    destination_location = find_location(params[:destination])
+    return unless destination_location
+
+    route_ids_for_destination = Stop.where(location_id: destination_location.id, is_dropoff: true).pluck(:route_id)
+    @schedules = @schedules.joins(:route)
+      .where(route_id: route_ids_for_destination)
+      .where(route_id: @schedules.select(:route_id))
+  end
+
+  def filter_by_date
+    date = parse_date(params[:date])
+    @schedules = @schedules.where(departure_date: date) if date
+  end
+
+  def find_location(location_name)
+    Location.find_by('LOWER(name) = ?', location_name.downcase)
+  end
+
+  def parse_date(date_string)
+    Date.parse(date_string)
+  rescue StandardError
+    nil
   end
 
   def apply_price_range

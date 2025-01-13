@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :route_pages, only: [:index] do
-    post :create_booking, on: :collection
+  resources :route_pages, only: [:index]
+
+  resources :bookings, only: [:create] do
+    get :invoice, on: :member
+    get :thank_you, on: :collection
   end
 
   if Rails.env.development?

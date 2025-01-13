@@ -1,19 +1,18 @@
 .text-center.mt-32.mb-11
-    h2.text-4xl.font-bold.bg-base-100.underline.underline-offset-8.decoration-green-500
-      | Popular Routes
+  h2.text-4xl.font-bold.bg-base-100.underline.underline-offset-8.decoration-green-500
+    | Popular Routes
 .container.mx-auto.mt-8.max-w-7xl.shadow-xl.rounded-md.bg-base-200.p-16.my-8
-  .relative.overflow-hidden
-    #carousel.flex.transition-transform.duration-500.ease-out.shadow-xl
+  .relative.overflow-hidden data-controller="carousel"
+    #carousel.flex.transition-transform.duration-500.ease-out.shadow-xl data-carousel-target="container"
       - routes.each do |route|
-        .carousel-item.flex-shrink-0.w-1/4.p-2.relative
+        .carousel-item.flex-shrink-0.w-1/4.p-2.relative data-carousel-target="slide"
           = image_tag "https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp", class: "rounded-box w-full"
           .card-body.p-6.absolute.bottom-0.left-0.right-0
             h3.text-white.text-center.font-medium.text-lg.bg-black.bg-opacity-50.p-2.rounded 
               = "#{route.start_location_name} → #{route.end_location_name}"
-    button#prev.absolute.left-0.z-10.top-1/2.transform.-translate-y-1/2.bg-slate-200.text-black.font-bold.rounded-full.flex.items-center.justify-center.w-12.h-12
+    button.absolute.left-0.z-10.top-1/2.transform.-translate-y-1/2.bg-slate-200.text-black.font-bold.rounded-full.flex.items-center.justify-center.w-12.h-12 data-action="click->carousel#prev"
       svg.text-center xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"
-        path(d="m15 18-6-6 6-6")
-    button#next.absolute.right-0.z-10.top-1/2.transform.-translate-y-1/2.bg-slate-200.text-black.font-bold.rounded-full.flex.items-center.justify-center.w-12.h-12
+        path d="m15 18-6-6 6-6"
+    button.absolute.right-0.z-10.top-1/2.transform.-translate-y-1/2.bg-slate-200.text-black.font-bold.rounded-full.flex.items-center.justify-center.w-12.h-12 data-action="click->carousel#next"
       svg.text-center xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"
-        path(d="m9 18 6-6-6-6")
- 
+        path d="m9 18 6-6-6-6"

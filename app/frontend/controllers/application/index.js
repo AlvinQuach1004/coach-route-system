@@ -11,6 +11,7 @@ window.Stimulus = application;
 
 const controllers = import.meta.glob('./**/*_controller.js', { eager: true });
 
+
 // Register Stimulus controllers
 registerControllers(application, controllers);
 // Datepicker format from flatpickr
@@ -29,62 +30,12 @@ document.addEventListener('turbo:load', () => {
       datepicker.focus();
     });
   }
-  // Exchange button logic
-  const departureInput = document.getElementById('departure');
-  const destinationInput = document.getElementById('destination');
-  const exchangeButton = document.getElementById('exchange-btn');
-
-  if (exchangeButton) {
-    exchangeButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      const tempValue = departureInput.value;
-      departureInput.value = destinationInput.value;
-      destinationInput.value = tempValue;
-    });
-  }
 
   const form = document.getElementById('filter-form');
   const filterElements = form.querySelectorAll('[data-filter]');
   filterElements.forEach((element) => {
     element.addEventListener('change', function () {
       form.submit();
-    });
-  });
-
-  // Carousel logic
-  const carousel = document.getElementById('carousel');
-  const prevButton = document.getElementById('prev');
-  const nextButton = document.getElementById('next');
-
-  if (carousel && prevButton && nextButton) {
-    const cardWidth = document.querySelector('.carousel-item').offsetWidth;
-    const totalCards = document.querySelectorAll('.carousel-item').length;
-    const visibleCards = 4; // Number of visible cards in front of the carousel
-    let currentPosition = 0;
-
-    prevButton.addEventListener('click', () => {
-      currentPosition += cardWidth;
-      if (currentPosition > 0) {
-        currentPosition = -(cardWidth * (totalCards - visibleCards));
-      }
-      carousel.style.transform = `translateX(${currentPosition}px)`;
-    });
-
-    nextButton.addEventListener('click', () => {
-      currentPosition -= cardWidth;
-      if (Math.abs(currentPosition) >= cardWidth * (totalCards - visibleCards + 1)) {
-        currentPosition = 0;
-      }
-      carousel.style.transform = `translateX(${currentPosition}px)`;
-    });
-  }
-
-  // Handle tab switching
-  const tabList = document.querySelectorAll('.tab');
-  tabList.forEach((tab) => {
-    tab.addEventListener('click', (e) => {
-      tabList.forEach((t) => t.classList.remove('tab-active')); // Remove active class from all tabs except for the current one
-      e.target.classList.add('tab-active'); // Add active class to clicked tab
     });
   });
 
@@ -163,63 +114,10 @@ document.addEventListener('turbo:load', () => {
 
     update();
   });
-  // Seat selection logic
-});
-
-document.querySelectorAll('.dropdown-book-container').forEach((card) => {
-  const seats = card.querySelectorAll('.seat');
-  console.log(seats.length);
-
-  const chosenSeats = ['A1', 'A5', 'A7']; // Example chosen seats
-  let selectedSeats = []; // To track seats selected by the current user
-
-  seats.forEach((seat) => {
-    const seatId = seat.getAttribute('data-id');
-
-    // Cannot choose gray seat (chosen)
-    if (chosenSeats.includes(seatId)) {
-      seat.classList.remove('bg-white');
-      seat.classList.add('bg-gray-400');
-      seat.setAttribute('data-status', 'chosen');
-    } else {
-      seat.classList.add('bg-white');
-      seat.setAttribute('data-status', 'available');
-    }
-
-    // Add click event listener for toggle functionality
-    seat.addEventListener('click', function () {
-      const seatStatus = seat.getAttribute('data-status');
-
-      // Only allow toggling for available seats
-      if (seatStatus === 'selected') {
-        if (seat.classList.contains('bg-green-400')) {
-          const index = selectedSeats.indexOf(seatId);
-          if (index > -1) selectedSeats.splice(index, 1); // Remove seatId from array
-          seat.classList.remove('bg-green-400');
-          seat.classList.add('bg-white');
-          seat.setAttribute('data-status', 'available');
-        }
-      } else if (seatStatus === 'available') {
-        selectedSeats.push(seatId);
-        seat.classList.remove('bg-white');
-        seat.classList.add('bg-green-400');
-        seat.setAttribute('data-status', 'selected');
-      }
-
-      const selectedSeatsCount = selectedSeats.length;
-      const selectedSeatsDisplay = card.querySelector('#selected-seats');
-      const totalPriceDisplay = card.querySelector('#total-price');
-      console.log(selectedSeats);
-      // document.querySelector('input[name="booking[seat_number]"]').value = seatId;
-
-      // Display the number of selected seats and the total price
-      selectedSeatsDisplay.textContent = selectedSeats.join(', ') || '';
-      totalPriceDisplay.textContent = `${selectedSeatsCount * 270000}₫`;
-    });
-  });
 });
 
 // Get page load (in case Turbo isn't enabled)
 document.addEventListener('DOMContentLoaded', () => {
+  // Carousel logic
   document.dispatchEvent(new Event('turbo:load'));
 });

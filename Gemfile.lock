@@ -117,6 +117,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.2)
     date (3.4.1)
     debug (1.10.0)
       irb (~> 1.10)
@@ -163,6 +164,9 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
+    geocoder (1.8.5)
+      base64 (>= 0.1.0)
+      csv (>= 3.0.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     good_migrations (0.3.0)
@@ -540,6 +544,7 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   faker
+  geocoder
   good_migrations
   heroicons-rails (~> 1.2)
   i18n-tasks

@@ -4,7 +4,7 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
       = link_to root_path, class: 'h-24 w-24' do
         = image_tag vite_asset_path('images/icons/coach_icon.png'), class: '', alt: 'Coach Icon'
       div class='flex flex-1 px-2 mx-2 gap-4'
-        = link_to route_pages_url, class: 'btn btn-ghost btn-sm rounded-btn' do
+        = link_to route_pages_path, class: 'btn btn-ghost btn-sm rounded-btn' do
           | Routes
         = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn navbar-history-margin' do
           | History

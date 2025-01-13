@@ -30,6 +30,13 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def check_user_signed_in
+    unless user_signed_in?
+      flash[:alert] = 'You must log in to perform this action.'
+      redirect_to new_user_session_path
+    end
+  end
+
   def not_authorized
     redirect_back fallback_location: root_path, alert: 'You are not authorized to perform this action.'
   end
