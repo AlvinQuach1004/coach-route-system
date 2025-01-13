@@ -2,13 +2,18 @@
 #
 # Table name: stops
 #
-#  id          :uuid             not null, primary key
-#  stop_order  :integer
-#  time_range  :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  location_id :uuid             not null
-#  route_id    :uuid             not null
+#  id                :uuid             not null, primary key
+#  address           :string
+#  is_dropoff        :boolean          default(FALSE)
+#  is_pickup         :boolean          default(FALSE)
+#  latitude_address  :decimal(9, 6)
+#  longitude_address :decimal(9, 6)
+#  stop_order        :integer
+#  time_range        :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  location_id       :uuid             not null
+#  route_id          :uuid             not null
 #
 # Indexes
 #
@@ -29,5 +34,5 @@ class Stop < ApplicationRecord
 
   # Validations
   validates :stop_order, presence: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 10 }
-  validates :time_range, presence: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 12 }
+  validates :time_range, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 360 }
 end

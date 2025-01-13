@@ -1,0 +1,10 @@
+.min-h-screen.flex.items-center.justify-center.bg-white.relative.max-w-xl.w-full.mx-auto
+  .absolute.top-0.left-0.w-32.h-32.bg-green-600.rounded-br-full
+  .absolute.bottom-0.right-0.w-32.h-32.bg-green-600.rounded-tl-full
+  .bg-white.rounded-lg.shadow-lg.p-8.max-w-md.w-full.mx-4.text-center.relative.z-10
+    .flex.justify-center.mb-6
+      .relative
+        = image_tag vite_asset_path('images/thank-you.png'), alt: 'Thank you illustration', class: 'w-80'
+    h1.text-3xl.font-bold.mb-4 Thank you
+    p.text-gray-600.mb-6 Your booking is being processed.
+    = link_to 'Back to home', root_path, class: 'btn btn-success text-white px-8'

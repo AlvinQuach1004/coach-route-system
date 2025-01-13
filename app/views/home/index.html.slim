@@ -9,7 +9,7 @@
       p.text-center.text-lg.text-primary-500.font-semibold.pb-6.pt-4.pr-24
         | The best place to book your coach tickets
       div class='float-start pl-24'
-        = link_to route_pages_index_path, class: 'btn btn-accent btn-lg rounded-btn mx-auto mt-4 ml-2' do
+        = link_to route_pages_path, class: 'btn btn-accent btn-lg rounded-btn mx-auto mt-4 ml-2' do
           | View Routes
     = image_tag vite_asset_path('images/ticket_terminal_thumbnail.png'), class: 'thumbnail-ticket-terminal-img mr-20', alt: 'Coach Image'
 = render 'home/shared/search_routes'

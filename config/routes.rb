@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get 'route_pages/index'
+  resources :route_pages, only: [:index]
+
+  resources :bookings, only: [:create] do
+    get :invoice, on: :member
+    get :thank_you, on: :collection
+  end
+
   if Rails.env.development?
     get '/erd', to: 'docs#erd'
   end

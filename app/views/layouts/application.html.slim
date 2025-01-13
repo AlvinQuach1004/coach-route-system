@@ -15,7 +15,7 @@ html[lang="en"]
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
     = vite_client_tag
     = vite_javascript_tag "application", "data-turbo-track": "reload"
-  body.w-fit.md:w-full data-controller="icons" class="dark"
+  body.w-fit.md:w-full data-controller="icons" class="dark" data-user-signed-in="#{user_signed_in? ? 'true' : 'false'}"
     = render "layouts/header"
     = yield
     = render "layouts/footer"

@@ -4,17 +4,17 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
       = link_to root_path, class: 'h-24 w-24' do
         = image_tag vite_asset_path('images/icons/coach_icon.png'), class: '', alt: 'Coach Icon'
       div class='flex flex-1 px-2 mx-2 gap-4'
-        = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn' do
+        = link_to route_pages_path, class: 'btn btn-ghost btn-sm rounded-btn' do
           | Routes
         = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn navbar-history-margin' do
           | History
         = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn' do
           | About
-    .flex-none.gap-2
+    .flex.gap-4
+      = render 'shared/switch_theme'
       - if !user_signed_in?
         .flex.gap-4.justify-center.items-center.mr-14
           .m-1.normal-case[tabindex='0']
-            = render 'shared/switch_theme'
           = link_to 'Sign up', new_user_registration_path, class: 'btn btn-neutral btn-md rounded-btn'
           = link_to 'Log In', new_user_session_path, class: 'btn btn-accent btn-md rounded-btn'
       - else
