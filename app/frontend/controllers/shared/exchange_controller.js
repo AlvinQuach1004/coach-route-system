@@ -1,7 +1,7 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["departure", "destination"]
+  static targets = ['departure', 'destination'];
 
   exchange(event) {
     event.preventDefault();

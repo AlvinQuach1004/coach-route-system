@@ -5,7 +5,7 @@ export default class extends Controller {
 
   connect() {
     if (this.hasTabTarget && this.hasTabPanelTarget) {
-      if (!this.tabTargets.find(tab => tab.classList.contains('tab-active'))) {
+      if (!this.tabTargets.find((tab) => tab.classList.contains('tab-active'))) {
         this.activateTab(this.tabTargets[0]);
       }
     }
@@ -88,7 +88,7 @@ export default class extends Controller {
 
     const tabId = selectedTab.dataset.dropdownIdParam;
     if (!tabId) {
-      console.error("No tab ID found");
+      console.error('No tab ID found');
       return;
     }
 
@@ -98,7 +98,7 @@ export default class extends Controller {
 
     // Hide all panels within this dropdown only
     const allPanelsInDropdown = dropdownContainer.querySelectorAll('[data-dropdown-target="tabPanel"]');
-    allPanelsInDropdown.forEach(panel => {
+    allPanelsInDropdown.forEach((panel) => {
       panel.classList.add('hidden');
     });
 
@@ -110,7 +110,7 @@ export default class extends Controller {
 
     // Update tab states within this dropdown only
     const tabsInDropdown = dropdownContainer.querySelectorAll('[data-dropdown-target="tab"]');
-    tabsInDropdown.forEach(tab => {
+    tabsInDropdown.forEach((tab) => {
       tab.classList.remove('tab-active');
     });
     selectedTab.classList.add('tab-active');

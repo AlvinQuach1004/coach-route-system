@@ -11,7 +11,6 @@ window.Stimulus = application;
 
 const controllers = import.meta.glob('./**/*_controller.js', { eager: true });
 
-
 // Register Stimulus controllers
 registerControllers(application, controllers);
 // Datepicker format from flatpickr

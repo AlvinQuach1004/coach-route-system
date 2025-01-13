@@ -53,7 +53,7 @@ export default class extends Controller {
     } else if (seatStatus === 'available') {
       this.selectSeat(seat, seatId);
     }
-    
+
     this.updateSummary();
   }
 
@@ -90,16 +90,14 @@ export default class extends Controller {
   updateSummary() {
     // Update selected seats display
     if (this.hasSelectedSeatsTarget) {
-      const seatsText = this.selectedSeats.length > 0 
-        ? this.selectedSeats.join(', ')
-        : 'Chưa chọn ghế';
+      const seatsText = this.selectedSeats.length > 0 ? this.selectedSeats.join(', ') : 'Chưa chọn ghế';
       this.selectedSeatsTarget.textContent = seatsText;
     }
 
     // Calculate and update total price
     const totalPrice = this.selectedSeats.length * this.priceValue;
-    this.priceStep3Target.textContent = `${this.formatCurrency(this.priceValue)}₫`
-    
+    this.priceStep3Target.textContent = `${this.formatCurrency(this.priceValue)}₫`;
+
     if (this.hasTotalPriceTarget) {
       this.totalPriceTarget.textContent = `${this.formatCurrency(totalPrice)}₫`;
       this.totalPriceStep2Target.textContent = `${this.formatCurrency(totalPrice)}₫`;
@@ -125,7 +123,7 @@ export default class extends Controller {
   submitForm(event) {
     if (this.selectedSeats.length === 0) {
       event.preventDefault();
-      alert("Please select at least one seat");
+      alert('Please select at least one seat');
       return;
     }
   }
