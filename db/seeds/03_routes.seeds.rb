@@ -1,54 +1,54 @@
-ca_mau = Location.find_by(name: "Cà Mau")
-tp_ho_chi_minh = Location.find_by(name: "TP. Hồ Chí Minh")
-da_nang = Location.find_by(name: "Đà Nẵng")
-ha_noi = Location.find_by(name: "Hà Nội")
-lao_cai = Location.find_by(name: "Lào Cai")
-hai_phong = Location.find_by(name: "Hải Phòng")
-thanh_hoa = Location.find_by(name: "Thanh Hóa")
-khanh_hoa = Location.find_by(name: "Khánh Hòa")
-can_tho = Location.find_by(name: "Cần Thơ")
-tien_giang = Location.find_by(name: "Tiền Giang")
-hau_giang = Location.find_by(name: "Hậu Giang")
-long_an = Location.find_by(name: "Long An")
-tra_vinh = Location.find_by(name: "Trà Vinh")
-vung_tau = Location.find_by(name: "Bà Rịa - Vũng Tàu")
-an_giang = Location.find_by(name: "An Giang")
-binh_thuan = Location.find_by(name: "Bình Thuận")
-ninh_thuan = Location.find_by(name: "Ninh Thuận")
-kien_giang = Location.find_by(name: "Kiên Giang")
-bac_lieu = Location.find_by(name: "Bạc Liêu")
-nghe_an = Location.find_by(name: "Nghệ An")
-
+locations = Location.all
+ca_mau = locations.find { |location| location.name == "Cà Mau" }
+tp_ho_chi_minh = locations.find { |location| location.name == "TP. Hồ Chí Minh" }
+da_nang = locations.find { |location| location.name == "Đà Nẵng" }
+ha_noi = locations.find { |location| location.name == "Hà Nội" }
+lao_cai = locations.find { |location| location.name == "Lào Cai" }
+hai_phong = locations.find { |location| location.name == "Hải Phòng" }
+thanh_hoa = locations.find { |location| location.name == "Thanh Hóa" }
+khanh_hoa = locations.find { |location| location.name == "Khánh Hòa" }
+can_tho = locations.find { |location| location.name == "Cần Thơ" }
+tien_giang = locations.find { |location| location.name == "Tiền Giang" }
+hau_giang = locations.find { |location| location.name == "Hậu Giang" }
+long_an = locations.find { |location| location.name == "Long An" }
+tra_vinh = locations.find { |location| location.name == "Trà Vinh" }
+vung_tau = locations.find { |location| location.name == "Bà Rịa - Vũng Tàu" }
+an_giang = locations.find { |location| location.name == "An Giang" }
+binh_thuan = locations.find { |location| location.name == "Bình Thuận" }
+ninh_thuan = locations.find { |location| location.name == "Ninh Thuận" }
+kien_giang = locations.find { |location| location.name == "Kiên Giang" }
+bac_lieu = locations.find { |location| location.name == "Bạc Liêu" }
+nghe_an = locations.find { |location| location.name == "Nghệ An" }
 
 # Thêm dữ liệu vào bảng routes
-Route.create(start_location_id: ca_mau.id, end_location_id: tp_ho_chi_minh.id)
-Route.create(start_location_id: tp_ho_chi_minh.id, end_location_id: ca_mau.id)
-Route.create(start_location_id: da_nang.id, end_location_id: ha_noi.id)
-Route.create(start_location_id: ha_noi.id, end_location_id: da_nang.id)
-Route.create(start_location_id: ha_noi.id, end_location_id: lao_cai.id)
-Route.create(start_location_id: lao_cai.id, end_location_id: ha_noi.id)
-Route.create(start_location_id: ha_noi.id, end_location_id: hai_phong.id)
-Route.create(start_location_id: ha_noi.id, end_location_id: thanh_hoa.id)
-Route.create(start_location_id: hai_phong.id, end_location_id: ha_noi.id)
-Route.create(start_location_id: thanh_hoa.id, end_location_id: ha_noi.id)
-Route.create(start_location_id: da_nang.id, end_location_id: khanh_hoa.id)
-Route.create(start_location_id: khanh_hoa.id, end_location_id: da_nang.id)
-Route.create(start_location_id: tp_ho_chi_minh.id, end_location_id: can_tho.id)
-Route.create(start_location_id: can_tho.id, end_location_id: tp_ho_chi_minh.id)
-Route.create(start_location_id: can_tho.id, end_location_id: ca_mau.id)
-Route.create(start_location_id: ca_mau.id, end_location_id: can_tho.id)
-Route.create(start_location_id: tien_giang.id, end_location_id: hau_giang.id)
-Route.create(start_location_id: long_an.id, end_location_id: tra_vinh.id)
-Route.create(start_location_id: tp_ho_chi_minh.id, end_location_id: vung_tau.id)
-Route.create(start_location_id: tp_ho_chi_minh.id, end_location_id: an_giang.id)
-Route.create(start_location_id: binh_thuan.id, end_location_id: ninh_thuan.id)
-Route.create(start_location_id: ninh_thuan.id, end_location_id: binh_thuan.id)
-Route.create(start_location_id: binh_thuan.id, end_location_id: khanh_hoa.id)
-Route.create(start_location_id: khanh_hoa.id, end_location_id: binh_thuan.id)
-Route.create(start_location_id: ninh_thuan.id, end_location_id: tp_ho_chi_minh.id)
-Route.create(start_location_id: tp_ho_chi_minh.id, end_location_id: ninh_thuan.id)
-Route.create(start_location_id: tp_ho_chi_minh.id, end_location_id: kien_giang.id)
-Route.create(start_location_id: kien_giang.id, end_location_id: tp_ho_chi_minh.id)
-Route.create(start_location_id: kien_giang.id, end_location_id: bac_lieu.id)
-Route.create(start_location_id: bac_lieu.id, end_location_id: kien_giang.id)
-Route.create(start_location_id: thanh_hoa.id, end_location_id: nghe_an.id)
+ca_mau.routes.create(end_location: tp_ho_chi_minh)
+tp_ho_chi_minh.routes.create(end_location: ca_mau)
+da_nang.routes.create(end_location: ha_noi)
+ha_noi.routes.create(end_location: da_nang)
+ha_noi.routes.create(end_location: lao_cai)
+lao_cai.routes.create(end_location: ha_noi)
+ha_noi.routes.create(end_location: hai_phong)
+ha_noi.routes.create(end_location: thanh_hoa)
+hai_phong.routes.create(end_location: ha_noi)
+thanh_hoa.routes.create(end_location: ha_noi)
+da_nang.routes.create(end_location: khanh_hoa)
+khanh_hoa.routes.create(end_location: da_nang)
+tp_ho_chi_minh.routes.create(end_location: can_tho)
+can_tho.routes.create(end_location: tp_ho_chi_minh)
+can_tho.routes.create(end_location: ca_mau)
+ca_mau.routes.create(end_location: can_tho)
+tien_giang.routes.create(end_location: hau_giang)
+long_an.routes.create(end_location: tra_vinh)
+tp_ho_chi_minh.routes.create(end_location: vung_tau)
+tp_ho_chi_minh.routes.create(end_location: an_giang)
+binh_thuan.routes.create(end_location: ninh_thuan)
+ninh_thuan.routes.create(end_location: binh_thuan)
+binh_thuan.routes.create(end_location: khanh_hoa)
+khanh_hoa.routes.create(end_location: binh_thuan)
+ninh_thuan.routes.create(end_location: tp_ho_chi_minh)
+tp_ho_chi_minh.routes.create(end_location: ninh_thuan)
+tp_ho_chi_minh.routes.create(end_location: kien_giang)
+kien_giang.routes.create(end_location: tp_ho_chi_minh)
+kien_giang.routes.create(end_location: bac_lieu)
+bac_lieu.routes.create(end_location: kien_giang)
+thanh_hoa.routes.create(end_location: nghe_an)

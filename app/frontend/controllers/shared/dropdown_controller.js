@@ -43,10 +43,8 @@ export default class extends Controller {
           }
         });
 
-        // Show current dropdown
         this.openDropdown(targetDropdown, cardContainer);
       } else {
-        // Hide current dropdown
         this.closeDropdown(targetDropdown, cardContainer);
       }
     }
@@ -108,7 +106,6 @@ export default class extends Controller {
       selectedPanel.classList.remove('hidden');
     }
 
-    // Update tab states within this dropdown only
     const tabsInDropdown = dropdownContainer.querySelectorAll('[data-dropdown-target="tab"]');
     tabsInDropdown.forEach((tab) => {
       tab.classList.remove('tab-active');

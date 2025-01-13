@@ -159,10 +159,8 @@
                       - elsif departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
                         - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
                         - if stop
-                          - # Add time_range (in minutes) to schedule.departure_time
                           - adjusted_time = schedule.departure_time + (10 * stop.time_range * 60)
                           - adjusted_date = schedule.departure_date
-                          - # Check if adjusted_time is earlier than departure_time and adjust the date accordingly
                           - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
                             - adjusted_date = adjusted_date + 1.day
                           | #{adjusted_time.strftime("%H:%M")} (#{adjusted_date.strftime("%d/%m/%Y")})
@@ -182,7 +180,6 @@
                       | 119 B. Lý Thường Kiệt, Phường 6, Cà Mau, Vietnam
                       a.text-blue-500.hover:underline.ml-1 href="#" Position
         
-          / Bottom Navigation
           .flex.flex-col.items-end.justify-center.mt-8.border-t.pt-4
             p.text-lg
               | Total tickets: 
@@ -194,8 +191,6 @@
 
 
       .step-tab.hidden.h-full
-        / app/views/payments/checkout.html.slim
-
         .container.mx-auto.p-4.max-w-4xl.h-full.my-auto
           .grid.grid-cols-1.lg:grid-cols-2.gap-8
             / Payment Method Section

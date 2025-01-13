@@ -15,7 +15,7 @@ class BookingsController < ApplicationController
   end
 
   def invoice
-    @booking = Booking.find(params[:id])
+    @booking = current_user.bookings.find(params[:id])
   end
 
   def thank_you; end

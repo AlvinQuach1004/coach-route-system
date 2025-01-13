@@ -1,7 +1,7 @@
 import { registerControllers } from 'stimulus-vite-helpers';
 import { Application } from '@hotwired/stimulus';
-import 'flatpickr/dist/flatpickr.min.css'; // Import Flatpickr CSS
-import flatpickr from 'flatpickr'; // Import Flatpickr JavaScript
+import 'flatpickr/dist/flatpickr.min.css';
+import flatpickr from 'flatpickr';
 
 const application = Application.start();
 
@@ -13,7 +13,7 @@ const controllers = import.meta.glob('./**/*_controller.js', { eager: true });
 
 // Register Stimulus controllers
 registerControllers(application, controllers);
-// Datepicker format from flatpickr
+
 document.addEventListener('turbo:load', () => {
   // Use turbo:load Turbo Drive enables partial page updates instead of full page reloads.
   // Datepicker logic
@@ -46,32 +46,31 @@ document.addEventListener('turbo:load', () => {
     const progressContainer = card.querySelector('.progress-container');
     const circles = progressContainer.querySelectorAll('.circle-step');
 
-    // Assuming you have steps inside the step-tab containers:
     const steps = card.querySelectorAll('.step-tab');
 
-    let currentActive = 1; // Start at the first step
+    let currentActive = 1;
 
     next.addEventListener('click', () => {
       currentActive++;
 
       if (currentActive > circles.length) {
-        currentActive = circles.length; // Prevent going beyond the last step
+        currentActive = circles.length;
       }
-
-      update(); // Update the stepper and switch content
+      // Update the stepper and switch content
+      update();
     });
 
     prev.addEventListener('click', () => {
       currentActive--;
 
       if (currentActive < 1) {
-        currentActive = 1; // Prevent going before the first step
+        currentActive = 1;
       }
-      update(); // Update the stepper
+      update();
     });
 
     function update() {
-      // Add 'active' class to circles that are less than or equal to the current step
+      // Add display block by acitve class to circles that are less than or equal to the current step
       circles.forEach((circle, idx) => {
         if (idx < currentActive) {
           circle.classList.add('active');
@@ -87,17 +86,17 @@ document.addEventListener('turbo:load', () => {
       // Show/hide steps
       steps.forEach((step, idx) => {
         if (idx === currentActive - 1) {
-          step.classList.remove('hidden'); // Show the current step
+          step.classList.remove('hidden');
         } else {
-          step.classList.add('hidden'); // Hide the other steps
+          step.classList.add('hidden');
         }
       });
 
       // Disable/enable buttons based on the current step
       if (currentActive === 1) {
-        prev.disabled = true; // Disable Prev button on the first step
+        prev.disabled = true;
       } else if (currentActive === circles.length) {
-        next.disabled = true; // Disable Next button on the last step
+        next.disabled = true;
       } else {
         prev.disabled = false;
         next.disabled = false;
@@ -117,6 +116,5 @@ document.addEventListener('turbo:load', () => {
 
 // Get page load (in case Turbo isn't enabled)
 document.addEventListener('DOMContentLoaded', () => {
-  // Carousel logic
   document.dispatchEvent(new Event('turbo:load'));
 });
