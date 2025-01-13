@@ -1,37 +1,18 @@
 import { Controller } from '@hotwired/stimulus';
 import flatpickr from 'flatpickr';
-import merge from 'lodash/merge';
 
 import 'flatpickr/dist/flatpickr.css';
 
 export default class extends Controller {
-  static targets = ['input'];
+  static targets = ["input"];
 
-  static values = {
-    options: {
-      type: Object,
-      default: {},
-    },
-  };
-
-  inputTargetConnected(el) {
-    flatpickr(
-      el,
-      merge(
-        {
-          altInput: true,
-          altFormat: 'd-m-Y',
-          dateFormat: 'Y-m-d',
-          locale: {
-            firstDayOfWeek: 1,
-          },
-        },
-        this.optionsValue,
-      ),
-    );
+  connect() {
+    flatpickr(this.inputTarget, {
+      dateFormat: "d/m/Y",
+    });
   }
 
-  inputTargetDisconnected(el) {
-    el._flatpickr.destroy();
+  focusInput() {
+    this.inputTarget.focus();
   }
 }

@@ -1,7 +1,7 @@
 - provide(:title, 'Routes')
 = render 'route_pages/shared/search_routes'
 
-= form_with url: route_pages_path, method: :get, id: "filter-form", class: 'px-4 pt-16' do |f|
+= form_with url: route_pages_path, method: :get, id: "filter-form", class: 'px-4 pt-16', data: { controller: "filter" } do |f|
   .flex.flex-col.md:flex-row.px-32.pb-16
     .w-full.pt-0.pb-8.md:w-1/4.p-6.md:px-8.md:py-8.border-r
       h2.text-lg.font-semibold.mb-4 Keywords
@@ -16,7 +16,7 @@
         span.text-md.my-auto.font-bold = "#{number_to_currency(params[:price] || 500000, unit: 'đ', precision: 0)}"
   
       .flex.items-center.space-x-2.px-2
-        = range_field_tag :price, params[:price] || 500000, min: 0, max: 800000, step: 5000, class: "range w-full"
+        = range_field_tag :price, params[:price] || 500000, min: 0, max: 800000, step: 5000, class: "range w-full", data: { filter_target: "filter" }
   
       h2.text-lg.font-semibold.mt-6.mb-4 Category
       .space-y-3
