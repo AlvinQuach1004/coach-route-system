@@ -64,7 +64,10 @@
     
       .flex.justify-between.py-2.border-t.border-purple-500
         span.font-medium.text-purple-600 Rest
-        span.font-medium.text-purple-600 = "#{@booking.tickets.sum(&:paid_amount) - @booking.tickets.sum(&:paid_amount)}đ"
-
+        span.font-medium.text-purple-600
+        - if @booking.payment_method == 'cash'
+          = "#{@booking.tickets.sum(&:paid_amount)}đ"
+        - else
+          = "#{@booking.tickets.sum(&:paid_amount) - @booking.tickets.sum(&:paid_amount)}đ"
     .mt-8.flex.justify-end
-      button.btn.btn-success.text-white Confirm
+      = link_to 'Confirm', thank_you_bookings_path, class: 'btn btn-success text-white'

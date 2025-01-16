@@ -14,18 +14,37 @@ class BookingsController < ApplicationController
       create_tickets
       redirect_to invoice_booking_path(@booking)
 
-      redirect_back(fallback_location: route_pages_path)
-      raise ActiveRecord::Rollback, 'Failed to save booking'
+      raise ActiveRecord::Rollback if @booking.blank?
     end
   rescue ActiveRecord::RecordInvalid, StandardError => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
-  def invoice
+  def invoice # rubocop:disable Metrics/PerceivedComplexity
     @booking = current_user.bookings.find(params[:id])
+    if @booking.payment_method == 'online'
+      if @booking&.stripe_session_id.present?
+        session = Stripe::Checkout::Session.retrieve(@booking.stripe_session_id)
+        if session.payment_status == 'paid'
+          ActiveRecord::Base.transaction do
+            @booking.update!(payment_status: 'completed')
+            @booking.tickets.update_all(status: 'paid') # rubocop:disable Rails/SkipsModelValidations
+            raise ActiveRecord::Rollback, 'Not all tickets are marked as paid' if @booking.tickets.any? { |ticket| ticket.status != 'paid' }
+          end
+        end
+      else
+        @booking.update!(payment_status: 'failed')
+        @booking.tickes.update_all(status: 'failed') # rubocop:disable Rails/SkipsModelValidations
+        redirect_to error_payment_path
+      end
+    else
+      @booking.tickets.update_all(status: 'booked') # rubocop:disable Rails/SkipsModelValidations
+    end
   end
 
   def thank_you; end
+
+  def error_payment; end
 
   private
 

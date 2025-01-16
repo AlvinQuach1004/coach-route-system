@@ -42,7 +42,7 @@ class Schedule < ApplicationRecord
   end
 
   def seat_available?(seat_number)
-    !tickets.exists?(seat_number: seat_number)
+    !tickets.exists?(seat_number: seat_number, status: 'booked' || 'paid')
   end
 
   private
