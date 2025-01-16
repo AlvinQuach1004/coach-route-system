@@ -48,7 +48,7 @@ class PaymentsController < ApplicationController
       {
         price_data: {
           currency: 'vnd',
-          unit_amount: @schedule.price.to_i * selected_seats.length,
+          unit_amount: @schedule.price.to_i,
           product_data: {
             name: "Ticket Booking ##{@booking.id}",
             description: "Seat: #{seat_number}, Route: #{@booking.start_stop.address} - #{@booking.end_stop.address}"
