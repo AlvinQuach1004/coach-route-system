@@ -6,13 +6,11 @@ class PaymentsController < ApplicationController
   before_action :set_stops, only: [:create]
 
   def create
+    @booking = current_user.bookings.build(booking_params)
+    authorize @booking, :create?
+    @booking.payment_status = 'pending'
+    @booking.payment_method = 'stripe'
     ActiveRecord::Base.transaction do
-      @booking = current_user.bookings.build(booking_params)
-      authorize @booking, :create?
-
-      @booking.payment_status = 'pending'
-      @booking.payment_method = 'stripe'
-
       if @booking.save
         create_tickets
 
