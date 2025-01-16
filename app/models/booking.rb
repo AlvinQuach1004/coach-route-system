@@ -32,12 +32,41 @@ class Booking < ApplicationRecord
   belongs_to :start_stop, class_name: 'Stop', inverse_of: :start_stops
   belongs_to :end_stop, class_name: 'Stop', inverse_of: :end_stops
 
+  # Constants
+  module PaymentMethod
+    STRIPE = 'stripe'.freeze
+    CASH = 'cash'.freeze
+
+    ALL = [STRIPE, CASH].freeze
+  end
+
+  # Constants for payment status
+  module PaymentStatus
+    PENDING = 'pending'.freeze
+    COMPLETED = 'completed'.freeze
+    FAILED = 'failed'.freeze
+
+    ALL = [PENDING, COMPLETED, FAILED].freeze
+  end
+
   # Validations
   validate :start_and_stop_cannot_be_the_same
 
   # Enumerize
-  enum :payment_method, { online: 'stripe', cash: 'cash' }, default: :cash
-  enum :payment_status, { pending: 'pending', completed: 'completed', failed: 'failed' }, default: :pending
+  enum :payment_method,
+    {
+      online: PaymentMethod::STRIPE,
+      cash: PaymentMethod::CASH
+    },
+    default: PaymentMethod::CASH
+
+  enum :payment_status,
+    {
+      pending: PaymentStatus::PENDING,
+      completed: PaymentStatus::COMPLETED,
+      failed: PaymentStatus::FAILED
+    },
+    default: PaymentStatus::PENDING
 
   private
 

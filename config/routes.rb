@@ -7,11 +7,14 @@ Rails.application.routes.draw do
     member do
       get :invoice
     end
+    collection do
+      get :error_payment
+      get :thank_you
+    end
   end
 
   resources :payments, only: [:create] do
     member do
-      get :success
       get :cancel
     end
   end

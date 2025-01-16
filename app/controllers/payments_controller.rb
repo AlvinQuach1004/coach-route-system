@@ -8,8 +8,8 @@ class PaymentsController < ApplicationController
   def create
     @booking = current_user.bookings.build(booking_params)
     authorize @booking, :create?
-    @booking.payment_status = 'pending'
-    @booking.payment_method = 'stripe'
+    @booking.pending!
+    @booking.online!
     ActiveRecord::Base.transaction do
       @booking.save!
       create_tickets
@@ -18,10 +18,15 @@ class PaymentsController < ApplicationController
       @booking.update!(stripe_session_id: session.id)
 
       render json: { session_id: session.id }
-      raise ActiveRecord::Rollback, 'Failed to save booking'
+      raise ActiveRecord::Rollback if @booking.blank?
     end
   rescue ActiveRecord::RecordInvalid, StandardError => e
     render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  def cancel
+    @booking&.destroy if @booking.pending?
+    redirect_to root_path, alert: 'Payment was cancelled.'
   end
 
   private
@@ -32,7 +37,7 @@ class PaymentsController < ApplicationController
         payment_method_types: ['card'],
         line_items: build_line_items(booking),
         mode: 'payment',
-        success_url: invoice_booking_url(@booking),
+        success_url: invoice_booking_url(booking),
         cancel_url: cancel_payment_url(booking),
         client_reference_id: @booking.id.to_s,
         customer_email: current_user.email
@@ -91,7 +96,7 @@ class PaymentsController < ApplicationController
       @booking.tickets.create!(
         schedule_id: @schedule.id,
         seat_number: seat_number,
-        status: 'booked',
+        status: Ticket::Status::BOOKED,
         paid_amount: @schedule.price,
         pick_up: @booking.start_stop.address,
         drop_off: @booking.end_stop.address
