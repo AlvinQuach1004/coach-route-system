@@ -13,14 +13,16 @@ class PaymentsController < ApplicationController
       @booking.payment_status = 'pending'
       @booking.payment_method = 'stripe'
 
-      @booking.save!
+      if @booking.save
+        create_tickets
 
-      create_tickets
+        session = create_stripe_session(@booking)
+        @booking.update!(stripe_session_id: session.id)
 
-      session = create_stripe_session(@booking)
-      @booking.update!(stripe_session_id: session.id)
-
-      render json: { session_id: session.id }
+        render json: { session_id: session.id }
+      else
+        raise ActiveRecord::Rollback, 'Failed to save booking'
+      end
     end
   rescue ActiveRecord::RecordInvalid, StandardError => e
     render json: { error: e.message }, status: :unprocessable_entity

@@ -5,14 +5,23 @@ class BookingsController < ApplicationController
   before_action :set_stops, only: [:create]
 
   def create
-    @booking = current_user.bookings.build(booking_params)
-    authorize @booking
-    if @booking.save
-      create_tickets
-      redirect_to invoice_booking_path(@booking)
-    else
-      redirect_back(fallback_location: route_pages_path)
+    ActiveRecord::Base.transaction do
+      @booking = current_user.bookings.build(booking_params)
+      authorize @booking
+
+      @booking.payment_status = 'pending'
+      @booking.payment_method = 'cash'
+
+      if @booking.save
+        create_tickets
+        redirect_to invoice_booking_path(@booking)
+      else
+        redirect_back(fallback_location: route_pages_path)
+        raise ActiveRecord::Rollback, 'Failed to save booking'
+      end
     end
+  rescue ActiveRecord::RecordInvalid, StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   def invoice
