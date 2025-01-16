@@ -1,5 +1,5 @@
 = form_with model: booking, url: bookings_path, data: { turbo: false }, method: :post do |f|
-  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}"
+  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-key-value=Rails.configuration.stripe[:publishable_key] data-payment-amount-value="#{schedule.price}"
     / Hidden fields for booking params
     = f.hidden_field :payment_status, value: "pending"
     = f.hidden_field :payment_method, value: "cash", data: { seat_selection_target: "paymentMethod" }
@@ -200,16 +200,17 @@
               .space-y-2
                 / Stripe Option
                 label.flex.items-center.p-4.border.rounded-lg.cursor-pointer.hover:bg-gray-50
-                  = f.radio_button :payment_method, 'stripe', checked: true, id: 'stripe-option', class: 'radio radio-primary', data: { action: 'change->seat-selection#updatePaymentMethod' }
+                  = f.radio_button :payment_method, 'stripe', checked: true, id: 'stripe-option', class: 'radio radio-primary', data: { action: 'change->payment#updatePaymentMethod', payment_target: 'paymentMethodInput'}
                   .flex.items-center.ml-3.gap-2
                     = image_tag vite_asset_path('images/icons/Stripe.png'), class: "h-6 w-auto", alt: "Stripe"
                     span.text-gray-700 •••• 4242
 
                 / Cash Option
                 label.flex.items-center.p-4.border.rounded-lg.cursor-pointer.hover:bg-gray-50
-                  = f.radio_button :payment_method, 'cash', id: 'cash-option', class: 'radio radio-primary', data: { action: 'change->seat-selection#updatePaymentMethod' }
+                  = f.radio_button :payment_method, 'cash', id: 'cash-option', class: 'radio radio-primary', data: { action: 'change->payment#updatePaymentMethod', payment_target: 'paymentMethodInput' }
                   span.ml-3.text-gray-700 Cash
 
+                
             / Summary Section
             .card.bg-base-100.shadow-sm.border
               .card-body
@@ -266,7 +267,7 @@
                   .flex.justify-between.items-center.pt-4.border-t.mt-4
                     span.font-medium.text-gray-900 TOTAL
                     span.font-bold.text-gray-900 data-seat-selection-target="totalPriceStep3"
-                = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', data: { action: 'click->seat-selection#submitForm', turbo: false }
+                = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', data: { action: "click->payment#processPayment", turbo: false, payment_target: 'submitButton' }
 
       .flex.w-full.justify-between.items-end.px-4.mt-auto
         button#prev.btn data-stepper-target="prev" data-action="click->stepper#prev" type="button" Back

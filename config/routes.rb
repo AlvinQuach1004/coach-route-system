@@ -3,9 +3,17 @@
 Rails.application.routes.draw do
   resources :route_pages, only: [:index]
 
-  resources :bookings, only: [:create] do
-    get :invoice, on: :member
-    get :thank_you, on: :collection
+  resources :bookings do
+    member do
+      get :invoice
+    end
+  end
+
+  resources :payments, only: [:create] do
+    member do
+      get :success
+      get :cancel
+    end
   end
 
   if Rails.env.development?
