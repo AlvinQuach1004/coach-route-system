@@ -34,11 +34,11 @@ class BookingsController < ApplicationController
         end
       else
         @booking.failed!
-        @booking.tickets.map(&:cancelled!) # rubocop:disable Rails/SkipsModelValidations
+        @booking.tickets.map(&:cancelled!)
         redirect_to error_payment_path
       end
     else
-      @booking.tickets.map(&:booked!)# rubocop:disable Rails/SkipsModelValidations
+      @booking.tickets.map(&:booked!)
     end
   end
 
