@@ -6,6 +6,7 @@ class BookingsController < ApplicationController
 
   def create
     @booking = current_user.bookings.build(booking_params)
+    authorize @booking
     if @booking.save
       create_tickets
       redirect_to invoice_booking_path(@booking)

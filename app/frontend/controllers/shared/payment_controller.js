@@ -64,7 +64,6 @@ export default class extends Controller {
 
       const { session_id: sessionId } = await response.json();
 
-      // Redirect to Stripe Checkout
       const result = await this.stripe.redirectToCheckout({
         sessionId,
       });

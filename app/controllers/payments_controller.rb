@@ -1,28 +1,29 @@
 class PaymentsController < ApplicationController
   protect_from_forgery with: :null_session
+  before_action :check_user_signed_in, only: [:create]
   before_action :set_booking
   before_action :set_schedule, only: [:create]
   before_action :set_stops, only: [:create]
 
   def create
-    @booking = current_user.bookings.build(booking_params)
-    @booking.payment_status = 'pending'
-    @booking.payment_method = 'stripe'
+    ActiveRecord::Base.transaction do
+      @booking = current_user.bookings.build(booking_params)
+      authorize @booking, :create?
 
-    if @booking.save
+      @booking.payment_status = 'pending'
+      @booking.payment_method = 'stripe'
+
+      @booking.save!
+
       create_tickets
 
-      begin
-        session = create_stripe_session(@booking)
-        @booking.update(stripe_session_id: session.id)
-        render json: { session_id: session.id }
-      rescue StandardError => e
-        @booking.destroy
-        render json: { error: e.message }, status: :unprocessable_entity
-      end
-    else
-      render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
+      session = create_stripe_session(@booking)
+      @booking.update!(stripe_session_id: session.id)
+
+      render json: { session_id: session.id }
     end
+  rescue ActiveRecord::RecordInvalid, StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   private
