@@ -6,9 +6,9 @@ class BookingsController < ApplicationController
 
   def create
     @booking = current_user.bookings.build(booking_params)
+    authorize @booking
     @booking.payment_status = 'pending'
     @booking.payment_method = 'cash'
-    authorize @booking
     ActiveRecord::Base.transaction do
       if @booking.save
         create_tickets
