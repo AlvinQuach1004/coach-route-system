@@ -1,38 +1,65 @@
-# app/controllers/bookings_controller.rb
-class BookingsController < ApplicationController
-  before_action :check_user_signed_in, only: :create
+class PaymentsController < ApplicationController
+  protect_from_forgery with: :null_session
+  before_action :check_user_signed_in, only: [:create]
+  before_action :set_booking
   before_action :set_schedule, only: [:create]
   before_action :set_stops, only: [:create]
 
   def create
     @booking = current_user.bookings.build(booking_params)
-    authorize @booking
+    authorize @booking, :create?
     @booking.payment_status = 'pending'
-    @booking.payment_method = 'cash'
+    @booking.payment_method = 'stripe'
     ActiveRecord::Base.transaction do
       @booking.save!
       create_tickets
-      redirect_to invoice_booking_path(@booking)
 
-      redirect_back(fallback_location: route_pages_path)
+      session = create_stripe_session(@booking)
+      @booking.update!(stripe_session_id: session.id)
+
+      render json: { session_id: session.id }
       raise ActiveRecord::Rollback, 'Failed to save booking'
     end
   rescue ActiveRecord::RecordInvalid, StandardError => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
-  def invoice
-    @booking = current_user.bookings.find(params[:id])
+  private
+
+  def create_stripe_session(booking)
+    Stripe::Checkout::Session.create(
+      {
+        payment_method_types: ['card'],
+        line_items: build_line_items(booking),
+        mode: 'payment',
+        success_url: invoice_booking_url(@booking),
+        cancel_url: cancel_payment_url(booking),
+        client_reference_id: @booking.id.to_s,
+        customer_email: current_user.email
+      }
+    )
   end
 
-  def thank_you; end
-
-  private
+  def build_line_items(_booking)
+    selected_seats = JSON.parse(params[:selected_seats])
+    @schedule.departure_time.strftime('%I:%M %p, %b %d')
+    selected_seats.map do |seat_number|
+      {
+        price_data: {
+          currency: 'vnd',
+          unit_amount: @schedule.price.to_i,
+          product_data: {
+            name: "Ticket Booking ##{@booking.id}",
+            description: "Seat: #{seat_number}, Route: #{@booking.start_stop.address} - #{@booking.end_stop.address}"
+          }
+        },
+        quantity: 1
+      }
+    end
+  end
 
   def booking_params
     params.require(:booking).permit(
-      :payment_method,
-      :payment_status,
       :start_stop_id,
       :end_stop_id
     )
@@ -59,7 +86,7 @@ class BookingsController < ApplicationController
   end
 
   def create_tickets
-    selected_seats = JSON.parse(params[:booking][:selected_seats])
+    selected_seats = JSON.parse(params[:selected_seats])
     selected_seats.each do |seat_number|
       @booking.tickets.create!(
         schedule_id: @schedule.id,
@@ -70,5 +97,9 @@ class BookingsController < ApplicationController
         drop_off: @booking.end_stop.address
       )
     end
+  end
+
+  def set_booking
+    @booking = current_user.bookings.find_by(id: params[:id])
   end
 end

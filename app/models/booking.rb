@@ -2,14 +2,16 @@
 #
 # Table name: bookings
 #
-#  id             :uuid             not null, primary key
-#  payment_method :string           not null
-#  payment_status :string           not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  end_stop_id    :uuid             not null
-#  start_stop_id  :uuid             not null
-#  user_id        :uuid             not null
+#  id                       :uuid             not null, primary key
+#  payment_method           :string           not null
+#  payment_status           :string           not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  end_stop_id              :uuid             not null
+#  start_stop_id            :uuid             not null
+#  stripe_payment_intent_id :string
+#  stripe_session_id        :string
+#  user_id                  :uuid             not null
 #
 # Indexes
 #
@@ -34,7 +36,7 @@ class Booking < ApplicationRecord
   validate :start_and_stop_cannot_be_the_same
 
   # Enumerize
-  enum :payment_method, { online: 'online', cash: 'cash' }, default: :cash
+  enum :payment_method, { online: 'stripe', cash: 'cash' }, default: :cash
   enum :payment_status, { pending: 'pending', completed: 'completed', failed: 'failed' }, default: :pending
 
   private
