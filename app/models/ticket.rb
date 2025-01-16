@@ -29,8 +29,23 @@ class Ticket < ApplicationRecord
   belongs_to :booking, inverse_of: :tickets
   belongs_to :schedule, inverse_of: :tickets
 
+  # Constants
+  module Status
+    BOOKED = 'booked'.freeze
+    PAID = 'paid'.freeze
+    CANCELLED = 'cancelled'.freeze
+
+    ALL = [BOOKED, PAID, CANCELLED].freeze
+  end
+
   # Enumerize
-  enum :status, { booked: 'booked', paid: 'paid', cancelled: 'cancelled' }, default: :booked
+  enum :status,
+    {
+      booked: Status::BOOKED,
+      paid: Status::PAID,
+      cancelled: Status::CANCELLED
+    },
+    default: Status::BOOKED
 
   # Validations
   validates :paid_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }

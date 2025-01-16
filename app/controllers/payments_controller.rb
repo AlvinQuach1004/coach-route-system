@@ -8,8 +8,8 @@ class PaymentsController < ApplicationController
   def create
     @booking = current_user.bookings.build(booking_params)
     authorize @booking, :create?
-    @booking.payment_status = 'pending'
-    @booking.payment_method = 'stripe'
+    @booking.pending!
+    @booking.online!
     ActiveRecord::Base.transaction do
       @booking.save!
       create_tickets
@@ -25,7 +25,7 @@ class PaymentsController < ApplicationController
   end
 
   def cancel
-    @booking&.destroy if @booking&.payment_status == 'pending'
+    @booking&.destroy if @booking.pending?
     redirect_to root_path, alert: 'Payment was cancelled.'
   end
 
@@ -96,7 +96,7 @@ class PaymentsController < ApplicationController
       @booking.tickets.create!(
         schedule_id: @schedule.id,
         seat_number: seat_number,
-        status: 'booked',
+        status: Ticket::Status::BOOKED,
         paid_amount: @schedule.price,
         pick_up: @booking.start_stop.address,
         drop_off: @booking.end_stop.address
