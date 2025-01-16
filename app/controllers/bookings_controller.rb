@@ -10,13 +10,12 @@ class BookingsController < ApplicationController
     @booking.payment_status = 'pending'
     @booking.payment_method = 'cash'
     ActiveRecord::Base.transaction do
-      if @booking.save
-        create_tickets
-        redirect_to invoice_booking_path(@booking)
-      else
-        redirect_back(fallback_location: route_pages_path)
-        raise ActiveRecord::Rollback, 'Failed to save booking'
-      end
+      @booking.save!
+      create_tickets
+      redirect_to invoice_booking_path(@booking)
+
+      redirect_back(fallback_location: route_pages_path)
+      raise ActiveRecord::Rollback, 'Failed to save booking'
     end
   rescue ActiveRecord::RecordInvalid, StandardError => e
     render json: { error: e.message }, status: :unprocessable_entity
