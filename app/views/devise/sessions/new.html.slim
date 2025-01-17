@@ -24,5 +24,5 @@ p.mt-2.text-sm.leading-6
               input_html: { autocomplete: "current-password", class: 'w-full px-4 py-2 border rounded-md mt-4' }
     = f.input :remember_me, as: :boolean, input_html: { class: 'mt-4' } if devise_mapping.rememberable?
   .form-actions.mt-4
-    = f.button :submit, "Log in", class: "w-full bg-primary text-white py-2 rounded-md"
+    = f.button :submit, "Log in", class: "w-full bg-primary text-white py-2 rounded-md", data: { turbo: false }
 = render "devise/shared/links"

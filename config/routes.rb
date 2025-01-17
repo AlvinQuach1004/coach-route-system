@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :history, only: [:index]
+
   resources :payments, only: [:create] do
     member do
       get :cancel
