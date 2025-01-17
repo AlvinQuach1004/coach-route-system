@@ -11,7 +11,7 @@ class HistoryController < ApplicationController
           tickets: { schedule: :coach }
         )
         .order(created_at: :desc)
-    @total_bookings = @bookings.count
+    @total_bookings = @bookings.size
     @pagy, @bookings = pagy(@bookings)
   end
 end

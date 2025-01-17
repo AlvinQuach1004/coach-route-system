@@ -9,10 +9,6 @@ export default class extends Controller {
     });
   }
 
-  filter(event) {
-    if (event.target.dataset.filterIgnore) return;
-  }
-
   submitForm() {
     this.element.requestSubmit();
   }
