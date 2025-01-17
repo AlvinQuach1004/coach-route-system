@@ -10,6 +10,6 @@ export default class extends Controller {
   }
 
   submitForm() {
-    this.element.submit();
+    this.element.requestSubmit();
   }
 }

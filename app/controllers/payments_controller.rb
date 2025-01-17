@@ -55,7 +55,7 @@ class PaymentsController < ApplicationController
           unit_amount: @schedule.price.to_i,
           product_data: {
             name: "Ticket Booking ##{@booking.id}",
-            description: "Seat: #{seat_number}, Route: #{@booking.start_stop.address} - #{@booking.end_stop.address}"
+            description: "Seat: #{seat_number}, Route: #{@booking.start_stop.address} - #{@booking.end_stop.address}, Coach: #{@schedule.coach.coach_type}"
           }
         },
         quantity: 1

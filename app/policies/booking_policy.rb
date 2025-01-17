@@ -9,4 +9,14 @@ class BookingPolicy < ApplicationPolicy
   def create?
     user.present? && booking.user_id == user.id
   end
+
+  def index?
+    user.present?
+  end
+
+  class Scope < Scope
+    def resolve
+      scope.where(user: user)
+    end
+  end
 end

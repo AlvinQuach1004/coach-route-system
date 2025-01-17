@@ -1,0 +1,71 @@
+- provide(:title, 'History Booking')
+.container.mx-auto.p-20.py-8
+  .flex.justify-between.items-center.mb-8
+    h1.text-2xl.font-bold Booking History
+    .text-md.text-gray-500
+      = "Total: #{@total_bookings} Bookings"
+
+  .overflow-x-auto.rounded-lg.shadow-md
+    table.table.w-full
+      thead
+        tr.bg-base-200
+          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
+            | #
+          th.px-6.py-4.font-medium.text-base-content
+            | Route
+          th.px-6.py-4.font-medium.text-base-content
+            | Seats
+          th.px-6.py-4.font-medium.text-base-content
+            | Coach Type
+          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
+            | Booked Date
+          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
+            | Departure Date
+          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
+            | Departure Time
+          th.px-6.py-4.font-medium.text-base-content
+            | Payment Method
+          th.px-6.py-4.font-medium.text-base-content.text-center
+            | Status
+      tbody.divide-y.divide-base-200
+        - @bookings.each_with_index do |booking, index|
+          tr.hover:bg-base-100
+            td.px-6.py-4.font-mono.text-sm
+              = index + 1
+            td.px-6.py-4
+              .flex.flex-col.gap-1
+                .flex.items-center.gap-2
+                  svg.h-4.w-4.text-primary[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"]
+                    path[d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"]
+                  span.text-sm.font-medium
+                    = booking.tickets.first.pick_up
+                .flex.items-center.gap-2
+                  svg.h-4.w-4.text-primary[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"]
+                    path[d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"]
+                  span.text-sm.font-medium
+                    = booking.tickets.first.drop_off
+            td.px-6.py-4
+              .flex.flex-wrap.gap-1
+                - booking.tickets.each do |ticket|
+                  span.badge.badge-primary.badge-outline.text-xs
+                    = ticket.seat_number
+            td.px-6.py-4
+              = booking.tickets.first.schedule.coach.coach_type.capitalize
+            td.px-6.py-4.whitespace-nowrap.text-sm
+              = booking.created_at.strftime("%b %d, %Y")
+            td.px-6.py-4.whitespace-nowrap.text-sm
+              = booking.tickets.first.schedule.departure_date.strftime("%b %d, %Y")
+            td.px-6.py-4.whitespace-nowrap.text-sm
+              = booking.tickets.first.schedule.departure_time.strftime("%I:%M %p")
+            td.px-6.py-4.text-center.ml-6
+              .badge.badge-ghost
+                = booking.payment_method.capitalize
+            td.px-6.py-4.text-center
+              div class="badge #{booking.payment_status == 'completed' ? 'badge-accent' : 'badge-warning'}"
+                = booking.payment_status.capitalize
+
+  - if @pagy.pages > 1
+    .mt-6.flex.justify-center
+      nav.btn-group.shadow-md role="navigation" aria-label="pager"
+        == pagy_nav(@pagy)
+       

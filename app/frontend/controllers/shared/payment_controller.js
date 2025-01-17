@@ -27,6 +27,7 @@ export default class extends Controller {
 
   async processPayment(event) {
     event.preventDefault();
+    event.stopPropagation();
 
     const form = event.target.closest('form');
     const selectedPaymentMethod = this.paymentMethodInputTargets.find((input) => input.checked).value;
@@ -34,7 +35,6 @@ export default class extends Controller {
     if (selectedPaymentMethod === 'stripe') {
       await this.handleStripePayment(form);
     } else {
-      // For cash payment, submit the form normally
       form.submit();
     }
   }
