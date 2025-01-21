@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
     before_action :set_user, only: %i[show edit update destroy]
-    def index # rubocop:disable Metrics/AbcSize
+    def index # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       authorize(User)
       @users = User.all
 
