@@ -14,6 +14,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@images': '/app/frontend/images',
+      'toastify-js': 'toastify-js/src/toastify.js'
     }
   }
 })

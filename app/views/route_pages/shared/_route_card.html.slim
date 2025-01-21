@@ -17,14 +17,14 @@
                 circle(cx="12" cy="12" r="7")
                 circle(cx="12" cy="12" r="3")
               span.text-lg.ml-6
-                | #{schedule.departure_date.strftime("%d/%m/%Y")} - #{schedule.departure_time.strftime("%H:%M")} - 
+                | #{schedule.formatted_departure_date} - #{schedule.formatted_departure_time} - 
                 = schedule.route.start_location.name
           .relative.mt-2
             svg.absolute xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical"
               circle(cx="12" cy="12" r="1")
               circle(cx="12" cy="5" r="1")
               circle(cx="12" cy="19" r="1")
-            span.text-lg.ml-8 8h
+            span.text-lg.ml-8 = "#{schedule.route.stops.order(:stop_order).last&.time_range.to_i / 60}h"
           .relative.mt-2
             svg.absolute.top-1 xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"
               path(d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0")
@@ -35,7 +35,7 @@
                   - adjusted_time = schedule.departure_time + (10 * last_stop.time_range * 60)
                   - adjusted_date = schedule.departure_date
                   - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
-                    - adjusted_date = adjusted_date + 1.day # Adjust adjusted_date to the next day if adjusted_time is earlier
+                    - adjusted_date = adjusted_date + 1.day
                   | #{adjusted_date.strftime("%d/%m/%Y")} - #{adjusted_time.strftime("%H:%M")} - 
                   = schedule.route.end_location.name
                 - else
@@ -47,7 +47,7 @@
               | #{format_currency_vnd(schedule.price)}
           div.flex.flex-col.md:flex-row.justify-between.md:justify-start.items-center.md:items-end.w-full
           .flex.w-full.items-center.justify-end.mb-4.mt-4.md:mt-6.md:mb-0
-            span.text-gray-500.text-end Available: 37 empty seats
+            span.text-gray-500.text-end = "Available: #{schedule.coach.capacity} empty seats"
           .flex.justify-between.items-center.w-full.md:w-auto.md:justify-start
             .relative
               button.text-blue-500.pr-4.underline.w-full.md:max-w-52.hidden.md:mr-5.md:block type="button" data-controller="dropdown" data-action="click->dropdown#toggle" data-dropdown-id-param="dropdown-#{schedule.id}" View details

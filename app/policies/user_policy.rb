@@ -1,39 +1,41 @@
 class UserPolicy < ApplicationPolicy
-  def permitted_attributes
-    [
-      :email,
-      :phone_number,
-      :password,
-      :password_confirmation,
-      {
-        role_ids: []
-      }
-    ]
-  end
-
   def index?
-    admin?
+    user.admin?
   end
 
   def show?
-    admin?
+    user.admin? || (user.has_role?(:customer) && user.id == record.id)
+  end
+
+  def edit?
+    user.admin? || (user.has_role?(:customer) && user.id == record.id)
   end
 
   def create?
-    admin?
+    user.admin?
   end
 
   def update?
-    admin?
+    user.admin? || (user.has_role?(:customer) && user.id == record.id)
   end
 
   def destroy?
-    admin?
+    return false if user.id == record.id
+
+    user.admin?
+  end
+
+  def access?
+    user&.admin?
   end
 
   class Scope < Scope
     def resolve
-      scope.order(created_at: :desc)
+      if user.admin?
+        scope.all
+      else
+        scope.none
+      end
     end
   end
 end

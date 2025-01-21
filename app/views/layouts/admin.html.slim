@@ -15,6 +15,16 @@ html[lang="en"]
     = javascript_include_tag "admin", "data-turbo-track": "reload", type: "module"
     = vite_client_tag
     = vite_javascript_tag "admin", "data-turbo-track": "reload"
-  body data-controller="icons"
-    = render "layouts/admin_header"
-    = yield
+    link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+  body.bg-gray-100
+    - if flash.any?
+      - flash.each do |type, message|
+        - if message.present?
+          div data-controller="toast" data-toast-type-value=type data-toast-message-value=message
+    .drawer.lg:drawer-open
+      input#my-drawer-2.drawer-toggle type="checkbox"
+      .drawer-content.flex.flex-col.p-8
+        = render 'layouts/admin_navbar'
+        = yield
+        = turbo_frame_tag 'modal'
+      = render 'layouts/admin_sidebar'   

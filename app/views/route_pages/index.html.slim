@@ -29,7 +29,7 @@
           = @total_schedules
         .flex.items-center.space-x-2
           span Sort:
-          = f.select :sort_by, options_for_select([['Default', 'default'], ['Price Low to High', 'price_low_to_high'], ['Price High to Low', 'price_high_to_low']], selected: params[:sort_by]), {}, { class: 'select select-bordered', onchange: 'this.form.submit()' }
+          = f.select :sort_by, options_for_select([['Default', 'default'], ['Price Low to High', 'price_low_to_high'], ['Price High to Low', 'price_high_to_low']], selected: params[:sort_by]), {}, { class: 'select select-bordered', data: { turbo_action: 'replace', filter_target: 'filter' } }
       - if @schedules.any?
         = render partial: 'route_pages/shared/route_card', locals: { booking: @booking, schedules: @schedules, departure_search: @departure_search, destination_search: @destination_search }
       - else

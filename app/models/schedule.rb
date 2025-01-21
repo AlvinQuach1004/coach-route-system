@@ -38,7 +38,7 @@ class Schedule < ApplicationRecord
   end
 
   def formatted_departure_time
-    departure_time.strftime('%H:%M:%S') if departure_time.present?
+    departure_time.strftime('%H:%M') if departure_time.present?
   end
 
   def seat_available?(seat_number)

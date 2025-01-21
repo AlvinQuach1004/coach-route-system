@@ -1,4 +1,4 @@
-= form_with model: booking, url: bookings_path, data: { turbo: false }, method: :post do |f|
+= form_with model: booking, url: bookings_path, data: { turbo: false, filter_ignore: true }, method: :post do |f|
   .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-key-value=Rails.configuration.stripe[:publishable_key] data-payment-amount-value="#{schedule.price}"
     / Hidden fields for booking params
     = f.hidden_field :payment_status, value: "pending"
@@ -54,7 +54,7 @@
                 circle cx="12" cy="12" r="4"
               .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-10
                 - (1..18).each do |seat|
-                  .seat#selected-seats.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
+                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
                     data-seat-selection-target="seat"
                     data-id="A#{seat}"
                     data-action="click->seat-selection#toggleSeat"

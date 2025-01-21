@@ -1,0 +1,82 @@
+= turbo_frame_tag "modal" do
+  .modal.modal-open.fixed.inset-0.flex.items-center.justify-center.z-50.bg-black/50 data-controller="modal"
+    .modal-box.relative.max-w-2xl.bg-white.rounded-lg.shadow-lg
+      / Close button
+      = link_to admin_users_path, class: "btn btn-sm btn-circle absolute right-2 top-2", data: { turbo_frame: "modal" } do
+        svg.h-6.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
+
+      / Modal Header
+      .mb-6
+        h3.text-lg.font-bold Edit User
+        p.text-sm.text-base-content/70 Update user information
+
+      / Edit Form
+      = form_with(model: [:admin, @user], url: admin_user_path(@user), method: :put, data: { turbo: true }) do |f|
+        / User Avatar Section
+        .flex.items-center.space-x-4.mb-6
+          .avatar.placeholder
+            .bg-neutral-focus.text-neutral-content.rounded-full.w-16
+              span.text-xl = @user.email[0].upcase
+          .flex-1
+            p.font-medium = @user.email
+            p.text-sm.text-base-content/70 
+              | Member since 
+              = display_datetime(@user.created_at)
+
+        / Form Fields
+        .space-y-4
+          / Email Field
+          .form-control
+            label.label
+              span.label-text Email Address
+              span.label-text-alt Required
+            = f.email_field :email, class: "input input-bordered w-full #{'input-error' if @user.errors[:email].any?}", required: true
+            - if @user.errors[:email].any?
+              .label
+                span.label-text-alt.text-error = @user.errors[:email].join(", ")
+          
+          / Role Field
+          .form-control
+            label.label
+              span.label-text Role
+            = f.select :role, options_for_select(['Customer', 'Admin'], @user.roles.first&.name&.capitalize), {}, class: "select select-bordered w-full"
+          
+          / Phone Number Field
+          .form-control
+            label.label
+              span.label-text Phone number
+            = f.text_field :phone_number, 
+              class: "input input-bordered w-full #{'input-error' if @user.errors[:phone_number].any?}",
+              required: true,
+              placeholder: 'Phone number'
+            - if @user.errors[:phone_number].any?
+              .label
+                span.label-text-alt.text-error = @user.errors[:phone_number].join(", ")
+
+          .divider.mb-4 Change Password
+          .form-control
+            label.label
+              span.label-text New Password
+              span.label-text-alt Optional
+            = f.password_field :password, 
+              class: "input input-bordered w-full #{'input-error' if @user.errors[:password].any? && @user.password.present?}"
+            - if @user.errors[:password].any? && @user.password.present?
+              .label
+                span.label-text-alt.text-error = @user.errors[:password].join(", ")
+            .label
+              span.label-text-alt.text-base-content/70 Leave blank if you don't want to change it
+          
+          .form-control
+            label.label
+              span.label-text Confirm New Password
+            = f.password_field :password_confirmation, 
+              class: "input input-bordered w-full #{'input-error' if @user.errors[:password_confirmation].any?}"
+            - if @user.errors[:password_confirmation].any?
+              .label
+                span.label-text-alt.text-error = @user.errors[:password_confirmation].join(", ")
+        / Form Actions
+        .modal-action.mt-6
+          .flex.gap-2
+            = link_to "Cancel", "#", class: "btn btn-ghost", data: { turbo_frame: "modal" }
+            = f.submit "Save Changes", class: "btn btn-primary", data: { turbo: false }
