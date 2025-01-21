@@ -58,8 +58,8 @@ module Admin
 
       if @user.save
         update_user_roles
-        redirect_to admin_users_path
         flash[:success] = 'User was successfully created.'
+        redirect_to admin_users_path
       else
         render :new, status: :unprocessable_entity
       end
@@ -67,8 +67,8 @@ module Admin
 
     def update
       if update_user_with_roles
-        redirect_to admin_users_path
         flash[:success] = 'User was successfully updated.'
+        redirect_to admin_users_path
       else
         render :edit, status: :unprocessable_entity
       end
@@ -76,13 +76,13 @@ module Admin
 
     def destroy
       if @user == current_user
-        redirect_to admin_users_path
         flash[:warning] = 'You cannot delete your own account.'
+        redirect_to admin_users_path
         return
       end
       @user.destroy!
-      redirect_to admin_users_path
       flash[:success] = 'User was successfully deleted.'
+      redirect_to admin_users_path
     end
 
     private

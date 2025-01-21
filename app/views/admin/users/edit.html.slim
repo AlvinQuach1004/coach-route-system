@@ -1,6 +1,6 @@
 = turbo_frame_tag "modal" do
-  .modal.modal-open.fixed.inset-0.flex.items-center.justify-center.z-50.bg-black/50 data-controller="modal"
-    .modal-box.relative.max-w-2xl.bg-white.rounded-lg.shadow-lg
+  .modal.modal-open.bg-base-100.fixed.inset-0.flex.items-center.justify-center.z-50
+    .modal-box.relative.max-w-2xl.rounded-lg.shadow-lg
       / Close button
       = link_to admin_users_path, class: "btn btn-sm btn-circle absolute right-2 top-2", data: { turbo_frame: "modal" } do
         svg.h-6.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -54,7 +54,7 @@
               .label
                 span.label-text-alt.text-error = @user.errors[:phone_number].join(", ")
 
-          .divider.mb-4 Change Password
+          .divider.py-8 Change Password
           .form-control
             label.label
               span.label-text New Password

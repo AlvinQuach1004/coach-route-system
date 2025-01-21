@@ -16,6 +16,8 @@ html[lang="en"]
     = vite_client_tag
     = vite_javascript_tag "application", "data-turbo-track": "reload"
   body.w-fit.md:w-full data-controller="icons" class="dark" data-user-signed-in="#{user_signed_in? ? 'true' : 'false'}"
+    - if flash.any?
+      = render partial: 'layouts/flash'
     = render "layouts/header"
     = yield
     = render "layouts/footer"
