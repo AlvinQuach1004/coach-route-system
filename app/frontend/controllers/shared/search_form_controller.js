@@ -1,13 +1,13 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = []
-  
+  static targets = [];
+
   submit() {
     // Add a small delay to prevent too many requests while typing
-    clearTimeout(this.timeout)
+    clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
-      this.element.requestSubmit()
-    }, 300)
+      this.element.requestSubmit();
+    }, 300);
   }
 }
