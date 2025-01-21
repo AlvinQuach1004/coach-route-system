@@ -1,10 +1,10 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["dialog"]
+  static targets = ['dialog'];
   static values = {
-    id: String
-  }
+    id: String,
+  };
 
   connect() {
     // Ensure modal is initially closed
@@ -21,7 +21,7 @@ export default class extends Controller {
 
   clickOutside(event) {
     if (event.target === this.dialogTarget) {
-      this.hide(event)
+      this.hide(event);
     }
   }
 }
