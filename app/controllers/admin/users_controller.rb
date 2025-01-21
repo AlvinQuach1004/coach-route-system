@@ -33,7 +33,13 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.turbo_stream if turbo_frame_request?
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            'users_table',
+            partial: 'admin/users/shared/users',
+            locals: { users: @users }
+          )
+        end
       end
     end
 

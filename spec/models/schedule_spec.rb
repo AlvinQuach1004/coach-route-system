@@ -14,7 +14,7 @@ RSpec.describe Schedule, type: :model do
       expect(schedule.price.to_f).to be_a(Float)
 
       expect(schedule.formatted_departure_date).to eq(schedule.departure_date.strftime('%d/%m/%Y'))
-      expect(schedule.formatted_departure_time).to eq(schedule.departure_time.strftime('%H:%M:%S'))
+      expect(schedule.formatted_departure_time).to eq(schedule.departure_time.strftime('%H:%M'))
     end
   end
 end

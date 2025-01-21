@@ -44,5 +44,5 @@
                     = button_to admin_user_path(user), 
                       method: :delete,
                       class: "btn btn-error text-white inline",
-                      form: { class: "inline" } do
+                      data: { turbo: false } do
                       | Delete
