@@ -42,8 +42,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users
-
-    root to: 'users#index'
+    root 'dashboard#index'
+    get 'dashboard', to: 'dashboard#index'
   end
 
   namespace :customers do

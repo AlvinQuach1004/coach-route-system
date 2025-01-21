@@ -10,7 +10,7 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
           | History
         = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn' do
           | About
-    .flex.gap-4
+    .container.flex.gap-4.w-full
       = render 'shared/switch_theme'
       - if !user_signed_in?
         .flex.gap-4.justify-center.items-center.mr-14

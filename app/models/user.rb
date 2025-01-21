@@ -57,7 +57,7 @@ class User < ApplicationRecord
     format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :phone_number, format: { with: /\A(03|05|07|08|09)\d{8}\z/ }, unless: -> { reset_password_token.present? }
   validates :password,
-    presence: true,
+    if: -> { password.present? },
     confirmation: { message: I18n.t('activerecord.errors.models.user.attributes.password.confirmation') },
     format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+\z/, message: I18n.t('activerecord.errors.models.user.attributes.password.format') },
     length: { minimum: 8, message: I18n.t('activerecord.errors.models.user.attributes.password.too_short') }
