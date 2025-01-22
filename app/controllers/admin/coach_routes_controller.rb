@@ -32,7 +32,11 @@ module Admin
         # Create the route
         @route = Route.create!(route_params_without_stops)
 
-        create_or_update_stops(@route)
+        if params[:route][:stops_attributes][:location_id].present?
+          create_or_update_stops(@route, params[:route][:stops_attributes])
+        else
+          create_default_stops(@route)
+        end
         handle_success('Route created successfully')
 
         if @route.errors.any? || @route.stops.any?(&:invalid?)
@@ -44,8 +48,11 @@ module Admin
     end
 
     def update
-      if @route.update(route_params)
-        create_or_update_stops(@route)
+      stops_attributes = route_params[:stops_attributes]
+
+      if @route.update(route_params.except(:stops_attributes))
+        create_or_update_stops(@route, stops_attributes)
+
         handle_success('Route updated successfully')
       else
         handle_failure(@route, 'admin/coach_routes/shared/form')
@@ -58,7 +65,6 @@ module Admin
       else
         handle_failure('Failed to delete route')
       end
-      redirect_to admin_coach_routes_path
     end
 
     private
@@ -118,36 +124,50 @@ module Admin
       ]
     end
 
-    def create_or_update_stops(route) # rubocop:disable Metrics/AbcSize
-      if route.stops.empty?
-        # Start stop
-        route.stops.create!(
-          location_id: route.start_location_id,
-          stop_order: 1,
-          time_range: 0,
-          address: params[:route][:start_location_address],
-          is_pickup: true,
-          is_dropoff: false
-        )
+    def create_default_stops(route)
+      # Start stop
+      route.stops.create!(
+        location_id: route.start_location_id,
+        stop_order: 1,
+        time_range: 0,
+        address: params[:route][:start_location_address],
+        is_pickup: true,
+        is_dropoff: false
+      )
 
-        # End stop
-        route.stops.create!(
-          location_id: route.end_location_id,
-          stop_order: 2,
-          time_range: 200,
-          address: params[:route][:end_location_address],
-          is_pickup: false,
-          is_dropoff: true
-        )
-      else
-        # Update existing stops
-        route.stops.each_with_index do |stop, index|
-          stop.update(stop_order: index + 1, time_range: 0)
-          if stop.location_id == route.start_location_id
-            stop.update(address: params[:route][:start_location_address], is_pickup: true, is_dropoff: false)
-          elsif stop.location_id == route.end_location_id
-            stop.update(address: params[:route][:end_location_address], is_pickup: false, is_dropoff: true)
-          end
+      # End stop
+      route.stops.create!(
+        location_id: route.end_location_id,
+        stop_order: 2,
+        time_range: 200,
+        address: params[:route][:end_location_address],
+        is_pickup: false,
+        is_dropoff: true
+      )
+    end
+
+    def create_or_update_stops(route, stops_attributes)
+      stops_attributes.to_unsafe_h.each_with_index do |(_key, stop_params), index|
+        stop = route.stops.find_by(location_id: stop_params[:location_id])
+
+        if stop
+          stop.update!(
+            stop_order: stop_params[:stop_order],
+            time_range: 20,
+            address: stop_params[:address],
+            is_pickup: stop_params[:is_pickup],
+            is_dropoff: stop_params[:is_dropoff]
+          )
+        else
+          # Create new stop if it doesn't exist
+          route.stops.create!(
+            location_id: stop_params[:location_id],
+            stop_order: index + 1,
+            time_range: 20,
+            address: stop_params[:address],
+            is_pickup: stop_params[:is_pickup],
+            is_dropoff: stop_params[:is_dropoff]
+          )
         end
       end
     end

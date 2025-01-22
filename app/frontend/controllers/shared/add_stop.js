@@ -92,10 +92,14 @@ function initializeStopControls() {
   }
 
   function updateStopOrders() {
+    const actionLabel = document.querySelector('.action-label');
+    const isNewRoute = actionLabel.innerText === 'New Route';
+
     stopsContainer.querySelectorAll('.stop-field').forEach((stop, index) => {
       const orderInput = stop.querySelector('input[name*="[stop_order]"]');
-      if (orderInput.value) {
-        orderInput.value = index + 1;
+
+      if (orderInput.value && isNewRoute) {
+        orderInput.value = index + 2;
       }
     });
   }

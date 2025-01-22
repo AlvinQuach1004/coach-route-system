@@ -2,7 +2,7 @@
   .fixed.inset-0.bg-gray-500.bg-opacity-50.transition-opacity.flex.items-center.justify-center.z-30
     .bg-base-100.rounded-lg.shadow-xl.overflow-y-auto.transform.transition-all.sm:max-w-2xl.sm:w-full.m-3.sm:mx-auto.flex.flex-col.max-h-[90vh]
       .px-4.py-3.border-b
-        h3.text-lg.leading-6.font-medium
+        h3.text-lg.leading-6.font-medium.action-label
           = route.new_record? ? "New Route" : "Edit Route"
 
       = form_with model: [:admin, route], url: route.new_record? ? admin_coach_routes_path : admin_coach_route_path(route), class: "flex flex-col", data: { turbo: true } do |f|
@@ -40,7 +40,6 @@
             .space-y-4
               .stops-container.space-y-4
                 - route.stops.each_with_index do |stop, index|
-                  - if stop.new_record? || !(stop.location_id == route.end_location_id)
                     .stop-field.bg-base-200.p-4.rounded-lg
                       .grid.grid-cols-1.gap-4
                         .form-control
@@ -68,7 +67,7 @@
                                 = stop_form.number_field :stop_order, \
                                   class: "input input-bordered w-full", \
                                   readonly: true, \
-                                  value: stop.stop_order
+                                  value: stop.stop_order || index + 2
                               .form-control
                                 = stop_form.label :time_range, "Estimated Time (minutes)", class: "label"
                                 = stop_form.number_field :time_range, \
