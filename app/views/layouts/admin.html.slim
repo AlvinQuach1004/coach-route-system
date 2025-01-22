@@ -20,9 +20,12 @@ html[lang="en"]
     .drawer.lg:drawer-open
       input#my-drawer-2.drawer-toggle type="checkbox"
       .drawer-content.flex.flex-col.p-8
-        - if flash.any?
+        / In your admin.html.slim
+        = turbo_frame_tag 'flash_message' do
           = render partial: 'layouts/flash'
         = render 'layouts/admin_navbar'
         = yield
-        = turbo_frame_tag 'modal'
+        = turbo_frame_tag 'modal_users'
+        = turbo_frame_tag 'modal_routes'
+        = turbo_frame_tag 'modal_delete'
       = render 'layouts/admin_sidebar'   

@@ -1,8 +1,8 @@
-= turbo_frame_tag "modal" do
+= turbo_frame_tag "modal_users" do
   .modal.modal-open.bg-base-100.fixed.inset-0.flex.items-center.justify-center.z-50
     .modal-box.relative.max-w-2xl.rounded-lg.shadow-lg
       / Close button
-      = link_to admin_users_path, class: "btn btn-sm btn-circle absolute right-2 top-2", data: { turbo_frame: "modal" } do
+      = link_to admin_users_path, class: "btn btn-sm btn-circle absolute right-2 top-2", data: { turbo_frame: "modal_users" } do
         svg.h-6.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
           path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
 
@@ -78,5 +78,5 @@
         / Form Actions
         .modal-action.mt-6
           .flex.gap-2
-            = link_to "Cancel", "#", class: "btn btn-ghost", data: { turbo_frame: "modal" }
+            = link_to "Cancel", "#", class: "btn btn-ghost", data: { turbo_frame: "modal_users" }
             = f.submit "Save Changes", class: "btn btn-primary", data: { turbo: false }

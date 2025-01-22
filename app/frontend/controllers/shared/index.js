@@ -2,6 +2,7 @@ import { registerControllers } from 'stimulus-vite-helpers';
 import { Application } from '@hotwired/stimulus';
 import './toast';
 import './modal';
+import './add_stop';
 
 const application = Application.start();
 

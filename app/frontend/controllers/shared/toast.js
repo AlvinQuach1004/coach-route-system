@@ -26,7 +26,7 @@ const showToast = (message, type = 'notice') => {
     text: message,
     duration: options.duration,
     gravity: 'top',
-    position: 'right',
+    position: 'center',
     stopOnFocus: true,
     className: 'rounded-lg',
     style: {

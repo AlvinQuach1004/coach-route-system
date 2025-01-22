@@ -44,6 +44,32 @@ class User < ApplicationRecord
   end
   has_many :bookings, dependent: :destroy
 
+  # Scopes
+  # Scopes
+  scope :search,
+    ->(query) {
+      where('email ILIKE :search', search: "%#{query}%") if query.present?
+    }
+
+  scope :role_filter,
+    ->(role) {
+      with_role(role.downcase) if role.present? && %w[customer admin].include?(role.downcase)
+    }
+
+  scope :sort_by_param,
+    ->(sort_param) {
+      case sort_param&.downcase
+      when 'oldest'
+        order(created_at: :asc)
+      when 'email_asc'
+        order(email: :asc)
+      when 'email_desc'
+        order(email: :desc)
+      else
+        order(created_at: :desc)
+      end
+    }
+
   # validations
   validates :avatar,
     content_type: /\Aimage\/.*\z/,
