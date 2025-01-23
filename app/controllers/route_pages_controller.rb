@@ -85,21 +85,16 @@ class RoutePagesController < ApplicationController
       location_names = params[:keywords].flat_map { |keyword| keyword.split('_') }.uniq
       locations = Location.where(name: location_names).pluck(:id, :name).to_h { |id, name| [name, id] }
 
-      # Initialize an empty array to store query conditions
       query_conditions = []
 
-      # Loop through each keyword and build the query conditions
       params[:keywords].each do |keyword|
         start_location_name, end_location_name = keyword.split('_')
 
-        # Retrieve start and end location IDs from the preloaded hash
         start_location_id = locations[start_location_name]
         end_location_id = locations[end_location_name]
 
-        # Only proceed if both locations are valid
         next if start_location_id.nil? || end_location_id.nil?
 
-        # Build and store the query condition for this keyword
         query_conditions << @schedules.joins(:route).where(
           routes: { start_location_id: start_location_id, end_location_id: end_location_id }
         )

@@ -1,2 +1,4 @@
+- if local_assigns[:message].present?
+  div[data-flash-type=local_assigns[:type] data-flash-message=local_assigns[:message]]
 - flash.each do |type, message|
   div[data-flash-type=type data-flash-message=message]

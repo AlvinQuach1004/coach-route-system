@@ -5,7 +5,7 @@
     .flex.justify-between.items-center.mb-6
       .flex.items-center.gap-3
         h2.text-2xl.font-bold Users List
-        span.badge.badge-primary = "Total: #{@users.size}"
+        span.badge.badge-primary = "Total: #{@total_users}"
 
     div class="flex flex-col sm:flex-row gap-4 mb-6"
       = form_with url: admin_users_path, method: :get, data: { controller: "search-form", turbo_frame: "users_table" }, class:"flex gap-2 justify-between w-full" do |f|

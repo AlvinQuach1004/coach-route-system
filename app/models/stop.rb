@@ -34,5 +34,5 @@ class Stop < ApplicationRecord
 
   # Validations
   validates :stop_order, presence: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 10 }
-  validates :time_range, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 360 }
+  validates :time_range, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 360 }
 end

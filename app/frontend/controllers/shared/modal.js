@@ -1,37 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const modals = document.querySelectorAll('dialog.modal');
+  document.addEventListener('click', (event) => {
+    const openButton = event.target.closest('.modal-open-button');
+    if (openButton) {
+      event.preventDefault();
 
-  modals.forEach((modal) => {
-    const closeButtons = modal.querySelectorAll('.modal-close-button');
-    const openButtons = document.querySelectorAll('.modal-open-button');
+      const modalId = openButton.dataset.modalId;
+      const modal = document.querySelector(`dialog.modal#${modalId}`);
 
-    // Show modal (display modal dialog)
-    openButtons.forEach((button) => {
-      button.addEventListener('click', (event) => {
-        event.preventDefault();
+      if (modal) {
+        // Close any other open modals
+        document.querySelectorAll('dialog.modal[open]').forEach((m) => m.close());
 
-        modals.forEach((m) => {
-          if (m.open) m.close();
-        });
-
+        // Show the modal
         modal.showModal();
-      });
-    });
+      }
+    }
+  });
 
-    // Close modal when clicking on cancel buttons or the close button
-    closeButtons.forEach((button) => {
-      button.addEventListener('click', (event) => {
-        event.preventDefault();
-        modal.close();
-      });
-    });
+  // Delegate click event for modal close buttons
+  document.addEventListener('click', (event) => {
+    const closeButton = event.target.closest('.modal-close-button');
+    if (closeButton) {
+      event.preventDefault();
 
-    // Close modal when clicking outside of modal-box
-    modal.addEventListener('click', (event) => {
-      const modalBox = modal.querySelector('.modal-box');
-      if (event.target === modal && !modalBox.contains(event.target)) {
+      // Find the parent modal and close it
+      const modal = closeButton.closest('dialog.modal');
+      if (modal) {
         modal.close();
       }
-    });
+    }
+  });
+
+  // Delegate click event to close modal when clicking outside modal-box
+  document.addEventListener('click', (event) => {
+    const modal = event.target.closest('dialog.modal');
+    if (modal) {
+      const modalBox = modal.querySelector('.modal-box');
+      if (modalBox && !modalBox.contains(event.target)) {
+        modal.close();
+      }
+    }
   });
 });

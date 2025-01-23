@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users
+    resources :coach_routes
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index'
   end

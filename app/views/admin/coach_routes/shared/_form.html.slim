@@ -1,0 +1,92 @@
+= turbo_frame_tag "modal_routes" do
+  .fixed.inset-0.bg-gray-500.bg-opacity-50.transition-opacity.flex.items-center.justify-center.z-30
+    .bg-base-100.rounded-lg.shadow-xl.overflow-y-auto.transform.transition-all.sm:max-w-2xl.sm:w-full.m-3.sm:mx-auto.flex.flex-col.max-h-[90vh]
+      .px-4.py-3.border-b
+        h3.text-lg.leading-6.font-medium.action-label
+          = route.new_record? ? "New Route" : "Edit Route"
+
+      = form_with model: [:admin, route], url: route.new_record? ? admin_coach_routes_path : admin_coach_route_path(route), class: "flex flex-col", data: { turbo: true } do |f|
+        .px-4.py-4.flex-1.overflow-y-auto.max-h-96
+          .space-y-4
+            .grid.grid-cols-2.gap-4
+              .form-control
+                = f.label :start_location_id, "Start Location", class: "label"
+                = f.collection_select :start_location_id, \
+                  Location.all, \
+                  :id, \
+                  :name, \
+                  { prompt: "Select start location" }, \
+                  class: "select select-bordered w-full"
+              .form-control
+                = f.label :start_location_address, "Start Address", class: "label"
+                = f.text_field :start_location_address, class: "input input-bordered w-full", placeholder: "Enter start address", value: @route.stops.order('stop_order ASC').first&.address
+
+
+              .form-control
+                = f.label :end_location_id, "End Location", class: "label"
+                = f.collection_select :end_location_id, \
+                  Location.all, \
+                  :id, \
+                  :name, \
+                  { prompt: "Select end location" }, \
+                  class: "select select-bordered w-full"
+              
+              .form-control
+                = f.label :end_location_address, "End Address", class: "label"
+                = f.text_field :end_location_address, class: "input input-bordered w-full", placeholder: "Enter end address", value: @route.stops.order('stop_order ASC').last&.address
+
+
+            .divider.py-8 Stops
+
+            .space-y-4
+              .stops-container.space-y-4
+                - route.stops.each_with_index do |stop, index|
+                  - unless stop.stop_order == route.stops.size
+                    .stop-field.bg-base-200.p-4.rounded-lg
+                      .grid.grid-cols-1.gap-4
+                        .form-control
+                          = f.fields_for :stops, stop do |stop_form|
+                            = stop_form.label :location_id, "Stop Location", class: "label"
+                            = stop_form.collection_select :location_id, \
+                              Location.all, \
+                              :id, \
+                              :name, \
+                              { prompt: "Select stop location" }, \
+                              class: "select select-bordered w-full"
+                            .form-control
+                              = stop_form.label :address, "Stop Address", class: "label"
+                              = stop_form.text_field :address, \
+                                class: "input input-bordered w-full", \
+                                placeholder: "Enter stop address", \
+                                value: stop.address
+                            .grid.grid-cols-2.gap-4.mt-2.flex.flex-row.justify-between
+                              .form-control
+                                = stop_form.label :stop_order, "Stop Order", class: "label"
+                                = stop_form.number_field :stop_order, \
+                                  class: "input input-bordered w-full", \
+                                  value: stop.stop_order
+                              .form-control
+                                = stop_form.label :time_range, "Estimated Time (minutes)", class: "label"
+                                = stop_form.number_field :time_range, \
+                                  class: "input input-bordered w-full", min: 0, step: 1, value: stop.time_range
+                              .form-control.flex.flex-row.items-center.gap-4.mt-8
+                                .flex.items-center.gap-2
+                                  = stop_form.check_box :is_pickup, class: "checkbox", checked: stop.is_pickup
+                                  = stop_form.label :is_pickup, "Pickup"
+                                .flex.items-center.gap-2
+                                  = stop_form.check_box :is_dropoff, class: "checkbox", checked: stop.is_dropoff
+                                  = stop_form.label :is_dropoff, "Dropoff"
+                              = stop_form.check_box :_destroy, class: "hidden destroy-stop"
+
+              .flex.justify-center.py-2
+                button.btn.btn-ghost.btn-circle.btn-lg[type="button" data-add-stop]
+                  svg.h-6.w-6[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+                    path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"]
+
+        / Fixed Footer
+        .border-t.px-4.py-3.flex.justify-end.gap-2.bg-base-100
+          = link_to "Cancel", \
+            admin_coach_routes_path, \
+            class: "btn btn-ghost", \
+            data: { turbo_frame: "modal_routes" }
+          = f.submit class: "btn btn-primary", data: { turbo: false }
