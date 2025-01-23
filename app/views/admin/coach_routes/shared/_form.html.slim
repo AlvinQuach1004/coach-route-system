@@ -19,7 +19,7 @@
                   class: "select select-bordered w-full"
               .form-control
                 = f.label :start_location_address, "Start Address", class: "label"
-                = f.text_field :start_location_address, class: "input input-bordered w-full", placeholder: "Enter start address", value: @route.stops.first&.address
+                = f.text_field :start_location_address, class: "input input-bordered w-full", placeholder: "Enter start address", value: @route.stops.order('stop_order ASC').first&.address
 
 
               .form-control
@@ -33,13 +33,15 @@
               
               .form-control
                 = f.label :end_location_address, "End Address", class: "label"
-                = f.text_field :end_location_address, class: "input input-bordered w-full", placeholder: "Enter end address", value: @route.stops.last&.address
+                = f.text_field :end_location_address, class: "input input-bordered w-full", placeholder: "Enter end address", value: @route.stops.order('stop_order ASC').last&.address
+
 
             .divider.py-8 Stops
 
             .space-y-4
               .stops-container.space-y-4
                 - route.stops.each_with_index do |stop, index|
+                  - unless stop.stop_order == route.stops.size
                     .stop-field.bg-base-200.p-4.rounded-lg
                       .grid.grid-cols-1.gap-4
                         .form-control
@@ -51,28 +53,22 @@
                               :name, \
                               { prompt: "Select stop location" }, \
                               class: "select select-bordered w-full"
-
                             .form-control
-                              = stop_form.hidden_field :id
                               = stop_form.label :address, "Stop Address", class: "label"
                               = stop_form.text_field :address, \
                                 class: "input input-bordered w-full", \
                                 placeholder: "Enter stop address", \
                                 value: stop.address
-
-
                             .grid.grid-cols-2.gap-4.mt-2.flex.flex-row.justify-between
                               .form-control
                                 = stop_form.label :stop_order, "Stop Order", class: "label"
                                 = stop_form.number_field :stop_order, \
                                   class: "input input-bordered w-full", \
-                                  readonly: true, \
-                                  value: stop.stop_order || index + 2
+                                  value: stop.stop_order
                               .form-control
                                 = stop_form.label :time_range, "Estimated Time (minutes)", class: "label"
                                 = stop_form.number_field :time_range, \
                                   class: "input input-bordered w-full", min: 0, step: 1, value: stop.time_range
-
                               .form-control.flex.flex-row.items-center.gap-4.mt-8
                                 .flex.items-center.gap-2
                                   = stop_form.check_box :is_pickup, class: "checkbox", checked: stop.is_pickup

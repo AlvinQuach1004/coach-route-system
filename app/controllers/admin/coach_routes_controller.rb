@@ -8,6 +8,7 @@ module Admin
         .sort_by_param(params[:sort_by])
       @total_routes = @routes.size
       @pagy, @routes = pagy(@routes, page: params[:page])
+
       respond_to do |format|
         format.html
         format.turbo_stream { render turbo_stream: turbo_stream.update('modal_routes', '') }
@@ -20,51 +21,90 @@ module Admin
     end
 
     def edit
-      @route = Route.includes(:stops).find(params[:id])
-
+      @route = Route.find(params[:id])
       @route.stops.build if @route.stops.empty?
     end
 
-    def create
-      # Start the transaction block
-      route_params_without_stops = route_params.except(:stops_attributes)
-      ActiveRecord::Base.transaction do
-        # Create the route
-        @route = Route.create!(route_params_without_stops)
+    def create # rubocop:disable Metrics/AbcSize,Metrics/PerceivedComplexity
+      route_params_filtered = route_params
+      if params[:route][:stops_attributes].blank? || params[:route][:stops_attributes].values.all? { |stop| stop[:location_id].blank? }
+        route_params_filtered = route_params.except(:stops_attributes)
+      end
 
-        if params[:route][:stops_attributes][:location_id].present?
-          create_or_update_stops(@route, params[:route][:stops_attributes])
+      @route = Route.new(route_params_filtered)
+      if @route.save
+        if params[:route][:stops_attributes].present? && params[:route][:stops_attributes].values.any? { |stop| stop[:location_id].present? }
+          create_stops_based_on_locations(@route)
         else
-          create_default_stops(@route)
+          create_default_stops
         end
         handle_success('Route created successfully')
-
-        if @route.errors.any? || @route.stops.any?(&:invalid?)
-          raise ActiveRecord::Rollback, 'Stops validation failed'
-        end
+      else
+        handle_failure('Fail to create route')
       end
-    rescue ActiveRecord::Rollback
-      handle_failure(@route, 'admin/coach_routes/shared/form')
     end
 
-    def update
-      stops_attributes = route_params[:stops_attributes]
+    def update # rubocop:disable Metrics/AbcSize,Metrics/PerceivedComplexity,Metrics/MethodLength
+      if @route.update(route_params)
+        if params[:route][:stops_attributes].present?
+          params[:route][:stops_attributes].each do |_index, stop_params|
+            next if stop_params[:location_id].blank?
 
-      if @route.update(route_params.except(:stops_attributes))
-        create_or_update_stops(@route, stops_attributes)
+            if stop_params[:id].present?
+              # Update existing stop
+              stop = @route.stops.find(stop_params[:id])
+              stop.update(
+                location_id: stop_params[:location_id],
+                stop_order: stop_params[:stop_order],
+                time_range: stop_params[:time_range],
+                address: stop_params[:address],
+                is_pickup: stop_params[:is_pickup],
+                is_dropoff: stop_params[:is_dropoff]
+              )
+            else
+              # Check if a stop with the same location_id already exists
+              existing_stop = @route.stops.find_by(location_id: stop_params[:location_id])
+              if existing_stop
+                # Update the existing stop
+                existing_stop.update(
+                  location_id: stop_params[:location_id],
+                  stop_order: stop_params[:stop_order],
+                  time_range: stop_params[:time_range],
+                  address: stop_params[:address],
+                  is_pickup: stop_params[:is_pickup],
+                  is_dropoff: stop_params[:is_dropoff]
+                )
+              else
+                # Create new stop
+                max_stop_order = @route.stops.maximum(:stop_order) || 1
+                @route.stops.create!(
+                  location_id: stop_params[:location_id],
+                  stop_order: max_stop_order + 1,
+                  time_range: stop_params[:time_range],
+                  address: stop_params[:address],
+                  is_pickup: stop_params[:is_pickup],
+                  is_dropoff: stop_params[:is_dropoff]
+                )
+              end
+            end
+          end
 
-        handle_success('Route updated successfully')
+          # Update stop_order for end location
+          max_stop_order = @route.stops.maximum(:stop_order) || 1
+          @route.stops.where(location_id: route_params[:end_location_id]).update_all(stop_order: max_stop_order + 1) # rubocop:disable Rails/SkipsModelValidations
+        end
+
+        handle_success('Route was updated successfully')
       else
-        handle_failure(@route, 'admin/coach_routes/shared/form')
+        handle_failure('Fail to update route')
       end
     end
 
     def destroy
-      if @route.destroy
-        handle_success('Route deleted successfully')
-      else
-        handle_failure('Failed to delete route')
-      end
+      @route.destroy
+      handle_success('Route was deleted successfully')
+    rescue ActiveRecord::RecordNotFound
+      handle_failure('Fail to delete route')
     end
 
     private
@@ -90,17 +130,81 @@ module Admin
       )
     end
 
+    def create_default_stops
+      @route.stops.create!(
+        location_id: @route.start_location_id,
+        stop_order: 1,
+        time_range: 0,
+        address: params[:route][:start_location_address],
+        is_pickup: true,
+        is_dropoff: false
+      )
+
+      @route.stops.create!(
+        location_id: @route.end_location_id,
+        stop_order: 2,
+        time_range: 200,
+        address: params[:route][:end_location_address],
+        is_pickup: false,
+        is_dropoff: true
+      )
+    end
+
+    def create_stops_based_on_locations(route) # rubocop:disable Metrics/MethodLength
+      # Ensure no duplicate stops
+      route.stops.destroy_all
+
+      # Create stop for start location
+      Stop.create!(
+        route_id: route.id,
+        location_id: route.start_location_id,
+        stop_order: 1,
+        time_range: 0,
+        address: params[:route][:start_location_address],
+        is_pickup: false,
+        is_dropoff: true
+      )
+
+      stop_order = 2
+
+      # Create stops for other locations
+      params[:route][:stops_attributes].each do |_index, stop_params|
+        next if stop_params[:location_id].blank? || stop_params[:_destroy] == '1'
+
+        Stop.create!(
+          route_id: route.id,
+          location_id: stop_params[:location_id],
+          stop_order: stop_order,
+          time_range: stop_params[:time_range].to_i,
+          address: stop_params[:address],
+          is_pickup: stop_params[:is_pickup] == '1',
+          is_dropoff: stop_params[:is_dropoff] == '1'
+        )
+        stop_order += 1
+      end
+
+      # Create stop for end location
+      Stop.create!(
+        route_id: route.id,
+        location_id: route.end_location_id,
+        stop_order: stop_order,
+        time_range: 200,
+        address: params[:route][:end_location_address],
+        is_pickup: false,
+        is_dropoff: true
+      )
+    end
+
     def handle_success(message)
-      flash[:success] = message
       respond_to do |format|
-        format.html { redirect_to admin_coach_routes_path }
+        format.html { redirect_to admin_coach_routes_path, flash: { success: message } }
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.update('modal_routes', ''),
             turbo_stream.update(
               'flash_message',
               partial: 'layouts/flash',
-              locals: { message: message, type: 'success' }
+              locals: { type: 'success', message: message }
             )
           ]
         end
@@ -109,7 +213,7 @@ module Admin
 
     def handle_failure(resource, partial_path)
       error_message = resource.errors.full_messages.to_sentence.presence || 'An error occurred. Please try again.'
-      flash[:warning] = error_message
+
       render turbo_stream: [
         turbo_stream.update(
           'modal_routes',
@@ -119,57 +223,9 @@ module Admin
         turbo_stream.update(
           'flash_message',
           partial: 'layouts/flash',
-          locals: { message: error_message, type: 'warning' }
+          locals: { type: 'warning', message: error_message }
         )
       ]
-    end
-
-    def create_default_stops(route)
-      # Start stop
-      route.stops.create!(
-        location_id: route.start_location_id,
-        stop_order: 1,
-        time_range: 0,
-        address: params[:route][:start_location_address],
-        is_pickup: true,
-        is_dropoff: false
-      )
-
-      # End stop
-      route.stops.create!(
-        location_id: route.end_location_id,
-        stop_order: 2,
-        time_range: 200,
-        address: params[:route][:end_location_address],
-        is_pickup: false,
-        is_dropoff: true
-      )
-    end
-
-    def create_or_update_stops(route, stops_attributes)
-      stops_attributes.to_unsafe_h.each_with_index do |(_key, stop_params), index|
-        stop = route.stops.find_by(location_id: stop_params[:location_id])
-
-        if stop
-          stop.update!(
-            stop_order: stop_params[:stop_order],
-            time_range: 20,
-            address: stop_params[:address],
-            is_pickup: stop_params[:is_pickup],
-            is_dropoff: stop_params[:is_dropoff]
-          )
-        else
-          # Create new stop if it doesn't exist
-          route.stops.create!(
-            location_id: stop_params[:location_id],
-            stop_order: index + 1,
-            time_range: 20,
-            address: stop_params[:address],
-            is_pickup: stop_params[:is_pickup],
-            is_dropoff: stop_params[:is_dropoff]
-          )
-        end
-      end
     end
   end
 end
