@@ -1,12 +1,16 @@
-# app/controllers/route_pages_controller.rb
 class RoutePagesController < ApplicationController
   before_action :retrieve_keywords, only: :index
 
   def index
     @booking = Booking.new
-    query = RoutePagesQuery.new(params)
-    @schedules = query.result
-    @total_schedules = query.count
+
+    query = RoutePagesQuery.new(
+      scope: Schedule.includes(:coach, :route),
+      params: params
+    ).call
+
+    @schedules = query[:schedules]
+    @total_schedules = query[:total]
 
     @pagy, @schedules = pagy(@schedules)
 
@@ -32,8 +36,8 @@ class RoutePagesController < ApplicationController
       .joins(route: [:start_location, :end_location])
       .select(
         'locations.name AS start_location_name,
-       end_locations_routes.name AS end_location_name,
-       COUNT(schedules.id) AS route_count'
+        end_locations_routes.name AS end_location_name,
+        COUNT(schedules.id) AS route_count'
       )
       .group('locations.name, end_locations_routes.name')
       .order('route_count DESC')

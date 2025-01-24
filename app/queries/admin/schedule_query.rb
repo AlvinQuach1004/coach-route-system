@@ -1,72 +1,103 @@
 module Admin
   class ScheduleQuery < ApplicationQuery
-    def initialize(params)
-      super()
+    def initialize(scope:, params: {}) # rubocop:disable Lint/MissingSuper
+      @scope = scope
       @params = params
-      @relation = Schedule.includes(route: [:start_location, :end_location], coach: [])
     end
 
-    def result
-      filter_by_search
-      filter_by_route
-      filter_by_coach
-      filter_by_date
-      filter_by_time
-      filter_by_price
-      @relation
-    end
-
-    def count
-      result.size
+    def call
+      {
+        total: @scope.size,
+        schedules: filtered_scope.distinct
+      }
     end
 
     private
 
-    def filter_by_search
-      return if @params[:search].blank?
-
-      search_term = "%#{@params[:search]}%"
-      @relation = @relation.joins('INNER JOIN routes ON routes.id = schedules.route_id')
-        .joins('INNER JOIN locations AS start_locations ON routes.start_location_id = start_locations.id')
-        .joins('INNER JOIN locations AS end_locations ON routes.end_location_id = end_locations.id')
-        .joins('INNER JOIN coaches ON coaches.id = schedules.coach_id')
-        .where('start_locations.name ILIKE :search_term OR end_locations.name ILIKE :search_term OR coaches.license_plate ILIKE :search_term', search_term: search_term) # rubocop:disable Layout/LineLength
+    def filtered_scope
+      @scope
+        .extending(Scopes)
+        .search(@params[:search])
+        .filter(@params)
     end
 
-    def filter_by_route
-      return if @params[:route_id].blank?
+    module Scopes
+      def search(search_term)
+        return self if search_term.blank?
 
-      @relation = @relation.where(route_id: @params[:route_id])
-    end
+        joins(<<-SQL.squish)
+          INNER JOIN routes ON routes.id = schedules.route_id
+          INNER JOIN locations AS start_locations ON routes.start_location_id = start_locations.id
+          INNER JOIN locations AS end_locations ON routes.end_location_id = end_locations.id
+          INNER JOIN coaches ON coaches.id = schedules.coach_id
+        SQL
+          .where(
+            'start_locations.name ILIKE :search OR end_locations.name ILIKE :search OR coaches.license_plate ILIKE :search',
+            search: "%#{search_term}%"
+          )
+      end
 
-    def filter_by_coach
-      return if @params[:coach_id].blank?
+      def filter(params)
+        relation = self
 
-      @relation = @relation.where(coach_id: @params[:coach_id])
-    end
+        relation = filter_by_route(relation, params[:route_id])
+        relation = filter_by_coach(relation, params[:coach_id])
+        relation = filter_by_date(relation, params[:start_date])
+        relation = filter_by_time(relation, params[:departure_time])
+        filter_by_price_range(relation, params[:min_price], params[:max_price])
+      end
 
-    def filter_by_date
-      return if @params[:start_date].blank?
+      private
 
-      start_date = Date.parse(@params[:start_date])
-      @relation = @relation.where('DATE(departure_date) = ?', start_date)
-    end
+      def filter_by_route(relation, route_id)
+        return relation if route_id.blank?
 
-    def filter_by_time
-      return if @params[:departure_time].blank?
+        relation.where(route_id: route_id)
+      end
 
-      departure_time = Time.zone.parse(@params[:departure_time])
-      @relation = @relation.where(
-        'EXTRACT(HOUR FROM departure_time) = ? AND EXTRACT(MINUTE FROM departure_time) = ?',
-        departure_time.hour,
-        departure_time.min
-      )
-    end
+      def filter_by_coach(relation, coach_id)
+        return relation if coach_id.blank?
 
-    def filter_by_price
-      return unless @params[:min_price].present? && @params[:max_price].present?
+        relation.where(coach_id: coach_id)
+      end
 
-      @relation = @relation.where(price: @params[:min_price]..@params[:max_price])
+      def filter_by_date(relation, start_date)
+        return relation if start_date.blank?
+
+        parsed_date = parse_date(start_date)
+        parsed_date ? relation.where('DATE(departure_date) = ?', parsed_date) : relation
+      end
+
+      def filter_by_time(relation, departure_time)
+        return relation if departure_time.blank?
+
+        parsed_time = parse_time(departure_time)
+        return relation unless parsed_time
+
+        relation.where(
+          'EXTRACT(HOUR FROM departure_time) = ? AND EXTRACT(MINUTE FROM departure_time) = ?',
+          parsed_time.hour,
+          parsed_time.min
+        )
+      end
+
+      def filter_by_price_range(relation, min_price, max_price)
+        return relation unless min_price.present? && max_price.present?
+
+        relation.where(price: min_price..max_price)
+      end
+
+      def parse_date(date_string)
+        Date.parse(date_string)
+      rescue StandardError
+        nil
+      end
+
+      def parse_time(time_string)
+        Time.zone.parse(time_string)
+      rescue StandardError
+        nil
+      end
     end
   end
 end

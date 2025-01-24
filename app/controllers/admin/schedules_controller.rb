@@ -4,9 +4,11 @@ module Admin
     before_action :load_dependencies, only: [:new, :edit, :create, :update, :index]
 
     def index
-      query = Admin::ScheduleQuery.new(params)
-      @total_schedules = query.count
-      @pagy, @schedules = pagy(query.result)
+      query = Admin::ScheduleQuery.new(scope: Schedule.includes(route: [:start_location, :end_location], coach: []), params: params)
+      result = query.call
+
+      @total_schedules = result[:total]
+      @pagy, @schedules = pagy(result[:schedules])
 
       respond_to do |format|
         format.html
