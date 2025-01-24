@@ -3,46 +3,10 @@ module Admin
     before_action :set_schedule, only: [:edit, :update, :destroy]
     before_action :load_dependencies, only: [:new, :edit, :create, :update, :index]
 
-    def index # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-      schedules_query = Schedule.includes(route: [:start_location, :end_location], coach: [])
-
-      # Search logic
-      if params[:search].present?
-        search_term = "%#{params[:search]}%"
-        schedules_query = schedules_query.joins('INNER JOIN routes ON routes.id = schedules.route_id')
-          .joins('INNER JOIN locations AS start_locations ON routes.start_location_id = start_locations.id')
-          .joins('INNER JOIN locations AS end_locations ON routes.end_location_id = end_locations.id')
-          .joins('INNER JOIN coaches ON coaches.id = schedules.coach_id')
-          .where('start_locations.name ILIKE :search_term OR end_locations.name ILIKE :search_term OR coaches.license_plate ILIKE :search_term', search_term: search_term) # rubocop:disable Layout/LineLength
-      end
-
-      # Filtering
-      schedules_query = schedules_query.where(route_id: params[:route_id]) if params[:route_id].present?
-      schedules_query = schedules_query.where(coach_id: params[:coach_id]) if params[:coach_id].present?
-
-      # Date and Time range filtering (departure_date and departure_time filtering)
-      if params[:start_date].present?
-        start_date = Date.parse(params[:start_date])
-        schedules_query = schedules_query.where('DATE(departure_date) = ?', start_date)
-      end
-
-      if params[:departure_time].present?
-        departure_time = Time.zone.parse(params[:departure_time])
-        schedules_query = schedules_query.where(
-          'EXTRACT(HOUR FROM departure_time) = ? AND EXTRACT(MINUTE FROM departure_time) = ?',
-          departure_time.hour,
-          departure_time.min
-        )
-      end
-
-      # Price range filtering
-      if params[:min_price].present? && params[:max_price].present?
-        schedules_query = schedules_query.where(price: params[:min_price]..params[:max_price])
-      end
-
-      @total_schedules = schedules_query.size
-
-      @pagy, @schedules = pagy(schedules_query)
+    def index
+      query = Admin::ScheduleQuery.new(params)
+      @total_schedules = query.count
+      @pagy, @schedules = pagy(query.result)
 
       respond_to do |format|
         format.html
