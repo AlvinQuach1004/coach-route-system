@@ -1,6 +1,7 @@
 module Admin
   class ScheduleQuery < ApplicationQuery
-    def initialize(params) # rubocop:disable Lint/MissingSuper
+    def initialize(params)
+      super()
       @params = params
       @relation = Schedule.includes(route: [:start_location, :end_location], coach: [])
     end

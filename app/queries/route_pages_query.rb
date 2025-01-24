@@ -1,5 +1,6 @@
-class RoutePagesQuery
+class RoutePagesQuery < ApplicationQuery
   def initialize(params)
+    super()
     @params = params
     @relation = Schedule.includes(:coach, route: [:start_location, :end_location])
   end
