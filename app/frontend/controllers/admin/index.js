@@ -1,7 +1,5 @@
 import { registerControllers } from 'stimulus-vite-helpers';
 import { Application } from '@hotwired/stimulus';
-// import '../shared/toast';
-// import '../shared/modal'
 
 const application = Application.start();
 

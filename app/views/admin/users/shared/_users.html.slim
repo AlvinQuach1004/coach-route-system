@@ -1,16 +1,15 @@
 .overflow-x-auto.bg-base-100.rounded-lg
   table.table.table-zebra.w-full
-    thead
+    thead.text-center
       tr.bg-base-200
         th.rounded-tl-lg #
-        th
-          .flex.items-center.gap-2.ml-10
-            | Email
-        th Created at
-        th Updated at
+        th.text-center
+          | Email
+        th Created At
+        th Updated At
         th.rounded-tr-lg Actions
 
-    tbody
+    tbody.text-center
       - users.each.with_index do |user, index|
         tr.hover
           th = index + 1
@@ -22,8 +21,8 @@
               = user.email
           td = display_datetime(user.created_at)
           td = display_datetime(user.updated_at)
-          td
-            .flex.gap-2 
+          td.mx-auto
+            .flex.gap-2.justify-center
               = link_to edit_admin_user_path(user), class: "btn btn-square btn-sm btn-ghost", data: { turbo_frame: 'modal_users' } do
                 svg.h-4.w-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
                   path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"]
@@ -43,3 +42,15 @@
                       class: "btn btn-error text-white inline",
                       data: { turbo: false } do
                       | Delete
+
+.mt-6.flex.justify-between.items-center
+        .text-sm.text-base-content/70
+          | Showing 
+          span.font-medium = "#{@pagy.from}"
+          |  to 
+          span.font-medium = "#{@pagy.to}"
+          |  of 
+          span.font-medium = "#{@pagy.count}"
+          |  users
+        .text-center.py-4
+          = pagy_nav(@pagy)

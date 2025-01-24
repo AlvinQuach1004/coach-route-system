@@ -46,15 +46,3 @@
     / Table Section
     = turbo_frame_tag "users_table" do
       = render partial: "admin/users/shared/users", locals: { users: @users }
-      / Pagination Section
-      .mt-6.flex.justify-between.items-center
-        .text-sm.text-base-content/70
-          | Showing 
-          span.font-medium = "#{@pagy.from}"
-          |  to 
-          span.font-medium = "#{@pagy.to}"
-          |  of 
-          span.font-medium = "#{@pagy.count}"
-          |  users
-        .text-center.py-4
-          = pagy_nav(@pagy)
