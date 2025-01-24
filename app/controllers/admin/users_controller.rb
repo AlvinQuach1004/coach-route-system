@@ -7,7 +7,7 @@ module Admin
       @users = User.search(params[:search])
         .role_filter(params[:role])
         .sort_by_param(params[:sort_by])
-        .all
+
       @total_users = @users.size
       @pagy, @users = pagy(@users, page: params[:page])
 

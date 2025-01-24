@@ -1,0 +1,34 @@
+= turbo_frame_tag "modal_schedules" do
+  .fixed.inset-0.bg-gray-500.bg-opacity-50.transition-opacity.flex.items-center.justify-center.z-30
+    .bg-base-100.rounded-lg.shadow-xl.overflow-y-auto.transform.transition-all.sm:max-w-2xl.sm:w-full.m-3.sm:mx-auto.flex.flex-col.max-h-[90vh]
+      .px-4.py-3.border-b
+        h3.text-lg.leading-6.font-medium.action-label
+          = action_name.capitalize + ' Schedule'
+
+      = form_with(model: [:admin, schedule], url: schedule.new_record? ? admin_schedules_path : admin_schedule_path(schedule), class: 'flex flex-col', data: { turbo: true }) do |f|
+        .px-4.py-4.flex-1.overflow-y-auto.max-h-96
+          .space-y-4
+            .form-control
+              = f.label :route_id, 'Route', class: 'label'
+              = f.collection_select :route_id, @routes, :id, ->(route) { "#{route.start_location.name} - #{route.end_location.name}" }, { prompt: 'Select Route' }, class: 'select select-bordered w-full'
+
+            .form-control
+              = f.label :coach_id, 'Coach', class: 'label'
+              = f.collection_select :coach_id, @coaches, :id, :license_plate, { prompt: 'Select Coach' }, class: 'select select-bordered w-full'
+
+            .form-control
+              = f.label :departure_date, 'Departure Date', class: 'label'
+              = f.date_field :departure_date, class: 'input input-bordered w-full'
+
+            .form-control
+              = f.label :departure_time, 'Departure Time', class: 'label'
+              = f.time_field :departure_time, class: 'input input-bordered w-full'
+
+            .form-control
+              = f.label :price, 'Price', class: 'label'
+              = f.number_field :price, step: 0.01, class: 'input input-bordered w-full'
+
+        / Fixed Footer
+        .border-t.px-4.py-3.flex.justify-end.gap-2.bg-base-100
+          = link_to 'Cancel', admin_coach_routes_path, class: 'btn btn-ghost', data: { turbo_frame: 'modal_schedules' }
+          = f.submit 'Save Schedule', class: 'btn btn-primary', data: { turbo: false }

@@ -1,0 +1,66 @@
+.container.mx-auto.p-4.mt-5
+  .flex.justify-between.items-center.mb-6
+    .flex.items-center.gap-3
+        h2.text-2xl.font-bold Schedules List
+        span.badge.badge-primary = "Total: #{@total_schedules}"
+    = link_to 'Create New Schedule', new_admin_schedule_path, class: 'btn btn-primary', data: { turbo_frame: 'modal_schedules' }
+
+  / Search and Filter Form
+  = form_with url: admin_schedules_path, method: :get, class: 'mb-4 grid gap-6', data: { turbo_frame: 'schedules_table' } do
+    // Search Field (Full Width)
+    .form-group
+      label.label.mb-2
+        span.label-text.font-semibold Search
+      = text_field_tag :search, params[:search], placeholder: 'Search by location or coach', class: 'input input-bordered w-full'
+
+    // Route and Coach Filters (Two Columns)
+    .form-group.grid.grid-cols-1.md:grid-cols-2.gap-6
+      .form-control
+        label.label.mb-2
+          span.label-text.font-semibold Route
+        = select_tag :route_id, 
+            options_from_collection_for_select(@routes, :id, lambda { |r| "#{r.start_location.name} - #{r.end_location.name}" }, params[:route_id]), 
+            prompt: 'Select Route', 
+            class: 'select select-bordered w-full'
+      .form-control
+        label.label.mb-2
+          span.label-text.font-semibold Coach
+        = select_tag :coach_id, 
+            options_from_collection_for_select(Coach.all, :id, :license_plate, params[:coach_id]), 
+            prompt: 'Select Coach', 
+            class: 'select select-bordered w-full'
+
+    // Date Range Filters (Two Columns)
+    .form-group.grid.grid-cols-1.md:grid-cols-2.gap-6
+      .form-control.relative data-controller="datepicker"
+        label.label.mb-2
+          span.label-text.font-semibold Start Date
+        = date_field_tag :start_date, params[:start_date], class: 'input input-bordered w-full', data: { datepicker_target: 'input' }, placeholder: 'Select date'
+        .absolute.right-3.top-14.-z-4.cursor-pointer data-action='click->datepicker#focusInput'
+          svg.w-6.h-6.text-gray-500.datepicker-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            path(stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z")
+      .form-control
+        label.label.mb-2
+          span.label-text.font-semibold End Time
+        = time_field_tag :departure_time, params[:departure_time], class: 'input input-bordered w-full', data: { datepicker_target: 'input' }, placeholder: 'Select time'
+
+    // Price Range Filters (Two Columns)
+    .form-group.grid.grid-cols-1.md:grid-cols-2.gap-6
+      .form-control
+        label.label.mb-2
+          span.label-text.font-semibold Min Price
+        = number_field_tag :min_price, params[:min_price], placeholder: 'Min Price', step: 0.01, class: 'input input-bordered w-full', min: 0, max: 10000000
+
+      .form-control
+        label.label.mb-2
+          span.label-text.font-semibold Max Price
+        = number_field_tag :max_price, params[:max_price], placeholder: 'Max Price', step: 0.01, class: 'input input-bordered w-full', min: 0, max: 10000000
+
+
+    // Action Buttons (Full Width)
+    .form-group.flex.justify-end.gap-4
+      = submit_tag 'Apply Filter', class: 'btn btn-primary'
+      = link_to 'Reset', admin_schedules_path, class: 'btn btn-ghost'
+    = turbo_frame_tag 'schedules_table' do
+      = render partial: 'admin/schedules/shared/schedules', locals: { schedules: @schedules }
+  

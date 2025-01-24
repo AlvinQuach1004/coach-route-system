@@ -40,7 +40,7 @@ module Admin
         end
         handle_success('Route created successfully')
       else
-        handle_failure('Fail to create route')
+        handle_failure(@route)
       end
     end
 
@@ -96,7 +96,7 @@ module Admin
 
         handle_success('Route was updated successfully')
       else
-        handle_failure('Fail to update route')
+        handle_failure(@route)
       end
     end
 
@@ -104,7 +104,7 @@ module Admin
       @route.destroy
       handle_success('Route was deleted successfully')
     rescue ActiveRecord::RecordNotFound
-      handle_failure('Fail to delete route')
+      handle_failure(@route)
     end
 
     private
@@ -211,13 +211,13 @@ module Admin
       end
     end
 
-    def handle_failure(resource, partial_path)
+    def handle_failure(resource)
       error_message = resource.errors.full_messages.to_sentence.presence || 'An error occurred. Please try again.'
 
       render turbo_stream: [
         turbo_stream.update(
           'modal_routes',
-          partial: partial_path,
+          partial: 'admin/coach_routes/shared/routes',
           locals: { route: resource }
         ),
         turbo_stream.update(

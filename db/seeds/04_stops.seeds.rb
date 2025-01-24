@@ -1,5 +1,3 @@
-# Ví dụ về cách tạo stops cho các tuyến đường đã liệt kê
-
 # Tạo stops cho tuyến TP.HCM -> Bạc Liêu -> Sóc Trăng -> Cần Thơ -> Sài Gòn
 route_1 = Route.find_by(start_location_id: Location.find_by(name: 'Cà Mau').id, end_location_id: Location.find_by(name: 'TP. Hồ Chí Minh').id)
 
@@ -510,37 +508,4 @@ route_12.stops.create!(
   address: 'Bến xe Cần Thơ',
   latitude_address: 10.045,
   longitude_address: 105.746
-)
-
-route_13 = Route.find_by(start_location_id: Location.find_by(name: 'Ninh Bình').id, end_location_id: Location.find_by(name: 'Hà Nội').id)
-
-# Tạo Stops cho route_13
-route_13.stops.create!(
-  stop_order: 1,
-  location_id: Location.find_by(name: 'Ninh Bình').id,
-  is_pickup: true,
-  time_range: 0,
-  address: 'Bến xe Ninh Bình',
-  latitude_address: 20.252,
-  longitude_address: 105.976
-)
-
-route_13.stops.create!(
-  stop_order: 2,
-  location_id: Location.find_by(name: 'Nam Định').id,
-  is_pickup: true,
-  time_range: 90,
-  address: 'Bến xe Nam Định',
-  latitude_address: 20.405,
-  longitude_address: 106.159
-)
-
-route_13.stops.create!(
-  stop_order: 3,
-  location_id: Location.find_by(name: 'Hà Nội').id,
-  is_dropoff: true,
-  time_range: 180,
-  address: 'Bến xe Mỹ Đình',
-  latitude_address: 21.027,
-  longitude_address: 105.801
 )

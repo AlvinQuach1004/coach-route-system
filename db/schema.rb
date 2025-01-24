@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_15_154139) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_24_023932) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -64,6 +64,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_15_154139) do
     t.integer "capacity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "available"
   end
 
   create_table "locations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -197,6 +198,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_15_154139) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "price"
+    t.string "status", default: "scheduled"
     t.index ["coach_id"], name: "index_schedules_on_coach_id"
     t.index ["route_id"], name: "index_schedules_on_route_id"
   end
