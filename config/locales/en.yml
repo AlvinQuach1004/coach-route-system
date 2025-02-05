@@ -1,5 +1,5 @@
----
 en:
+  language_name: "English"
   activerecord:
     errors:
       models:
@@ -14,181 +14,184 @@ en:
   common:
     create:
       exists: "%{model} already exists"
-      failed: Failed to create %{model}
+      failed: "Failed to create %{model}"
       success: "%{model} created successfully"
     delete:
-      failed: Failed to delete %{model}
+      failed: "Failed to delete %{model}"
       success: "%{model} deleted successfully"
     import:
-      failed: Failed to import %{model}
+      failed: "Failed to import %{model}"
       success: "%{model} imported successfully"
     update:
-      failed: Failed to update %{model}
+      failed: "Failed to update %{model}"
       success: "%{model} updated successfully"
   header:
-    about: About
-    history: History
-    log_in: Log In
-    log_out: Log out
-    profile: Profile
-    routes: Routes
-    sign_up: Sign up
+    routes: "Routes"
+    history: "History"
+    about: "About"
+    sign_up: "Sign Up"
+    log_in: "Log In"
+    profile: "Profile"
+    log_out: "Log Out"
   home:
-    description: The best place to book bus tickets
-    from_to: "%{from} → %{to}"
-    most_popular_routes_of_week: Most Popular Routes of the Week
-    no_popular_routes: No popular routes found this week.
-    popular_routes: Popular Routes
+    title: "Home"
+    welcome: "Welcome to"
+    ticket_terminal: "Ticket Booking System"
+    description: "The best place to book bus tickets"
+    view_routes: "View Routes"
     statistic:
-      description: We have achieved this through hard work and dedication
-      title: Our System Statistics
+      title: "Our System Statistics"
+      description: "We have achieved this through hard work and dedication"
     stats:
-      bookings: Bookings
-      members: Members
-      payments: Payments
-      routes: Routes
-    ticket_terminal: Ticket Booking System
-    title: Home
-    view_routes: View Routes
-    welcome: Welcome to
-  language_name: English
-  route_pages:
-    available: Available
-    available_seats: Available seats
-    book: Book
-    bookings:
-      form:
-        floors:
-          lower_floor: Lower Floor
-          upper_floor: Upper Floor
-        legend: Legend
-        locations:
-          dropoff:
-            change: Change
-            position: Position
-            title: Drop off
-            view_closest: View the closest dropoff point?
-          pickup:
-            change: Change
-            position: Position
-            title: Pick up
-            view_closest: View the closest pickup point?
-        navigation:
-          back: Back
-          next: Next
-        payment:
-          confirm: Confirm Booking
-          methods:
-            cash: Cash
-            stripe: Credit Card
-          summary:
-            departure_date: Departure Date
-            departure_time: Departure Time
-            from: From
-            pay_before: Pay ticket before
-            price: Price
-            quantity: Quantity
-            title: Summary
-            to: To
-            total: TOTAL
-          title: Payment Method
-        seats:
-          available: Available Seat
-          booked: Booked Seat
-          selected: Selected Seat
-        summary:
-          seats: Seats
-          total: Total
-        tickets:
-          total: Total tickets
-          total_price: Total price
-      lower_floor_label: Tầng dưới
-      seat_status:
-        booked: booked
-        empty: empty
-        selected: selected
-      upper_floor_label: Tầng trên
-    categories:
-      limousine: Limousine
-      room: Room
-      sleeper: Sleeper
-    category_label: Category
-    coach_type: Coach type
-    departure: Departure
-    dropdown_detail:
-      pickup:
-        stop_dropoff: "%{address} (drop off)"
-        stop_normal: "%{address}"
-        stop_pickup: "%{address} (pickup)"
-        title: Provinces
-      policies:
-        bike_shipping:
-          details: Contact Alvin Coach hotline for rates and availability.
-          title: Bike/Motorbike Shipping
-        children:
-          rules:
-          - Children under 3 years old or under 100 cm ride free if sharing a seat
-          - Children aged 3+ or taller than 100 cm require a full ticket
-          title: Children and Pregnant Women
-        list:
-        - Exchange paper ticket before boarding
-        - Do not bring food with a strong smell on board
-        - No smoking, drinking, or drug use on board
-        - No carrying flammable or explosive items
-        - No littering on the bus
-        - No noise or disturbances on the bus
-        - No wearing shoes inside the bus
-        luggage:
-          rules:
-          - Total luggage weight must not exceed 20kg
-          - No oversized baggage allowed
-          - No refunds for cancellations due to luggage violations
-          title: Hand Luggage
-        title: Policies
-      services:
-        bedding:
-          description: Vehicle is equipped with pillows and blankets
-          title: Pillow and Blanket
-        hammer:
-          description: Emergency hammer for breaking windows in case of emergency
-          title: Emergency Hammer
-        motorbike:
-          description: Service allows passengers to transport their motorbikes
-          title: Motorbike Transport
-        safety_belt:
-          description: Vehicle is equipped with safety belts for passengers
-          title: Safety Belt
-        water:
-          description: Complimentary drinking water is provided for passengers
-          title: Drinking Water
-      tabs:
-        images: Images
-        pickup: Pickup Points
-        policies: Policies
-        services: Services
-    filter_label: Filter
-    keywords_label: Keywords
-    no_routes_found: No routes found
-    no_stops_available: No stops available
-    price_label: Price
-    search_results_label: Search results
-    seats: seats
-    sort: Sort
-    sort_options:
-      default: Default
-      price_high_to_low: Price High to Low
-      price_low_to_high: Price Low to High
-    title: Routes
-    trends:
-      latest: Latest
-      seat_available: Seat available
-    view_details: View details
+      members: "Members"
+      routes: "Routes"
+      bookings: "Bookings"
+      payments: "Payments"
+    popular_routes: "Popular Routes"
+    most_popular_routes_of_week: "Most Popular Routes of the Week"
+    no_popular_routes: "No popular routes found this week."
+    from_to: "%{from} → %{to}"
   search_form:
-    date_label: Date
-    date_placeholder: Select date
-    departure_label: Type your departure point
-    departure_placeholder: Departure point
-    destination_label: Type your destination point
-    destination_placeholder: Destination point
-    exchange_button: Exchange
-    search_button: Search
+    departure_placeholder: "Departure point"
+    destination_placeholder: "Destination"
+    date_placeholder: "Select date"
+    search_button: "Search"
+    departure_label: "Enter departure point"
+    destination_label: "Enter destination"
+    date_label: "Enter date"
+    exchange_button: "Swap"
+  route_pages:
+    title: "Routes"
+    coach_type: "Coach Type"
+    available_seats: "Available Seats"
+    view_details: "View Details"
+    no_stops_available: "No Stops Available"
+    departure: "Departure"
+    available: "Available"
+    search_results_label: "Search Results"
+    no_routes_found: "No Routes Found"
+    sort: "Sort"
+    sort_options:
+      default: "Default"
+      price_low_to_high: "Price Low to High"
+      price_high_to_low: "Price High to Low"
+    seats: "seats"
+    book: "Book"
+    keywords_label: "Route Keywords"
+    filter_label: "Filter"
+    price_label: "Ticket Price"
+    category_label: "Coach Type"
+    categories:
+      sleeper: "Sleeper"
+      limousine: "Limousine"
+      room: "Private Room"
+    trends:
+      latest: "Latest"
+      seat_available: "Available Seats"
+    dropdown_detail:
+      tabs:
+        pickup: "Pickup Points"
+        images: "Images"
+        policies: "Policies"
+        services: "Services"
+      pickup:
+        title: "Province/City"
+        stop_pickup: "%{address} (Pickup Point)"
+        stop_dropoff: "%{address} (Drop-off Point)"
+        stop_normal: "%{address}"
+      policies:
+        title: "Policies"
+        list:
+          - "Exchange paper tickets before boarding"
+          - "No food or smelly items allowed on board"
+          - "No smoking, alcohol, or drug use on board"
+          - "No flammable or explosive items on board"
+          - "No littering on the bus"
+          - "No loud noise or disorderly behavior"
+          - "No shoes or slippers on the bus"
+        luggage:
+          title: "Hand Luggage"
+          rules:
+            - "Total weight must not exceed 20kg"
+            - "No bulky cargo allowed"
+            - "No refunds for cancellations due to luggage violations"
+        children:
+          title: "Children and Pregnant Women"
+          rules:
+            - "Children under 3 years old or under 100 cm ride free if sharing a seat"
+            - "Children over 3 years old or over 100 cm require a full ticket"
+        bike_shipping:
+          title: "Bicycle/Motorbike Transport"
+          details: "Contact customer service for pricing and availability."
+      services:
+        safety_belt:
+          title: "Seat Belts"
+          description: "Seat belts are available for passengers on board."
+        motorbike:
+          title: "Motorbike Transport"
+          description: "Customers can transport motorbikes on board."
+        water:
+          title: "Drinking Water"
+          description: "Free drinking water is available for passengers."
+        bedding:
+          title: "Pillow and Blanket"
+          description: "Pillows and blankets are provided on board."
+        hammer:
+          title: "Emergency Hammer"
+          description: "Used to break windows for emergency evacuation."
+    bookings:
+      seat_status:
+        empty: "Empty Seat"
+        booked: "Booked Seat"
+        selected: "Selected Seat"
+      floors:
+        lower_floor_label: "Lower Floor"
+        upper_floor_label: "Upper Floor"
+      summary:
+        seats: "Seats"
+        total: "Total"
+      locations:
+        pickup:
+          title: "Pickup"
+          view_closest: "View nearest pickup point?"
+          change: "Change"
+          position: "Position"
+        dropoff:
+          title: "Drop-off"
+          view_closest: "View nearest drop-off point?"
+          change: "Change"
+          position: "Position"
+      totals:
+        total_tickets: "Total tickets"
+        total_price: "Total price"
+      payment:
+        title: "Payment Method"
+        methods:
+          stripe: "Credit Card"
+          cash: "Cash"
+        summary:
+          title: "Summary"
+          price: "Ticket Price"
+          quantity: "Quantity"
+          from: "From"
+          to: "To"
+          departure_time: "Departure Time"
+          departure_date: "Departure Date"
+          pay_before: "Pay Before"
+          total: "TOTAL"
+        confirm: "Confirm Booking"
+      navigation:
+        back: "Back"
+        next: "Next"
+  history:
+    title: Booking history
+    information:
+      route: Tuyến đường
+      seats: Ghế ngồi
+      coach_type: Loại xe
+      booked_date: Ngày đặt vé
+      departure_date: Ngày khởi hành
+      departure_time: Giờ khởi hành
+      payment_method: Phương thức thanh toán
+      status: Trạng thái
+    no_bookings_found: Không tìm thấy đặt chỗ nào
