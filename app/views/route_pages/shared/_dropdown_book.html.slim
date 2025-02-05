@@ -41,7 +41,7 @@
             // Lower Floor
             .w-1/2.rounded-md.bg-slate-300.p-4.relative.pr-14
 
-              h2.text-center.font-bold.pt-4.text-lg.ml-8 = t('.lower_floor')     
+              h2.text-center.font-bold.pt-4.text-lg.ml-8 = t('route_pages.bookings.lower_floor_label')     
               svg.absolute.left-12.top-20 xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-life-buoy"
                 circle cx="12" cy="12" r="10"
                 path d="m4.93 4.93 4.24 4.24"
@@ -64,7 +64,7 @@
 
             // Upper Floor
             .w-1/2.rounded-md.bg-slate-400.p-4.ml-6.pr-8
-              h2.text-center.font-bold.mb-4.pt-4.text-lg = t('.upper_floor')   
+              h2.text-center.font-bold.mb-4.pt-4.text-lg = t('route_pages.bookings.upper_floor_label')   
               .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-8.pr-14
                 - seat_rows[:upper].each do |seat|
                   .seat.w-10.h-16.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[

@@ -141,6 +141,8 @@ vi:
           title: "Búa phá kính"
           description: "Dùng để phá kính ô tô thoát hiểm trong trường hợp khẩn cấp"
     bookings:
+      lower_floor_label: "Tầng dưới"
+      upper_floor_label: "Tầng trên"
       seat_status:
         empty: "Ghế trống"
         booked: "Ghế đã đặt"

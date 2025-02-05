@@ -5,5 +5,5 @@
     - [:en, :vi].each do |locale|
       li.mt-2
         = link_to url_for(locale: locale), class: "#{I18n.locale == locale ? 'active' : ''} w-32" do
-          = image_tag vite_asset_path("images/icons/#{locale}.svg"), class: 'w-4 h-4 mr-2', alt: t('language', locale: locale)
+          = image_tag vite_asset_path("images/icons/#{locale}.svg"), class: 'w-4 h-4 mr-2', alt: t('language_name', locale: locale)
           span = t('language_name', locale: locale)

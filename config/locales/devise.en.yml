@@ -11,7 +11,7 @@ en:
     failure:
       already_authenticated: You are already signed in.
       inactive: Your account is not activated yet.
-      invalid: "Invalid %{authentication_keys} or password."
+      invalid: Invalid %{authentication_keys} or password.
       last_attempt: You have one more attempt before your account is locked.
       locked: Your account is locked.
       timeout: Your session expired. Please sign in again to continue.
