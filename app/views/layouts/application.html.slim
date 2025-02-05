@@ -17,8 +17,9 @@ html[lang="en"]
     = vite_javascript_tag "application", "data-turbo-track": "reload"
     link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
   body.w-fit.md:w-full data-controller="icons" class="dark" data-user-signed-in="#{user_signed_in? ? 'true' : 'false'}"
-    - if flash.any?
-      = render partial: 'layouts/flash'
+    #flash-messages
+      - if flash.any?
+        = render partial: 'layouts/flash'
     = render "layouts/header"
     = yield
     = render "layouts/footer"

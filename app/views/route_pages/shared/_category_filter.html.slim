@@ -2,4 +2,4 @@
   - %w[Sleeper Limousine Room].each do |label|
     .flex.items-center.space-x-2
       = radio_button_tag "category", label, params[:category] == label, class: 'radio radio-primary', data: { filter: 'category', turbo_frame: 'schedules', turbo_action: 'replace', filter_target: 'filter' }
-      span = label
+      span = t("route_pages.categories.#{label.downcase}")

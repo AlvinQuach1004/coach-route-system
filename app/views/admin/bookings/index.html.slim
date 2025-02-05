@@ -1,0 +1,47 @@
+- provide(:title, "Booking Management")
+.container.mx-auto.p-4.mt-4
+  .flex.gap-3.items-center.mb-10
+    h1.text-2xl.font-bold Bookings
+    span.badge.badge-primary = "Total: #{@total_bookings}"
+
+
+  = form_with(url: admin_bookings_path, method: :get, class: 'mb-4 flex space-x-2', data: { turbo_frame: 'bookings_table' }) do |f|
+    .form-control.w-full.max-w-xs
+      = f.text_field :search, 
+        placeholder: 'Search routes...', 
+        value: params[:search],
+        class: 'input input-bordered w-full max-w-xs'
+    
+    .form-control.w-full.max-w-xs      
+      = f.select :payment_status, \
+          options_for_select([ \
+            ['Select Status', ''], \
+            ['Pending', 'pending'], \
+            ['Completed', 'completed'], \
+            ['Failed', 'failed'], \
+          ], params[:payment_status]), \
+          {}, \
+          class: "select select-bordered", \
+          data: { action: "change->search-form#submit" }
+    
+    .form-control.w-full.max-w-xs
+      = f.date_field :start_date, 
+        value: params[:start_date], 
+        placeholder: 'Start Date', 
+        class: 'input input-bordered w-full max-w-xs'
+    
+    .form-control.w-full.max-w-xs
+      = f.date_field :end_date, 
+        value: params[:end_date], 
+        placeholder: 'End Date', 
+        class: 'input input-bordered w-full max-w-xs'
+    
+    = f.submit 'Search', class: 'btn btn-primary'
+    = link_to 'Reset', admin_bookings_path, class: 'btn btn-ghost'
+  = turbo_frame_tag 'bookings_table' do
+    - if @bookings.any?
+      = render partial: 'admin/bookings/shared/bookings', locals: { bookings: @bookings }
+    - else
+      div.flex.flex-col.items-center.justify-center.p-6.bg-gray-100.rounded-lg.mt-8
+        p.text-center.text-gray-600.font-semibold.mt-4 No bookings found
+        p.text-center.text-gray-500.text-sm Please check again later or adjust your search criteria.

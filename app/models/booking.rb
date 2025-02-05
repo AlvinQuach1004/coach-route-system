@@ -52,6 +52,30 @@ class Booking < ApplicationRecord
   # Validations
   validate :start_and_stop_cannot_be_the_same
 
+  # Scopes
+  scope :search,
+    ->(query) {
+      return all if query.blank?
+
+      joins(:user, start_stop: :location, end_stop: :location)
+        .where('users.email ILIKE :q OR locations.name ILIKE :q', q: "%#{query}%")
+    }
+
+  scope :filter_by_status,
+    ->(status) {
+      return all if status.blank?
+
+      where(payment_status: status)
+    }
+
+  scope :filter_by_date_range,
+    ->(start_date, end_date) {
+      return all if start_date.blank? || end_date.blank?
+
+      joins(tickets: :schedule)
+        .where(schedules: { departure_date: start_date..end_date })
+    }
+
   # Enumerize
   enum :payment_method,
     {

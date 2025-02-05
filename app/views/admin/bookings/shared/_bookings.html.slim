@@ -1,0 +1,50 @@
+.overflow-x-auto.bg-base-100.rounded-lg.mt-10
+  table.table.table-zebra.w-full
+    thead.bg-base-200
+      tr
+        th #
+        th Email
+        th Route
+        th Departure
+        th Payment Method
+        th Payment Status
+        th Action  
+    tbody
+      - @bookings.each_with_index do |booking, index|
+        tr
+          td.font-bold = index + 1
+          td = booking.user.email
+          td 
+            = "#{booking.start_stop.location.name} - #{booking.end_stop.location.name}"
+          td
+            = "#{booking.tickets.first&.schedule&.formatted_departure_date} - #{booking.tickets.first&.schedule&.formatted_departure_time}"
+          td
+            - case booking.payment_method
+            - when 'cash'
+              span.badge.badge-primary Cash
+            - when 'online'
+              span.badge.badge-accent Online
+          td
+            - case booking.payment_status
+            - when 'pending'
+              span.badge.badge-warning Pending
+            - when 'completed'
+              span.badge.badge-success Completed
+            - when 'failed'
+              span.badge.badge-error Failed
+          td.flex.space-x-2
+            = link_to admin_booking_path(booking), class: 'btn btn-sm', data: { turbo: false } do
+              svg.lucide.lucide-eye xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+                circle cx="12" cy="12" r="3"
+.mt-6.flex.justify-between.items-center
+  .text-sm.text-base-content/70
+    | Showing 
+    span.font-medium = "#{@pagy.from}"
+    |  to 
+    span.font-medium = "#{@pagy.to}"
+    |  of 
+    span.font-medium = "#{@pagy.count}"
+    |  schedules
+  .text-center.py-4
+    = pagy_nav(@pagy)

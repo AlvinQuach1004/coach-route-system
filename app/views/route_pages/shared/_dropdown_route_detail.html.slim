@@ -1,5 +1,6 @@
 .dropdown-content-card.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown" id="dropdown-#{schedule.id}" data-dropdown-target="content"
   .w-full.p-4.bg-base-100.rounded-lg.text-center
+  .w-full.p-4.bg-base-100.rounded-lg.text-center
     div.tabs.tabs-bordered[role="tablist"]
       - %w(pickup images policies services).each do |tab|
         a.tab[role="tab"
@@ -7,29 +8,27 @@
           data-action="click->dropdown#showDetailTab"
           data-dropdown-id-param="#{tab}-#{schedule.id.gsub('-', '')}"
           class="#{'tab-active' if tab == 'pickup'}"]
-          = tab.titleize
+          = t("route_pages.dropdown_detail.tabs.#{tab}")
 
   // Tab Content: Drop/Pickup
-  div[
-    data-dropdown-target="tabPanel"
-    id="pickup-#{schedule.id.gsub('-', '')}"
-    role="tabpanel"
-    class="#{'hidden' unless 'pickup' == 'pickup'}"]
+  div[data-dropdown-target="tabPanel" 
+    id="pickup-#{schedule.id.gsub('-', '')}" 
+    role="tabpanel" class="#{'hidden' unless 'pickup' == 'pickup'}"]
     .flex.flex-col.mt-6
-      span.text-lg.font-semibold.text-gray-800.mb-4.text-center Provinces
+      span.text-lg.font-semibold.text-gray-800.mb-4.text-center = t("route_pages.dropdown_detail.pickup.title")
       .divider.divider-horizontal
       - schedule.route.stops.each do |stop|
         .flex.items-center.mt-4.ml-8
           .w-4.h-4.rounded-full.bg-blue-600
           .ml-4.text-lg.text-gray-700
             - if stop.is_pickup
-              = stop.address + ' (pick up)'
+              = t("route_pages.dropdown_detail.pickup.stop_pickup", address: stop.address)
             - elsif stop.is_dropoff
-              = stop.address + ' (drop off)'
+              = t("route_pages.dropdown_detail.pickup.stop_dropoff", address: stop.address)
             - else 
-              = stop.address
+              = t("route_pages.dropdown_detail.pickup.stop_normal", address: stop.address)
       .divider.divider-horizontal.mt-4
-
+  
   // Tab Content: Images (Carousel)
   div[
     data-dropdown-target="tabPanel"
@@ -58,35 +57,27 @@
 
   // Policy tab
   div[
-    data-dropdown-target="tabPanel"
-    id="policies-#{schedule.id.gsub('-', '')}"
-    role="tabpanel"
-    class="hidden bg-base-100"]
+    data-dropdown-target="tabPanel" 
+    id="policies-#{schedule.id.gsub('-', '')}" 
+    role="tabpanel" class="hidden bg-base-100"]
     .rounded-lg.p-6.text-start.pl-14
-      h3.text-xl.font-bold.mb-4 Chính sách
+      h3.text-xl.font-bold.mb-4 = t("route_pages.dropdown_detail.policies.title")
       ul.list-disc.list-inside
-        li Đổi vé giấy trước khi lên xe
-        li Không mang đồ ăn, thức ăn có mùi lên xe
-        li Không hút thuốc, uống rượu, sử dụng chất kích thích trên xe
-        li Không mang các vật dễ cháy nổ lên xe
-        li Không vứt rác trên xe
-        li Không làm ồn, gây mất trật tự trên xe
-        li Không mang giày, dép trên xe
+        - t("route_pages.dropdown_detail.policies.list").each do |policy|
+          li.py-1 = policy
       .divider
-      h4.text-lg.font-bold.mt-6.mb-2 Hành lý xách tay
+      h4.text-lg.font-bold.mt-6.mb-2 = t("route_pages.dropdown_detail.policies.luggage.title")
       ul.list-disc.list-inside
-        li Tổng trọng lượng hành lý không vượt quá 20 kg
-        li Không vận chuyển hàng hóa cồng kềnh
-        li Không hoàn tiền trong trường hợp hủy đơn hàng do vi phạm các quy định về hành lý
+        - t("route_pages.dropdown_detail.policies.luggage.rules").each do |rule|
+          li.py-1 = rule
       .divider
-      h4.text-lg.font-bold.mt-6.mb-2 Trẻ em và phụ nữ có thai
+      h4.text-lg.font-bold.mt-6.mb-2 = t("route_pages.dropdown_detail.policies.children.title")
       ul.list-disc.list-inside
-        li Trẻ em dưới 3 tuổi hoặc dưới 100 cm được miễn phí vé nếu ngồi chung ghế/giường với bố mẹ
-        li Trẻ em từ 3 tuổi hoặc cao từ 100 cm trở lên mua vé như người lớn
+        - t("route_pages.dropdown_detail.policies.children.rules").each do |rule|
+          li.py-1 = rule
       .divider
-      h4.text-lg.font-bold.mt-6.mb-2 Gửi xe đạp/xe máy
-      ul.list-disc.list-inside
-        li Quý khách vui lòng liên hệ tổng đài Alvin Coach để được hỗ trợ bằng giá cước gửi xe và xác nhận còn chỗ trống để gửi kèm xe (trong trường hợp nhà xe không còn hầm trống sẽ không hỗ trợ nhận gửi kèm xe đạp/xe máy)
+      h4.text-lg.font-bold.mt-6.mb-2 = t("route_pages.dropdown_detail.policies.bike_shipping.title")
+      span = t("route_pages.dropdown_detail.policies.bike_shipping.details")
 
   // Services tab
   div[
@@ -95,17 +86,8 @@
     role="tabpanel"
     class="hidden pb-12 bg-base-100"]
     .rounded-lg.p-6.text-start.pl-14.pt-10
-      h4.text-xl.font-bold.mb-3 Dây đai an toàn
-      span Trên xe có trang bị dây đai an toàn cho hành khách khi ngồi trên xe
-      .divider
-      h4.text-lg.font-bold.mt-6.mb-2 Gửi kèm xe máy
-      span Nhà xe cho khách gửi kèm theo xe máy
-      .divider
-      h4.text-lg.font-bold.mt-6.mb-2 Nước uống
-      span Nhà xe có phục vụ nước cho hành khách
-      .divider
-      h4.text-lg.font-bold.mt-6.mb-2 Gối nằm và chăn
-      span Trên xe có trang bị gối nằm và chăn
-      .divider
-      h4.text-lg.font-bold.mt-6.mb-2 Búa phá kính
-      span Dùng để phá kính ô tô thoát hiểm trong trường hợp khẩn cấp
+      - services = [:safety_belt, :motorbike, :water, :bedding, :hammer]
+      - services.each do |service|
+        h4.text-lg.font-bold.mb-2 = t("route_pages.dropdown_detail.services.#{service}.title")
+        span = t("route_pages.dropdown_detail.services.#{service}.description")
+        .divider class=("mt-6" unless service == services.last)
