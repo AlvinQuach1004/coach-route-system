@@ -46,7 +46,7 @@ class Coach < ApplicationRecord
   # Validations
   validates :license_plate, presence: true
   validates :coach_type, presence: true, inclusion: { in: %w[limousine sleeper room] }
-  validates :capacity, presence: true, numericality: { greater_than_or_equal_to: 30, less_than_or_equal_to: 50 }
+  validates :capacity, presence: true, numericality: { greater_than_or_equal_to: Coach::Capacity::LIMOUSINE, less_than_or_equal_to: Coach::Capacity::SLEEPER }
 
   private
 
