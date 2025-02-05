@@ -16,6 +16,8 @@ gem 'image_processing'
 gem 'enumerize'
 gem 'geocoder'
 gem 'stripe', '~> 13.3'
+gem 'chartkick'
+gem 'groupdate'
 
 # Auth
 gem 'devise'

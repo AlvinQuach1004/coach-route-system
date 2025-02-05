@@ -23,15 +23,15 @@
             td = format_currency_vnd(schedule.price)
             td
               - case schedule.status
-              - when 'scheduled'
+              - when Schedule::Status::SCHEDULED
                 span.badge.badge-primary Scheduled
-              - when 'ongoing'
+              - when Schedule::Status::ONGOING
                 span.badge.badge-secondary In Progress
-              - when 'completed'
+              - when Schedule::Status::COMPLETED
                 span.badge.badge-success Completed
-              - when 'cancelled'
+              - when Schedule::Status::CANCELLED
                 span.badge.badge-error Cancelled
-              - when 'maintainance'
+              - when Schedule::Status::DELAYED
                 span.badge.badge-ghost Delayed
               - else
                 span.badge.badge-neutral = schedule.status.titleize

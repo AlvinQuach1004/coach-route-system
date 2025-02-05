@@ -2,59 +2,64 @@
 .drawer.lg:drawer-open
   input#my-drawer-2.drawer-toggle type="checkbox"
   .drawer-content.flex.flex-col
-    / Main Content
     .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
-      / Revenue Chart
+      / Line Chart to show revenue
       .lg:col-span-2.bg-base-100.p-4.rounded-box.shadow-lg
         h2.text-xl.font-bold.mb-4 Revenue Overview
-        canvas#revenueChart.w-full.h-64
-      / Quick Stats
+        = line_chart @revenue_data,
+          colors: ["#36A2EB"],
+          thousands: ",",
+          suffix: "đ",
+          points: false,
+          curve: true
+
+      / Donut chart with amount of coach's status
+      .bg-base-100.p-4.rounded-box.shadow-lg
+        h2.text-xl.font-bold.mb-4 Coach Status
+        = pie_chart @coach_status_amount,
+          colors: ["#36A2EB", "#FF6384", "#4BC0C0"],
+          donut: true
+
+      / Popular Routes Chart
+      .lg:col-span-2.bg-base-100.p-4.rounded-box.shadow-lg
+        h2.text-xl.font-bold.mb-4 Popular Routes
+        - routes_data = @bookings_by_route.map { |route| ["#{route.start_location_name} - #{route.end_location_name}", route.ticket_count.to_i] }
+        = bar_chart routes_data, colors: ["#36A2EB"]
+      
       .bg-base-100.p-4.rounded-box.shadow-lg
         h2.text-xl.font-bold.mb-4 Today's Overview
         .stats.stats-vertical.w-full
           .stat
             .stat-title Active Routes
-            .stat-value 25
+            .stat-value = @daily_stats[:active_routes]
           .stat
             .stat-title Today's Bookings
-            .stat-value 142
+            .stat-value = @daily_stats[:todays_bookings]
           .stat
             .stat-title Available Coaches
-            .stat-value 18
-      / Recent Bookings
-      .lg:col-span-2.bg-base-100.p-4.rounded-box.shadow-lg
+            .stat-value = @daily_stats[:available_coaches]
+
+      / Recent Bookings Table
+      .lg:col-span-3.bg-base-100.p-4.rounded-box.shadow-lg
         h2.text-xl.font-bold.mb-4 Recent Bookings
         .overflow-x-auto
           table.table
             thead
               tr
                 th Booking ID
+                th Customer
                 th Route
-                th Date
+                th Amount
                 th Status
             tbody
-              tr
-                td BK001
-                td London - Manchester
-                td 2025-01-17
-                td
-                  .badge.badge-success Confirmed
-              tr
-                td BK002
-                td Birmingham - Leeds
-                td 2025-01-17
-                td
-                  .badge.badge-warning Pending
-      / Popular Routes
-      .bg-base-100.p-4.rounded-box.shadow-lg
-        h2.text-xl.font-bold.mb-4 Popular Routes
-        .space-y-4
-          .flex.justify-between.items-center
-            span London - Manchester
-            span.badge.badge-primary 85% full
-          .flex.justify-between.items-center
-            span Birmingham - Leeds
-            span.badge.badge-primary 75% full
-          .flex.justify-between.items-center
-            span Glasgow - Edinburgh
-            span.badge.badge-primary 65% full  
+              - @recent_bookings.each do |booking|
+                tr
+                  td = booking.id.first(8)
+                  td = booking.user.email
+                  td 
+                    - route = booking.tickets.first.schedule.route
+                    = "#{route.start_location.name} - #{route.end_location.name}"
+                  td = format_currency_vnd(booking.tickets.sum(&:paid_amount))
+                  td
+                    .badge class="badge-#{booking.payment_status == Booking::PaymentStatus::COMPLETED  ? 'success' : 'warning'}"
+                      = booking.payment_status.titleize

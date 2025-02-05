@@ -7,7 +7,8 @@ html.h-full.bg-base[lang="en"]
     div class="flex min-h-full drawer-content"
       div class="flex flex-1 flex-col lg:flex-row justify-center items-center py-12 sm:px-6 lg:flex-none lg:px-20 xl:pl-48"
         div class="mx-auto w-full max-w-sm lg:w-96 lg:max-w-md"
-          div class="absolute top-2 right-2" title="Change Theme"
+          div class="absolute top-2 right-8" title="Change Theme"
+            = render 'shared/switch_locale'
             = render 'shared/switch_theme'
           div class="flex justify-start items-end"
             = link_to root_path do
