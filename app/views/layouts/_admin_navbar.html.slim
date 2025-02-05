@@ -15,11 +15,7 @@
           = image_tag 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp', alt: 'Avatar'
       ul class='mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52' tabindex='0'
         li
-          = link_to '#', class: 'justify-between' do
+          = link_to profile_path, class: 'justify-between' do
             |  Profile
-            span.badge
-              | New
-        li
-          a Settings
         li
           = button_to 'Log out', destroy_user_session_path, method: :delete, data: { turbo: false }

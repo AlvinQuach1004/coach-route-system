@@ -32,7 +32,6 @@ en:
     log_out: Log out
     profile: Profile
     routes: Routes
-    settings: Settings
     sign_up: Sign up
   home:
     description: The best place to book bus tickets

@@ -32,7 +32,6 @@ vi:
     sign_up: 'Đăng ký'
     log_in: 'Đăng nhập'
     profile: 'Hồ sơ'
-    settings: 'Cài đặt'
     log_out: 'Đăng xuất'
   home:
     title: "Trang chủ"

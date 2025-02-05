@@ -25,11 +25,7 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
               = image_tag 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp', alt: 'Avatar'
           ul class='mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52' tabindex='0'
             li
-              = link_to profile_path(current_user), class: 'justify-between' do
+              = link_to profile_path, class: 'justify-between' do
                 = t('header.profile')
-                span.badge
-                  | New
-            li
-              = t('header.settings')
             li
               = button_to t('header.log_out'), destroy_user_session_path, method: :delete, data: { turbo: false }

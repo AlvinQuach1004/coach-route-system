@@ -1,4 +1,4 @@
-.min-h-screen.bg-base-200.py-8
+.min-h-screen.bg-base-200.py-6
   .max-w-3xl.mx-auto.px-4.sm:px-6.lg:px-8
     .bg-base-100.shadow-lg.rounded-xl.overflow-hidden
       .px-6.py-8
@@ -15,11 +15,11 @@
                 .flex.items-center.space-x-2.relative
                   / Display View
                   .display-view.py-1
-                    p.text-base.text-base-content = @user.email
+                    p.text-base.text-base-content = current_user.email
                   
                   / Edit Form
                   .edit-form.hidden.flex-grow
-                    = form_with(model: @user, url: update_field_profile_path, class: "flex items-center space-x-2", data: { turbo: false }) do |f|
+                    = form_with(model: current_user, url: update_field_profile_path, class: "flex items-center space-x-2", data: { turbo: false }) do |f|
                       = f.email_field :email,
                         class: "edit-input block w-full max-w-md rounded-lg border border-base-300 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary sm:text-sm input input-bordered focus:outline-none",
                         placeholder: "Enter your email"
@@ -43,10 +43,10 @@
                 label.text-sm.font-medium.text-base-content/80 Phone Number
                 .flex.items-center.space-x-2.relative
                   .display-view.py-1
-                    p.text-base.text-base-content = @user.phone_number.presence || 'Not provided'
+                    p.text-base.text-base-content = current_user.phone_number.presence || 'Not provided'
                   
                   .edit-form.hidden.flex-grow
-                    = form_with(model: @user, url: update_field_profile_path, class: "flex items-center space-x-2", data: { turbo: false }) do |f|
+                    = form_with(model: current_user, url: update_field_profile_path, class: "flex items-center space-x-2", data: { turbo: false }) do |f|
                       = f.telephone_field :phone_number, 
                         class: "edit-input block w-full max-w-md rounded-lg border border-base-300 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary sm:text-sm input input-bordered focus:outline-none",
                         placeholder: "Enter your phone number"
@@ -65,4 +65,4 @@
         .p-6.bg-base-100
           .space-y-1
             label.text-sm.font-medium.text-base-content/80 Account Created
-            p.text-base.text-base-content = @user.created_at.strftime('%B %d, %Y')
+            p.text-base.text-base-content = current_user.created_at.strftime('%B %d, %Y')

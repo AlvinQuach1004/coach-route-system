@@ -3,7 +3,7 @@
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
-  before_action :store_user_location!, if: :storable_location?
+  before_action :store_user_location, if: :storable_location?
   before_action :set_locale
 
   include Pundit::Authorization
@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
     request.get? && !request.xhr? && !devise_controller? && !request.path.match?(/sign_in|sign_up|password/)
   end
 
-  def store_user_location!
+  def store_user_location
     store_location_for(:user, request.fullpath)
   end
 end

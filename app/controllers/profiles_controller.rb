@@ -1,11 +1,10 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user
 
   def show; end
 
   def update_field
-    if @user.update(user_params)
+    if current_user.update(user_params)
       flash.now[:success] = "#{user_params.keys.first.humanize} updated successfully"
 
       render json: {
@@ -15,10 +14,10 @@ class ProfilesController < ApplicationController
           locals: { message: flash[:success], type: 'success' },
           formats: [:html]
         ),
-        new_value: @user.send(user_params.keys.first)
+        new_value: current_user.send(user_params.keys.first)
       }
     else
-      error_message = @user.errors.full_messages.to_sentence
+      error_message = current_user.errors.full_messages.to_sentence
 
       render json: {
                success: false,
@@ -33,10 +32,6 @@ class ProfilesController < ApplicationController
   end
 
   private
-
-  def set_user
-    @user = current_user
-  end
 
   def user_params
     params.require(:user).permit(:email, :phone_number)
