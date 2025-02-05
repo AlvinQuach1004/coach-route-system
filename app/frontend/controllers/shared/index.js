@@ -3,6 +3,7 @@ import { Application } from '@hotwired/stimulus';
 import './toast';
 import './modal';
 import './add_stop';
+import './profile_editor';
 
 const application = Application.start();
 

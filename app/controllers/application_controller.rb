@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+  before_action :store_user_location, if: :storable_location?
+  before_action :set_locale
 
   include Pundit::Authorization
   include Pagy::Backend
@@ -29,6 +31,15 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_locale
+    I18n.locale = params[:locale] || session[:locale] || I18n.default_locale
+    session[:locale] = I18n.locale
+  end
+
+  def default_url_options
+    { locale: I18n.locale }
+  end
 
   def check_user_signed_in
     unless user_signed_in?
@@ -59,5 +70,13 @@ class ApplicationController < ActionController::Base
 
   def set_current_variables
     Current.user = current_user
+  end
+
+  def storable_location?
+    request.get? && !request.xhr? && !devise_controller? && !request.path.match?(/sign_in|sign_up|password/)
+  end
+
+  def store_user_location
+    store_location_for(:user, request.fullpath)
   end
 end

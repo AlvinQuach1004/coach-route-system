@@ -1,56 +1,64 @@
 = turbo_frame_tag 'schedules' do
-  - schedules.each do |schedule|
-    .card.shadow-xl.p-4.flex.mb-4.bg-base-200.my-8.card-container data-controller="dropdown" data-schedule-id="#{schedule.id}" data-dropdown-target="cardContainer"
-      .flex.flex-col.md:flex-row
-        = image_tag "https://via.placeholder.com/150", alt: "Product", class: "w-full md:w-48 h-48 object-cover mb-4 md:mb-0 md:mr-4"
-        .flex-1
-          .flex.flex-col.justify-center.mb-2
-            h3.font-bold.text-xl Xe Tuấn Hưng
-            h3.text-gray-600.text-md.mt-2.opacity-80 #{schedule.coach.coach_type.capitalize} #{schedule.coach.capacity} seats
-          .flex.flex-col.justify-start.text-sm.text-gray-600.mt-6.gap-2
-            .relative
-              svg.absolute.top-1 xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-locate-fixed"
-                line(x1="2" x2="5" y1="12" y2="12")
-                line(x1="19" x2="22" y1="12" y2="12")
-                line(x1="12" x2="12" y1="2" y2="5")
-                line(x1="12" x2="12" y1="19" y2="22")
-                circle(cx="12" cy="12" r="7")
-                circle(cx="12" cy="12" r="3")
-              span.text-lg.ml-6
-                | #{schedule.formatted_departure_date} - #{schedule.formatted_departure_time} - 
-                = schedule.route.start_location.name
-          .relative.mt-2
-            svg.absolute xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical"
-              circle(cx="12" cy="12" r="1")
-              circle(cx="12" cy="5" r="1")
-              circle(cx="12" cy="19" r="1")
-            span.text-lg.ml-8 = "#{schedule.route.stops.order(:stop_order).last&.time_range.to_i / 60}h"
-          .relative.mt-2
-            svg.absolute.top-1 xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"
-              path(d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0")
-              circle(cx="12" cy="10" r="3")
-              span.text-lg.ml-6
-                - last_stop = schedule.route.stops.order(:stop_order).last
-                - if last_stop
-                  - adjusted_time = schedule.departure_time + (10 * last_stop.time_range * 60)
-                  - adjusted_date = schedule.departure_date
-                  - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
-                    - adjusted_date = adjusted_date + 1.day
-                  | #{adjusted_date.strftime("%d/%m/%Y")} - #{adjusted_time.strftime("%H:%M")} - 
-                  = schedule.route.end_location.name
-                - else
-                  | No stops available - 
-                  = schedule.route.end_location.name
-        .flex.flex-col.items-end.justify-between.md:items-start.md:text-right.mt-4.md:mt-0
-          .w-full.text-end
-            span.text-2xl.text-primary.font-semibold.text-end.md:pr-2
-              | #{format_currency_vnd(schedule.price)}
-          div.flex.flex-col.md:flex-row.justify-between.md:justify-start.items-center.md:items-end.w-full
-          .flex.w-full.items-center.justify-end.mb-4.mt-4.md:mt-6.md:mb-0
-            span.text-gray-500.text-end = "Available: #{schedule.coach.capacity} empty seats"
-          .flex.justify-between.items-center.w-full.md:w-auto.md:justify-start
-            .relative
-              button.text-blue-500.pr-4.underline.w-full.md:max-w-52.hidden.md:mr-5.md:block type="button" data-controller="dropdown" data-action="click->dropdown#toggle" data-dropdown-id-param="dropdown-#{schedule.id}" View details
-            = render partial: 'route_pages/shared/dropdown_route_detail', locals: { schedule: schedule }
-            = render partial: 'route_pages/shared/dropdown_book', locals: { schedule: schedule, booking: booking, departure_search: departure_search, destination_search: destination_search }
-            button.btn.btn-accent.w-full.md:w-24.mt-4.md:mt-0 type="button" data-controller="dropdown" data-action="click->dropdown#toggle" data-dropdown-id-param="dropdown-book-#{schedule.id}" Book
+  - schedules.each_with_index do |schedule, index|
+    div data-turbo-permanent="true"
+      .card.shadow-xl.p-4.flex.mb-4.bg-base-200.my-8.card-container data-controller="dropdown" data-schedule-id="#{schedule.id}" data-dropdown-target="cardContainer" id="schedule-card-#{schedule.id}"
+        .flex.flex-col.md:flex-row
+          = image_tag "https://via.placeholder.com/150", alt: "Product", class: "w-full md:w-48 h-48 object-cover mb-4 md:mb-0 md:mr-4"
+          .flex-1
+            .flex.flex-col.justify-center.mb-2
+              h3.font-bold.text-xl Xe Tuấn Hưng
+              h3.text-gray-600.text-md.mt-2.opacity-80 ="#{t("route_pages.categories.#{schedule.coach.coach_type.downcase}")} #{schedule.coach.capacity} #{t('route_pages.seats')}"
+            .flex.flex-col.justify-start.text-sm.text-gray-600.mt-6.gap-2
+              .relative
+                svg.absolute.top-1 xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-locate-fixed"
+                  line(x1="2" x2="5" y1="12" y2="12")
+                  line(x1="19" x2="22" y1="12" y2="12")
+                  line(x1="12" x2="12" y1="2" y2="5")
+                  line(x1="12" x2="12" y1="19" y2="22")
+                  circle(cx="12" cy="12" r="7")
+                  circle(cx="12" cy="12" r="3")
+                span.text-lg.ml-6
+                  | #{schedule.formatted_departure_date} - #{schedule.formatted_departure_time} - 
+                  = schedule.route.start_location.name
+            .relative.mt-2
+              svg.absolute xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical"
+                circle(cx="12" cy="12" r="1")
+                circle(cx="12" cy="5" r="1")
+                circle(cx="12" cy="19" r="1")
+              span.text-lg.ml-8 = "#{schedule.route.stops.order(:stop_order).last&.time_range.to_i / 60}h"
+            .relative.mt-2
+              svg.absolute.top-1 xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"
+                path(d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0")
+                circle(cx="12" cy="10" r="3")
+                span.text-lg.ml-6
+                  - last_stop = schedule.route.stops.order(:stop_order).last
+                  - if last_stop
+                    - adjusted_time = schedule.departure_time + (10 * last_stop.time_range * 60)
+                    - adjusted_date = schedule.departure_date
+                    - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
+                      - adjusted_date = adjusted_date + 1.day
+                    | #{adjusted_date.strftime("%d/%m/%Y")} - #{adjusted_time.strftime("%H:%M")} - 
+                    = schedule.route.end_location.name
+                  - else
+                    | #{t('route_pages.no_stops_available')} - 
+                    = schedule.route.end_location.name
+          .flex.flex-col.items-end.justify-between.md:items-start.md:text-right.mt-4.md:mt-0
+            .w-full.text-end
+              span.text-2xl.text-primary.font-semibold.text-end.md:pr-2
+                | #{format_currency_vnd(schedule.price)}
+            div.flex.flex-col.md:flex-row.justify-between.md:justify-start.items-center.md:items-end.w-full
+            .flex.w-full.items-center.justify-end.mb-4.mt-4.md:mt-6.md:mb-0
+              span.text-gray-500.text-end = "#{t('route_pages.available')}: #{schedule.coach.capacity - schedule.tickets.count} #{t('route_pages.seats')}"
+            .flex.justify-between.items-center.w-full.md:w-auto.md:justify-start
+              .relative
+                button.text-blue-500.pr-4.underline.w-full.md:max-w-52.hidden.md:mr-5.md:block type="button" data-controller="dropdown" data-action="click->dropdown#toggle" data-dropdown-id-param="dropdown-#{schedule.id}" = t('route_pages.view_details')
+              = render partial: 'route_pages/shared/dropdown_route_detail', locals: { schedule: schedule }
+              = render partial: 'route_pages/shared/dropdown_book', locals: { schedule: schedule, booking: booking, departure_search: departure_search, destination_search: destination_search }
+              button.btn.btn-accent.w-full.md:w-24.mt-4.md:mt-0[
+                type="button"
+                data-controller="dropdown booking"
+                data-action="click->dropdown#toggle click->booking#checkAvailability"
+                data-dropdown-id-param="dropdown-book-#{schedule.id}"
+                data-booking-available-seats-value=schedule.coach.capacity-schedule.tickets.count
+                data-booking-dropdown-open-value="false"
+              ] = t('route_pages.book')

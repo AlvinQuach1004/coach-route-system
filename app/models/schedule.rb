@@ -74,6 +74,17 @@ class Schedule < ApplicationRecord
     !tickets.exists?(seat_number: seat_number, status: Ticket::Status::BOOKED || Ticket::Status::PAID)
   end
 
+  def seat_rows_by_type
+    case coach.coach_type # rubocop:disable Style/HashLikeCase
+    when 'sleeper'
+      { upper: (1..18), lower: (1..18) }  # 36 seats total
+    when 'room'
+      { upper: (1..16), lower: (1..16) }  # 32 seats total
+    when 'limousine'
+      { upper: (1..14), lower: (1..14) }  # 28 seats total
+    end
+  end
+
   private
 
   def departure_date_cannot_be_in_the_past

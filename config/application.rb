@@ -25,6 +25,9 @@ module RailsBoilerplate
     # Prevents Rails from trying to eager-load the contents of app/frontend
     config.javascript_path = 'frontend'
 
+    config.i18n.available_locales = [:en, :vi]
+    config.i18n.default_locale = :en
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
 

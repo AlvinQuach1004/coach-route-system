@@ -1,6 +1,6 @@
 .text-center.mt-24.mb-11.max-w-2xl.w-full.mx-auto
   h2.text-4xl.font-bold.bg-base-100.p-4.rounded.underline.underline-offset-8.decoration-green-500
-    | The Most Popular Routes Of Week
+    = t('home.most_popular_routes_of_week')
 
 .container.mx-auto.px-4.my-10.max-w-7xl.shadow-xl.bg-base-200.rounded-md
   .grid.grid-cols-1.p-14.rounded-md.sm:grid-cols-2.md:grid-cols-3.gap-6
@@ -8,10 +8,11 @@
       - routes.each do |route|
         .card.bg-base-100.shadow-xl
           .card-image.aspect-video.overflow-hidden
-            = image_tag vite_asset_path('images/signup-signin.png'), alt: "#{route.start_location_name} → #{route.end_location_name}", class: "object-cover w-full h-full"
+            = link_to route_pages_path(departure: route.start_location_name, destination: route.end_location_name), class: "block" do
+              = image_tag vite_asset_path('images/signup-signin.png'), alt: "#{route.start_location_name} → #{route.end_location_name}", class: "object-cover w-full h-full"
           .card-body.p-4
             h3.text-white.text-center.font-medium.text-lg.bg-black.bg-opacity-50.p-2.rounded
-              = "#{route.start_location_name} → #{route.end_location_name}"
+              = t('home.from_to', from: route.start_location_name, to: route.end_location_name)
     - else
       .text-center.text-gray-500
         | No popular routes found for this week.

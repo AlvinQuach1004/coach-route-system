@@ -63,6 +63,12 @@ export default class extends Controller {
     seat.classList.remove('bg-white');
     seat.classList.add('bg-green-400');
     seat.dataset.status = 'selected';
+
+    const event = new CustomEvent('seats-updated', {
+      detail: { selectedSeats: this.selectedSeats },
+      bubbles: true,
+    });
+    this.element.dispatchEvent(event);
   }
 
   unselectSeat(seat, seatId) {
@@ -73,6 +79,11 @@ export default class extends Controller {
     seat.classList.remove('bg-green-400');
     seat.classList.add('bg-white');
     seat.dataset.status = 'available';
+    const event = new CustomEvent('seats-updated', {
+      detail: { selectedSeats: this.selectedSeats },
+      bubbles: true,
+    });
+    this.element.dispatchEvent(event);
   }
 
   markSeatAsChosen(seat) {

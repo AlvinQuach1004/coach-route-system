@@ -1,19 +1,61 @@
-- provide(:title, "Home")
+- provide(:title, t('home.title'))
 .container.mx-auto.bg-base-200
   div class='flex flex-row justify-between h-fit-content'
     div class='flex flex-col justify-center introduction_container'
-      h1.text-6xl.text-center.text-primary-500.font-bold.px-24.flex.pt-28
-        | Welcome to the
+      h1.text-6xl.text-left.text-primary-500.font-bold.px-24.flex.pt-28
+        | #{t('home.welcome')}
         br
-        | Ticket Terminal
-      p.text-center.text-lg.text-primary-500.font-semibold.pb-6.pt-4.pr-24
-        | The best place to book your coach tickets
+        | #{t('home.ticket_terminal')}
+      p.text-left.text-lg.text-primary-500.font-semibold.pb-6.pt-4.pl-28
+      
+        | #{t('home.description')}
       div class='float-start pl-24'
         = link_to route_pages_path, class: 'btn btn-accent btn-lg rounded-btn mx-auto mt-4 ml-2', data: { turbo: false } do
-          | View Routes
+          | #{t('home.view_routes')}
     = image_tag vite_asset_path('images/ticket_terminal_thumbnail.png'), class: 'thumbnail-ticket-terminal-img mr-20', alt: 'Coach Image'
 = render 'home/shared/search_routes'
 - if @top_routes_of_week.present?
   = render partial: 'home/shared/top_coach_route_of_week', locals: { routes: @top_routes_of_week }
 - if @most_popular_routes.present?
   = render partial: 'home/shared/most_popular_route', locals: { routes: @most_popular_routes }
+.container.mx-auto.mt-10.p-28
+  .card.bg-base-100.shadow-xl
+    .card-body.flex.flex-row.items-center.justify-around
+      div
+        h2.card-title.font-bold.text-4xl 
+          | #{t('home.statistic.title')}
+        p.text-lg.mt-4
+          | #{t('home.statistic.description')}
+      .grid.grid-cols-2.gap-4
+            .stats.shadow
+              .stat
+                .stat-figure.text-primary
+                  svg[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"]
+                    path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"]
+                .stat-title 
+                  | #{t('home.stats.members')}
+                .stat-value = User.count
+            .stats.shadow
+              .stat
+                .stat-figure.text-primary
+                  svg[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"]
+                    path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"]
+                .stat-title 
+                  | #{t('home.stats.routes')}
+                .stat-value = Route.count
+            .stats.shadow
+              .stat
+                .stat-figure.text-primary
+                  svg[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"]
+                    path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H5a3 3 0 00-3 3v8a3 3 0 003 3z"]
+                .stat-title 
+                  | #{t('home.stats.bookings')}
+                .stat-value = Booking.count
+            .stats.shadow
+              .stat
+                .stat-figure.text-primary
+                  svg[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"]
+                    path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"]
+                .stat-title 
+                  | #{t('home.stats.payments')}
+                .stat-value = Booking.where(payment_method: 'online').count

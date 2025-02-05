@@ -14,7 +14,18 @@ class Coach < ApplicationRecord
   # Associations
   has_many :schedules, dependent: :destroy, inverse_of: :coach
 
+  # Callbacks
+  before_validation :set_default_capacity, on: :create
+
   # Constants
+  module Capacity
+    LIMOUSINE = 28
+    ROOM = 32
+    SLEEPER = 36
+
+    ALL = [LIMOUSINE, ROOM, SLEEPER].freeze
+  end
+
   module Status
     AVAILABLE = 'available'.freeze
     INUSE = 'in use'.freeze
@@ -35,5 +46,15 @@ class Coach < ApplicationRecord
   # Validations
   validates :license_plate, presence: true
   validates :coach_type, presence: true, inclusion: { in: %w[limousine sleeper room] }
-  validates :capacity, presence: true, numericality: { greater_than_or_equal_to: 30, less_than_or_equal_to: 50 }
+  validates :capacity, presence: true, numericality: { greater_than_or_equal_to: Coach::Capacity::LIMOUSINE, less_than_or_equal_to: Coach::Capacity::SLEEPER }
+
+  private
+
+  def set_default_capacity
+    self.capacity = case coach_type
+                    when 'limousine' then Capacity::LIMOUSINE
+                    when 'room' then Capacity::ROOM
+                    when 'sleeper' then Capacity::SLEEPER
+                    end
+  end
 end

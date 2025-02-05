@@ -19,7 +19,7 @@ const TOAST_TYPES = {
   },
 };
 
-const showToast = (message, type = 'notice') => {
+export const showToast = (message, type = 'notice') => {
   const options = TOAST_TYPES[type] || TOAST_TYPES.notice;
 
   Toastify({

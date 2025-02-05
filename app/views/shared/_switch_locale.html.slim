@@ -1,0 +1,9 @@
+.dropdown.dropdown-end
+  div class='btn btn-ghost btn-circle' tabindex='0'
+    = image_tag vite_asset_path("images/icons/#{I18n.locale}.svg"), class: 'w-6 h-6 rounded-full', alt: t('language_name')
+  ul class='mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-36' tabindex='0'
+    - [:en, :vi].each do |locale|
+      li.mt-2
+        = link_to url_for(locale: locale), class: "#{I18n.locale == locale ? 'active' : ''} w-32" do
+          = image_tag vite_asset_path("images/icons/#{locale}.svg"), class: 'w-4 h-4 mr-2', alt: t('language_name', locale: locale)
+          span = t('language_name', locale: locale)

@@ -6,6 +6,6 @@ RSpec.describe Coach, type: :model do
     expect(coach).to be_valid
     expect(coach.license_plate).to be_a(String)
     expect(['sleeper', 'room', 'limousine']).to include(coach.coach_type)
-    expect(coach.capacity).to be_between(30, 50)
+    expect(coach.capacity).to be_between(28, 36)
   end
 end

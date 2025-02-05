@@ -1,5 +1,5 @@
 = form_with model: booking, url: bookings_path, data: { turbo: false, filter_ignore: true }, method: :post do |f|
-  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-key-value=Rails.configuration.stripe[:publishable_key] data-payment-amount-value="#{schedule.price}"
+  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-key-value=Rails.configuration.stripe[:publishable_key] data-payment-amount-value="#{schedule.price}"  data-stepper-selected-seats-value="[]" data-stepper-available-seats-value=schedule.coach.capacity-schedule.tickets.count
     / Hidden fields for booking params
     = f.hidden_field :payment_status, value: "pending"
     = f.hidden_field :payment_method, value: "cash", data: { seat_selection_target: "paymentMethod" }
@@ -22,64 +22,60 @@
           .w-1/4.mt-4.max-w-xl.mr-10
             h2.text-lg.font-bold.text-left.pl-4 Chú thích
             ul.pt-4
-              li.flex.items-center
-                .grid.grid-cols-3.gap-x-12.gap-y-4
-                  .w-8.h-14.bg-white.border.border-gray-400.rounded.inline-block
-                    svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                      rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
-                  span.whitespace-nowrap Ghế trống
-              li.flex.items-center
-                .grid.grid-cols-3.gap-x-12.gap-y-4
-                  .w-8.h-14.bg-gray-400.border.border-gray-400.rounded.inline-block
-                    svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                      rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
-                  span.whitespace-nowrap Ghế đã đặt
-              li.flex.items-center
-                .grid.grid-cols-3.gap-x-12.gap-y-4
-                  .w-8.h-14.bg-green-400.border.border-gray-400.rounded.inline-block
-                    svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                      rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
-                  span.whitespace-nowrap Ghế đang chọn
+              - { "empty" => "bg-white border-gray-400", "booked" => "bg-gray-400 border-gray-400", "selected" => "bg-green-400 border-gray-400" }.each do |seat_type, color_classes|
+                li.flex.items-center
+                  .grid.grid-cols-3.gap-x-12.gap-y-4.p-4
+                    - if ["limousine", "room", "sleeper"].include?(schedule.coach.coach_type)
+                      .w-10.h-16.rounded.border.flex.items-center.justify-center class=color_classes
+                        = image_tag vite_asset_path("images/seats/#{schedule.coach.coach_type}-icon.svg"), class: "w-6 h-8 inline-block"
+                    - else
+                      .w-8.h-14.rounded.inline-block class=color_classes
+                        svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                          rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
+                    span.whitespace-nowrap = t("route_pages.bookings.seat_status.#{seat_type}")
+
 
           .w-3/4.flex.justify-between
+            - seat_rows = schedule.seat_rows_by_type          
+
             // Lower Floor
-            .w-1/2.bg-slate-300.mr-4.rounded-md.relative
-              h2.text-center.font-bold.mb-8.pt-4.text-lg Tầng dưới
-              svg.absolute.left-8.top-16 xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-life-buoy"
+            .w-1/2.rounded-md.bg-slate-300.p-4.relative.pr-14
+
+              h2.text-center.font-bold.pt-4.text-lg.ml-8 = t('route_pages.bookings.lower_floor_label')     
+              svg.absolute.left-12.top-20 xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-life-buoy"
                 circle cx="12" cy="12" r="10"
                 path d="m4.93 4.93 4.24 4.24"
                 path d="m14.83 9.17 4.24-4.24"
                 path d="m14.83 14.83 4.24 4.24"
                 path d="m9.17 14.83-4.24 4.24"
-                circle cx="12" cy="12" r="4"
-              .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-10
-                - (1..18).each do |seat|
-                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
+                circle cx="12" cy="12" r="4"     
+
+              .grid.grid-cols-3.gap-x-14.gap-y-4.p-8.mt-8
+                - seat_rows[:lower].each do |seat|                
+                  .seat.w-10.h-16.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
                     data-seat-selection-target="seat"
                     data-id="A#{seat}"
                     data-action="click->seat-selection#toggleSeat"
                     data-status="#{schedule.seat_available?("A#{seat}") ? 'available' : 'chosen'}"
-                    class="w-8 h-14 #{schedule.seat_available?("A#{seat}") ? 'bg-white' : 'bg-gray-400'}"
+                    class="#{schedule.seat_available?("A#{seat}") ? 'bg-white' : 'bg-gray-400'}"
                     data-tip="A#{seat} - #{format_currency_vnd(schedule.price)}"
                   ]
-                    svg.relative.h-10.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                      rect.absolute width="20" height="8" x="2" y="20" rx="2" ry="2"
+                    = image_tag vite_asset_path("images/seats/#{schedule.coach.coach_type}-icon.svg"), class: 'w-8 h-10'         
+
             // Upper Floor
-            .w-1/2.bg-slate-300.mr-4.rounded-md
-              h2.text-center.font-bold.mb-4.pt-4.text-lg Tầng trên
-              .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-10
-                - (1..18).each do |seat|
-                  .seat.w-8.h-14.bg-white.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
+            .w-1/2.rounded-md.bg-slate-400.p-4.ml-6.pr-8
+              h2.text-center.font-bold.mb-4.pt-4.text-lg = t('route_pages.bookings.upper_floor_label')   
+              .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-8.pr-14
+                - seat_rows[:upper].each do |seat|
+                  .seat.w-10.h-16.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
                     data-seat-selection-target="seat"
                     data-id="B#{seat}"
                     data-action="click->seat-selection#toggleSeat"
                     data-status="#{schedule.seat_available?("B#{seat}") ? 'available' : 'chosen'}"
-                    class="w-8 h-14 #{schedule.seat_available?("B#{seat}") ? 'bg-white' : 'bg-gray-400'}"
+                    class="#{schedule.seat_available?("B#{seat}") ? 'bg-white' : 'bg-gray-400'}"
                     data-tip="B#{seat} - #{format_currency_vnd(schedule.price)}"
                   ]
-                    svg.relative.h-10.w-6 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                      rect.absolute width="20" height="8" x="2" y="20" rx="2" ry="2"
-
+                    = image_tag vite_asset_path("images/seats/#{schedule.coach.coach_type}-icon.svg"), class: "h-10 w-8"
         .divider.mt-10
         .flex.justify-between.items-center
           .flex.justify-start.items-center
@@ -267,7 +263,7 @@
                   .flex.justify-between.items-center.pt-4.border-t.mt-4
                     span.font-medium.text-gray-900 TOTAL
                     span.font-bold.text-gray-900 data-seat-selection-target="totalPriceStep3"
-                = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', data: { action: 'payment#processPayment', payment_target: 'submitButton' }
+                = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', id: "dropdown-book-btn-#{schedule.id}", data: { action: 'payment#processPayment', payment_target: 'submitButton' }
 
       .flex.w-full.justify-between.items-end.px-4.mt-auto
         button#prev.btn data-stepper-target="prev" data-action="click->stepper#prev" type="button" Back

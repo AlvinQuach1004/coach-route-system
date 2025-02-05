@@ -1,20 +1,53 @@
-// app/javascript/controllers/progress_controller.js
 import { Controller } from '@hotwired/stimulus';
+import { showToast } from './toast';
 
 export default class extends Controller {
   static targets = ['progress', 'prev', 'next', 'progressContainer', 'stepTab', 'circleStep'];
 
+  static values = {
+    availableSeats: Number,
+    selectedSeats: { type: Array, default: [] },
+  };
+
   connect() {
-    this.currentActive = 1; // Set initial active step
+    this.currentActive = 1;
     this.update();
+
+    this.element.addEventListener('seats-updated', (event) => {
+      this.selectedSeatsValue = event.detail.selectedSeats;
+    });
   }
 
   next() {
+    // Check conditions before proceeding to next step
+    if (!this.canProceedToNextStep()) {
+      return;
+    }
+
     this.currentActive++;
     if (this.currentActive > this.circleStepTargets.length) {
       this.currentActive = this.circleStepTargets.length;
     }
     this.update();
+  }
+
+  canProceedToNextStep() {
+    // If we're on step 1 and trying to go to step 2
+    if (this.currentActive === 1) {
+      // console.log(this.availableSeatsValue)
+      if (this.availableSeatsValue <= 0) {
+        showToast('This schedule is fully booked. Please choose another schedule.', 'alert');
+        return false;
+      }
+
+      if (!this.selectedSeatsValue || this.selectedSeatsValue.length === 0) {
+        console.log(this.selectedSeatsValue);
+        showToast('Please select at least one seat to continue.', 'alert');
+        return false;
+      }
+    }
+
+    return true;
   }
 
   prev() {

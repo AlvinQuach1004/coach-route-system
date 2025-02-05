@@ -8,20 +8,187 @@ en:
             avatar:
               size: File size must be less than %{size} MB
             password:
-              confirmation: Password confirmation doesn't match Password
+              confirmation: Password confirmation doesn't match the password
               format: Password must contain at least one letter and one number
               too_short: Password is too short (minimum is %{count} characters)
   common:
     create:
-      exists: "%{model} already existed"
-      failed: Unable to create %{model}
-      success: Created %{model} successfully
+      exists: "%{model} already exists"
+      failed: Failed to create %{model}
+      success: "%{model} created successfully"
     delete:
-      failed: Unable to delete %{model}
-      success: Deleted %{model} successfully
+      failed: Failed to delete %{model}
+      success: "%{model} deleted successfully"
     import:
-      failed: Unable to import %{model}
-      success: Import %{model} successfully
+      failed: Failed to import %{model}
+      success: "%{model} imported successfully"
     update:
-      failed: Unable to update %{model}
-      success: Updated %{model} successfully
+      failed: Failed to update %{model}
+      success: "%{model} updated successfully"
+  header:
+    about: About
+    history: History
+    log_in: Log In
+    log_out: Log out
+    profile: Profile
+    routes: Routes
+    sign_up: Sign up
+  home:
+    description: The best place to book bus tickets
+    from_to: "%{from} → %{to}"
+    most_popular_routes_of_week: Most Popular Routes of the Week
+    no_popular_routes: No popular routes found this week.
+    popular_routes: Popular Routes
+    statistic:
+      description: We have achieved this through hard work and dedication
+      title: Our System Statistics
+    stats:
+      bookings: Bookings
+      members: Members
+      payments: Payments
+      routes: Routes
+    ticket_terminal: Ticket Booking System
+    title: Home
+    view_routes: View Routes
+    welcome: Welcome to
+  language_name: English
+  route_pages:
+    available: Available
+    available_seats: Available seats
+    book: Book
+    bookings:
+      form:
+        floors:
+          lower_floor: Lower Floor
+          upper_floor: Upper Floor
+        legend: Legend
+        locations:
+          dropoff:
+            change: Change
+            position: Position
+            title: Drop off
+            view_closest: View the closest dropoff point?
+          pickup:
+            change: Change
+            position: Position
+            title: Pick up
+            view_closest: View the closest pickup point?
+        navigation:
+          back: Back
+          next: Next
+        payment:
+          confirm: Confirm Booking
+          methods:
+            cash: Cash
+            stripe: Credit Card
+          summary:
+            departure_date: Departure Date
+            departure_time: Departure Time
+            from: From
+            pay_before: Pay ticket before
+            price: Price
+            quantity: Quantity
+            title: Summary
+            to: To
+            total: TOTAL
+          title: Payment Method
+        seats:
+          available: Available Seat
+          booked: Booked Seat
+          selected: Selected Seat
+        summary:
+          seats: Seats
+          total: Total
+        tickets:
+          total: Total tickets
+          total_price: Total price
+      lower_floor_label: Tầng dưới
+      seat_status:
+        booked: booked
+        empty: empty
+        selected: selected
+      upper_floor_label: Tầng trên
+    categories:
+      limousine: Limousine
+      room: Room
+      sleeper: Sleeper
+    category_label: Category
+    coach_type: Coach type
+    departure: Departure
+    dropdown_detail:
+      pickup:
+        stop_dropoff: "%{address} (drop off)"
+        stop_normal: "%{address}"
+        stop_pickup: "%{address} (pickup)"
+        title: Provinces
+      policies:
+        bike_shipping:
+          details: Contact Alvin Coach hotline for rates and availability.
+          title: Bike/Motorbike Shipping
+        children:
+          rules:
+          - Children under 3 years old or under 100 cm ride free if sharing a seat
+          - Children aged 3+ or taller than 100 cm require a full ticket
+          title: Children and Pregnant Women
+        list:
+        - Exchange paper ticket before boarding
+        - Do not bring food with a strong smell on board
+        - No smoking, drinking, or drug use on board
+        - No carrying flammable or explosive items
+        - No littering on the bus
+        - No noise or disturbances on the bus
+        - No wearing shoes inside the bus
+        luggage:
+          rules:
+          - Total luggage weight must not exceed 20kg
+          - No oversized baggage allowed
+          - No refunds for cancellations due to luggage violations
+          title: Hand Luggage
+        title: Policies
+      services:
+        bedding:
+          description: Vehicle is equipped with pillows and blankets
+          title: Pillow and Blanket
+        hammer:
+          description: Emergency hammer for breaking windows in case of emergency
+          title: Emergency Hammer
+        motorbike:
+          description: Service allows passengers to transport their motorbikes
+          title: Motorbike Transport
+        safety_belt:
+          description: Vehicle is equipped with safety belts for passengers
+          title: Safety Belt
+        water:
+          description: Complimentary drinking water is provided for passengers
+          title: Drinking Water
+      tabs:
+        images: Images
+        pickup: Pickup Points
+        policies: Policies
+        services: Services
+    filter_label: Filter
+    keywords_label: Keywords
+    no_routes_found: No routes found
+    no_stops_available: No stops available
+    price_label: Price
+    search_results_label: Search results
+    seats: seats
+    sort: Sort
+    sort_options:
+      default: Default
+      price_high_to_low: Price High to Low
+      price_low_to_high: Price Low to High
+    title: Routes
+    trends:
+      latest: Latest
+      seat_available: Seat available
+    view_details: View details
+  search_form:
+    date_label: Date
+    date_placeholder: Select date
+    departure_label: Type your departure point
+    departure_placeholder: Departure point
+    destination_label: Type your destination point
+    destination_placeholder: Destination point
+    exchange_button: Exchange
+    search_button: Search
