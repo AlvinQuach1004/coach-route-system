@@ -42,7 +42,8 @@ class User < ApplicationRecord
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [200, 200]
   end
-  has_many :bookings, dependent: :destroy
+  has_many :bookings, dependent: :destroy, inverse_of: :user
+  has_many :notifications, dependent: :destroy, inverse_of: :user
 
   # Scopes
   # Scopes

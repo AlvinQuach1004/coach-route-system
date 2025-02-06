@@ -96,7 +96,11 @@ module Admin
         format.html { redirect_to admin_schedules_path, flash: { success: message } }
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.update('modal_schedules', ''),
+            turbo_stream.update(
+              'schedules_table',
+              partial: 'admin/schedules/shared/schedules',
+              locals: { schedules: @schedules }
+            ),
             turbo_stream.update(
               'flash_message',
               partial: 'layouts/flash',

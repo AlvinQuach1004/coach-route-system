@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_24_023932) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_06_033445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -73,6 +73,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_24_023932) do
     t.decimal "latitude", precision: 9, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.boolean "is_read"
+    t.uuid "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "booking_id"
+    t.index ["booking_id"], name: "index_notifications_on_booking_id"
+    t.index ["user_id", "booking_id"], name: "index_notifications_on_user_id_and_booking_id"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "pay_charges", force: :cascade do |t|
@@ -269,6 +282,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_24_023932) do
   add_foreign_key "bookings", "stops", column: "end_stop_id"
   add_foreign_key "bookings", "stops", column: "start_stop_id"
   add_foreign_key "bookings", "users"
+  add_foreign_key "notifications", "bookings"
+  add_foreign_key "notifications", "users"
   add_foreign_key "pay_charges", "pay_customers", column: "customer_id"
   add_foreign_key "pay_charges", "pay_subscriptions", column: "subscription_id"
   add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"
