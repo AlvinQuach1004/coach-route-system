@@ -140,54 +140,49 @@ vi:
           title: "Búa phá kính"
           description: "Dùng để phá kính ô tô thoát hiểm trong trường hợp khẩn cấp"
     bookings:
-      lower_floor_label: "Tầng dưới"
-      upper_floor_label: "Tầng trên"
+      legend: "Chú thích"
       seat_status:
         empty: "Ghế trống"
         booked: "Ghế đã đặt"
         selected: "Ghế đã chọn"
-      form:
-        legend: "Chú thích"
-        seats:
-          available: "Ghế trống"
-          booked: "Ghế đã đặt"
-          selected: "Ghế đang chọn"
-        floors:
-          lower_floor: "Tầng dưới"
-          upper_floor: "Tầng trên"
+      floors:
+        lower_floor_label: "Tầng dưới"
+        upper_floor_label: "Tầng trên"
+      summary:
+        seats: "Ghế"
+        total: "Tổng cộng"
+      locations:
+        pickup:
+          title: "Điểm đón"
+          view_closest: "Xem điểm đón gần nhất?"
+          change: "Thay đổi"
+          position: "Vị trí"
+        dropoff:
+          title: "Điểm trả"
+          view_closest: "Xem điểm trả gần nhất?"
+          change: "Thay đổi"
+          position: "Vị trí"
+      totals:
+        total_tickets: "Tổng số vé"
+        total_price: "Tổng cộng"
+      payment:
+        title: "Phương thức thanh toán"
+        methods:
+          stripe: "Thẻ tín dụng"
+          cash: "Tiền mặt"
         summary:
-          seats: "Ghế"
-          total: "Tổng cộng"
-        locations:
-          pickup:
-            title: "Điểm đón"
-            view_closest: "Xem điểm đón gần nhất?"
-            change: "Thay đổi"
-            position: "Vị trí"
-          dropoff:
-            title: "Điểm trả"
-            view_closest: "Xem điểm trả gần nhất?"
-            change: "Thay đổi"
-            position: "Vị trí"
-        payment:
-          title: "Phương thức thanh toán"
-          methods:
-            stripe: "Thẻ tín dụng"
-            cash: "Tiền mặt"
-          summary:
-            title: "Tổng quan"
-            price: "Giá vé"
-            quantity: "Số lượng"
-            from: "Từ"
-            to: "Đến"
-            departure_time: "Giờ khởi hành"
-            departure_date: "Ngày khởi hành"
-            pay_before: "Thanh toán trước"
-            total: "TỔNG CỘNG"
-          confirm: "Xác nhận đặt vé"
-        navigation:
-          back: "Quay lại"
-          next: "Tiếp tục"
-        tickets:
-          total: "Tổng số vé"
-          total_price: "Tổng tiền"
+          title: "Tổng quan"
+          price: "Giá vé"
+          quantity: "Số lượng"
+          from: "Từ"
+          to: "Đến"
+          departure_time: "Giờ khởi hành"
+          departure_date: "Ngày khởi hành"
+          pay_before: "Thanh toán trước"
+          total: "TỔNG CỘNG"
+        confirm: "Xác nhận đặt vé"
+      navigation:
+        back: "Quay lại"
+        next: "Tiếp tục"
+  history:
+    title: "Lịch sử đặt vé"

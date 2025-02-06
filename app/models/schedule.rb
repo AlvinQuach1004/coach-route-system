@@ -71,7 +71,7 @@ class Schedule < ApplicationRecord
   end
 
   def seat_available?(seat_number)
-    !tickets.exists?(seat_number: seat_number, status: Ticket::Status::BOOKED || Ticket::Status::PAID)
+    !tickets.exists?(seat_number: seat_number, status: [Ticket::Status::BOOKED, Ticket::Status::PAID])
   end
 
   def seat_rows_by_type

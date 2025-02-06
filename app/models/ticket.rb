@@ -45,7 +45,7 @@ class Ticket < ApplicationRecord
       paid: Status::PAID,
       cancelled: Status::CANCELLED
     },
-    default: Status::BOOKED
+    default: Status::CANCELLED
 
   # Validations
   validates :paid_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
