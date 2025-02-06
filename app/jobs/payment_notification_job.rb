@@ -31,7 +31,6 @@ class PaymentNotificationJob
           title: 'Payment Trip Reminder'
         )
 
-        # Create notification for the user
         Notification.create!(
           user: user,
           booking_id: booking.id,

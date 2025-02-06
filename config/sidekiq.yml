@@ -4,3 +4,17 @@ concurrency: 10
   - low
   - medium
   - high
+:scheduler:
+  :schedule:
+    schedule_notifications:
+      # Run every day at 8:00 AM
+      cron: '0 9 * * *'
+      class: ScheduleNotificationJob
+      queue: default
+      enabled: true
+
+    payment_notifications:
+      cron: '0 8 * * *'
+      class: PaymentNotificationJob
+      queue: default
+      enabled: true
