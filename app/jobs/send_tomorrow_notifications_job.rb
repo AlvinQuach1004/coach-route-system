@@ -38,7 +38,7 @@ class SendTomorrowNotificationsJob
       PaymentReminderCableNotifier.with(
         booking: booking,
         schedule: booking.tickets.first.schedule
-      ).deliver(booking.user)s
+      ).deliver(booking.user)
     end
   end
 end
