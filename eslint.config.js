@@ -8,6 +8,9 @@ export default [
   js.configs.recommended,
   eslintPluginPrettierRecommended,
   {
+    ignores: ["app/frontend/controllers/shared/routes.js"]
+  },
+  {
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
