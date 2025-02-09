@@ -8,6 +8,7 @@
       
   .flex.gap-4.pr-4
     = render 'shared/switch_locale'
+    = render 'shared/notifications' if user_signed_in?
     = render 'shared/switch_theme'
     .dropdown.dropdown-end
       div class='btn btn-ghost btn-circle avatar' tabindex='0'

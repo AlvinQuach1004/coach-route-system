@@ -35,15 +35,15 @@ en:
     sign_up: Sign Up
   history:
     information:
-      booked_date: Ngày đặt vé
-      coach_type: Loại xe
-      departure_date: Ngày khởi hành
-      departure_time: Giờ khởi hành
-      payment_method: Phương thức thanh toán
-      route: Tuyến đường
-      seats: Ghế ngồi
-      status: Trạng thái
-    no_bookings_found: Không tìm thấy đặt chỗ nào
+      booked_date: Booking Date
+      coach_type: Coach Type
+      departure_date: Departure Date
+      departure_time: Departure Time
+      payment_method: Payment Method
+      route: Route
+      seats: Seats
+      status: Status
+    no_bookings_found: No bookings found
     title: Booking history
   home:
     description: The best place to book bus tickets

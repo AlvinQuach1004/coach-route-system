@@ -43,7 +43,8 @@ class User < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [200, 200]
   end
   has_many :bookings, dependent: :destroy, inverse_of: :user
-  has_many :notifications, dependent: :destroy, inverse_of: :user
+  has_many :notifications, as: :recipient, dependent: :destroy, class_name: 'Noticed::Notification'
+  has_many :notification_mentions, as: :record, dependent: :destroy, class_name: 'Noticed::Event'
 
   # Scopes
   # Scopes

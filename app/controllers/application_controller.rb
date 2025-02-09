@@ -3,8 +3,10 @@
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+  protect_from_forgery with: :exception, unless: -> { request.format.json? }
   before_action :store_user_location, if: :storable_location?
   before_action :set_locale
+  before_action :set_notifications_count, if: :user_signed_in?
 
   include Pundit::Authorization
   include Pagy::Backend
@@ -31,6 +33,11 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_notifications_count
+    @notifications = current_user.notifications.order(created_at: :desc)
+    @unread_count = current_user.notifications.unread.where(type: ['DepartureCableNotifier::Notification', 'PaymentReminderCableNotifier::Notification']).count
+  end
 
   def set_locale
     I18n.locale = params[:locale] || session[:locale] || I18n.default_locale

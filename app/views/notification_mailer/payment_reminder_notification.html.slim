@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
+  body.bg-gray-100
+    .container.mx-auto.p-4
+      h1.text-2xl.font-bold.mb-4 Payment Reminder
+      p.mb-4 Please complete your payment for tomorrow's trip.
+      .bg-white.rounded-lg.shadow.p-4.mb-4
+        h2.text-xl.font-semibold.mb-2 Booking Details
+        p
+          | Amount Due: #{format_currency_vnd(@booking.tickets.sum(&:paid_amount))}
+        p
+          | Trip: #{@schedule.route.start_location.name} to #{@schedule.route.end_location.name}
+        p
+          = "Departure: #{@schedule.formatted_departure_date} #{@schedule.formatted_departure_time}"
+        
+        .mt-4
+          h3.text-lg.font-semibold.mb-2 Your Tickets
+          table.w-full.border-collapse
+            thead
+              tr.bg-gray-50
+                th.p-2.border.text-left Seat Number
+                th.p-2.border.text-right Amount
+            tbody
+              - @booking.tickets.each do |ticket|
+                tr
+                  td.p-2.border = ticket.seat_number
+                  td.p-2.border.text-right = format_currency_vnd(ticket.paid_amount)

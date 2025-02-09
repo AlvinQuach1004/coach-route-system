@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { loadStripe } from '@stripe/stripe-js';
+import { payments_path } from './routes';
 
 export default class extends Controller {
   static targets = ['paymentMethodInput', 'submitButton'];
@@ -45,7 +46,7 @@ export default class extends Controller {
       this.submitButtonTarget.disabled = true;
 
       // Create checkout session
-      const response = await fetch('/payments', {
+      const response = await fetch(payments_path(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

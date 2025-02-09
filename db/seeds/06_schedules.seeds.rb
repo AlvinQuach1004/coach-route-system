@@ -14,7 +14,7 @@ coaches = Coach.all
     coach_id: coach.id,
     departure_date: departure_date,
     departure_time: departure_time,
-    status: 'scheduled',
+    status: Schedule::Status::SCHEDULED,
     price: price
   )
 end

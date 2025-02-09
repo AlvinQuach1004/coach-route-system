@@ -1,10 +1,12 @@
 module Authentication
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+    skip_before_action :verify_authenticity_token, only: [:google_oauth2]
+
     def google_oauth2
       user = User.from_google(from_google_params)
 
       if user.present?
-        flash[:notice] = t('devise.omniauth_callbacks.success', kind: 'Google')
+        flash[:success] = t('devise.omniauth_callbacks.success', kind: 'Google')
         sign_in_and_redirect user, event: :authentication
       else
         flash[:alert] = t(

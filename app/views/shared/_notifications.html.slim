@@ -1,0 +1,45 @@
+= turbo_frame_tag 'notifications_dropdown' do
+  .dropdown.dropdown-end.relative data-controller="notifications"
+    button.btn.btn-ghost.btn-circle[
+      data-notifications-target="dropdown"
+      data-action="click->notifications#toggleDropdown"
+      tabindex="0"
+    ]
+      .indicator
+        svg.h-5.w-5[
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        ]
+          path[
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+          ]
+        - if @unread_count > 0
+          #notifications-badge
+            span.badge.badge-primary.badge-sm.indicator-item.badge-notifications-count data-notifications-target="badge" 
+              = @unread_count
+
+    .dropdown-content.shadow.bg-base-100.rounded-box.max-w-80.w-80[
+      data-notifications-target="content"
+      class="hidden"
+      tabindex="0"
+    ]
+      .border-b.bg-base-100.rounded-t-box
+        .menu-title.flex.justify-between.items-center.px-4.py-2
+          span.mx-auto Notifications
+          - if @unread_count > 0
+            button.mark-as-all-read-btn.btn.btn-ghost.btn-xs[
+              data-action="notifications#markAllAsRead"
+            ] Mark all as read
+
+      .overflow-y-auto.max-h-96
+        = turbo_frame_tag 'notifications_list' do
+          #notifications-list
+            - if @notifications.any?
+              = render partial: 'notifications/notification', collection: @notifications
+            - else
+              .no-notifications-text.text-center.py-4.text-base-content/60 No notifications
