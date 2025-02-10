@@ -64,24 +64,26 @@ class RoutePagesQuery < ApplicationQuery
       return self if trends.blank?
       return order(departure_date: :desc) if trends.include?('Latest')
 
-      self
+      if trends.include?('Seat available')
+        joins(:coach)
+          .joins('LEFT JOIN tickets ON tickets.schedule_id = schedules.id')
+          .select('schedules.*, coaches.capacity, COUNT(DISTINCT tickets.id) as booked_seats')
+          .group('schedules.id, coaches.id, routes.id')
+          .having('COUNT(DISTINCT tickets.id) < coaches.capacity')
+      end
     end
 
     def filter_by_departure(departure)
       return self if departure.blank?
 
-      # Tìm Location theo tên (không phân biệt hoa thường)
       departure_location = Location.find_by('LOWER(name) = ?', departure.downcase)
 
-      # Tìm Stop theo địa chỉ hoặc location_id
       departure_stops = Stop.where(is_pickup: true)
         .where('LOWER(address) ILIKE ?', "%#{departure.downcase}%")
         .or(Stop.where(location_id: departure_location&.id, is_pickup: true))
 
-      # Lấy danh sách route_id từ các điểm dừng hợp lệ
       route_ids = departure_stops.pluck(:route_id)
 
-      # Truy vấn Schedule theo Route hoặc Stop hợp lệ
       joins(route: :stops)
         .where(routes: { id: route_ids })
         .or(joins(route: :stops).where(stops: { location_id: departure_location&.id, is_pickup: true }))

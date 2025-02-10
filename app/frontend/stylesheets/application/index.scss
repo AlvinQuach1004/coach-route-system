@@ -86,6 +86,15 @@
   height: 100%;
 }
 
+#carousel::-webkit-scrollbar {
+  display: none;
+}
+
+#carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 // Carousel at view details to show images logic
 @mixin aspect-ratio($width, $height) {
   position: relative;

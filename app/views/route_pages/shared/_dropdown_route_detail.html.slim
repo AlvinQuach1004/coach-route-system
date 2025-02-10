@@ -30,31 +30,33 @@
       .divider.divider-horizontal.mt-4
   
   // Tab Content: Images (Carousel)
+  - image_prefix = schedule.coach.coach_type
+  - image_urls = (1..6).map { |i| vite_asset_path("images/coach/#{image_prefix}/#{image_prefix}_#{i}.jpg") }
+  
   div[
-    data-dropdown-target="tabPanel"
-    id="images-#{schedule.id.gsub('-', '')}"
-    role="tabpanel"
-    class="mx-auto relative hidden mt-4"]
+      data-dropdown-target="tabPanel"
+      id="images-#{schedule.id.gsub('-', '')}"
+      role="tabpanel"
+      class="mx-auto relative hidden mt-4"]
     section.max-w-2xl
       .carousel-container
         .carousel
           - (1..6).each do |i|
             input type="radio" name="slides-#{schedule.id}" id="slide-#{i}-#{schedule.id}"
           ul.carousel__slides
-            - (1..6).each do |i|
+            - image_urls.each_with_index do |image_url, i|
               li.carousel__slide
                 figure
                   div
-                    img src="https://picsum.photos/id/#{1040 + i}/800/450" alt="Picture #{1040 + i}"
+                    = image_tag image_url, alt: "Picture #{i + 1}"
                   figcaption
-                    | Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    span.credit Photo: Example #{i}
+                    = t("route_pages.categories.#{image_prefix}")
+                    span.credit Photo: #{i + 1}
           ul.carousel__thumbnails.max-h-dhv
-            - (1..6).each do |i|
+            - image_urls.each_with_index do |image_url, i|
               li
-                label for="slide-#{i}-#{schedule.id}"
-                  img src="https://picsum.photos/id/#{1040 + i}/150/150" alt=""
-
+                label for="slide-#{i + 1}-#{schedule.id}"
+                  = image_tag image_url, alt: "Thumbnail #{i + 1}"
   // Policy tab
   div[
     data-dropdown-target="tabPanel" 

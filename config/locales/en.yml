@@ -45,6 +45,23 @@ en:
       status: Status
     no_bookings_found: No bookings found
     title: Booking history
+  invoice:
+    title: "Invoice"
+    heading: "Invoice Details"
+    icon_alt: "Coach Icon"
+    issued: "Issued Date"
+    due: "Due Date"
+    from: "From"
+    to: "To"
+    ticket: "Ticket"
+    quantity: "Quantity"
+    seat_number: "Seat Number"
+    payment_method: "Payment Method"
+    total: "Total"
+    total_quantity: "Total Quantity"
+    paid: "Paid"
+    rest: "Remaining Balance"
+    confirm: "Confirm Payment"
   home:
     description: The best place to book bus tickets
     from_to: "%{from} → %{to}"
@@ -115,7 +132,7 @@ en:
         total_tickets: Total tickets
     categories:
       limousine: Limousine
-      room: Private Room
+      room: Room
       sleeper: Sleeper
     category_label: Coach Type
     coach_type: Coach Type

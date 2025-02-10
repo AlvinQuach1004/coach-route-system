@@ -3,7 +3,9 @@
     div data-turbo-permanent="true"
       .card.shadow-xl.p-4.flex.mb-4.bg-base-200.my-8.card-container data-controller="dropdown" data-schedule-id="#{schedule.id}" data-dropdown-target="cardContainer" id="schedule-card-#{schedule.id}"
         .flex.flex-col.md:flex-row
-          = image_tag "https://via.placeholder.com/150", alt: "Product", class: "w-full md:w-48 h-48 object-cover mb-4 md:mb-0 md:mr-4"
+          - coach_images = {'limousine' => vite_asset_path('images/coach/limousine/limousine.jpg'), 'room' => vite_asset_path('images/coach/room/room.jpg'), 'sleeper' => vite_asset_path('images/coach/sleeper/sleeper.jpg') }
+          - image_url = coach_images[schedule.coach.coach_type] || "https://via.placeholder.com/150"
+          = image_tag image_url, alt: "#{schedule.coach.coach_type}_image", class: "w-full rounded-md md:w-48 h-48 object-cover mb-4 md:mb-0 md:mr-4"
           .flex-1
             .flex.flex-col.justify-center.mb-2
               h3.font-bold.text-xl Xe Tuấn Hưng

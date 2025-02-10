@@ -1,74 +1,75 @@
-- provide(:title, 'Invoice')
+- provide(:title, t('invoice.title'))
+
 .min-h-screen.bg-base-100.p-8
   .max-w-3xl.mx-auto.bg-base-200.rounded-lg.shadow-lg.p-8
     .flex.justify-between.items-center
       div
-        h1.text-4xl.font-bold.text-gray-800 INVOICE
+        h1.text-4xl.font-bold.text-gray-800 = t('invoice.heading')
         p.text-gray-600.mt-1 = @booking.id
       
       .text-slate-600.h-28.w-28
-        = image_tag vite_asset_path('images/icons/coach_icon.png'), alt: 'Coach Icon'
+        = image_tag vite_asset_path('images/icons/coach_icon.png'), alt: t('invoice.icon_alt')
 
     .grid.grid-cols-4.gap-8.mt-8.border-b.border-gray-200.pb-8
       .space-y-2
-        p.text-gray-600 Issued
+        p.text-gray-600 = t('invoice.issued')
         p.font-medium = @booking.created_at.strftime('%d %b, %Y')
       
       .space-y-2
-        p.text-gray-600 Due
-        p.font-medium = @booking.tickets.first.created_at.strftime('%d %b, %Y')
+        p.text-gray-600 = t('invoice.due')
+        p.font-medium = @booking_date.strftime('%d %b, %Y')
 
       .space-y-2
-        p.text-gray-600 From
+        p.text-gray-600 = t('invoice.from')
         .font-medium
-          p = "#{@booking.start_stop.address} - "
-          p = @booking.start_stop.location.name 
-          p.mt-6 = @booking.start_stop.is_pickup ? current_user.phone_number : ''
+          p = safe_join([@booking.start_stop.address, "-", @booking.start_stop.location.name])
+          - if @booking.start_stop.is_pickup
+            p.mt-6 = current_user.phone_number
       
       .space-y-2
-        p.text-gray-600 To
+        p.text-gray-600 = t('invoice.to')
         .font-medium
-          p = "#{@booking.end_stop.address} - "
-          p = @booking.end_stop.location.name 
+          p = safe_join([@booking.end_stop.address, "-", @booking.end_stop.location.name])
     
     .mt-8
       table.w-full
         thead
           tr.text-left
-            th.py-2.font-medium.text-gray-600 Ticket
-            th.py-2.font-medium.text-gray-600 Quantity
-            th.py-2.font-medium.text-gray-600 Seat Number
-            th.py-2.font-medium.text-gray-600 Payment method
-            th.py-2.font-medium.text-gray-600.text-right Total
+            th.py-2.font-medium.text-gray-600 = t('invoice.ticket')
+            th.py-2.font-medium.text-gray-600 = t('invoice.quantity')
+            th.py-2.font-medium.text-gray-600 = t('invoice.seat_number')
+            th.py-2.font-medium.text-gray-600 = t('invoice.payment_method')
+            th.py-2.font-medium.text-gray-600.text-right = t('invoice.total')
         
         tbody
           - @booking.tickets.each do |ticket|
             tr
               td.py-4
-                p.font-medium = "#{@booking.start_stop.location.name} - #{@booking.end_stop.location.name}"
-                p.text-gray-600.text-sm = "#{ticket.pick_up} - #{ticket.drop_off}"
+                p.font-medium = safe_join([@booking.start_stop.location.name, "-", @booking.end_stop.location.name])
+                p.text-gray-600.text-sm = safe_join([ticket.pick_up, "-", ticket.drop_off])
               td.py-4.text-center = 1
               td.py-4.text-center = ticket.seat_number
               td.py-4.text-center = @booking.payment_method
-              td.py-4.text-right = "#{ticket.paid_amount}đ"
+              td.py-4.text-right = number_to_currency(ticket.paid_amount, unit: "đ", delimiter: ".")
+    
     .mt-8.space-y-3
       .flex.justify-between.py-2
-          span.font-medium Total Quantity
-          span.font-medium = @booking.tickets.count
+        span.font-medium = t('invoice.total_quantity')
+        span.font-medium = @booking.tickets.count
+      
       .flex.justify-between.py-2
-        span.font-medium Total
-        span.font-medium = @booking.tickets.sum(&:paid_amount).to_s + "đ"
-    
+        span.font-medium = t('invoice.total')
+        - total_amount = @booking.tickets.sum(&:paid_amount)
+        span.font-medium = number_to_currency(total_amount, unit: "đ", delimiter: ".")
+
       .flex.justify-between.py-2.border-t.border-gray-200
-        span.font-medium Paid
-        span.font-medium = @booking.tickets.sum(&:paid_amount).to_s + "đ"
-    
+        span.font-medium = t('invoice.paid')
+        span.font-medium = number_to_currency(total_amount, unit: "đ", delimiter: ".")
+
       .flex.justify-between.py-2.border-t.border-purple-500
-        span.font-medium.text-purple-600 Rest
-        span.font-medium.text-purple-600
-        - if @booking.payment_method == 'cash'
-          = "#{@booking.tickets.sum(&:paid_amount)}đ"
-        - else
-          = "#{@booking.tickets.sum(&:paid_amount) - @booking.tickets.sum(&:paid_amount)}đ"
+        span.font-medium.text-purple-600 = t('invoice.rest')
+        - rest_amount = (@booking.payment_method == 'cash' ? 0 : total_amount)
+        span.font-medium.text-purple-600 = number_to_currency(rest_amount, unit: "đ", delimiter: ".")
+
     .mt-8.flex.justify-end
-      = link_to 'Confirm', thank_you_bookings_path, class: 'btn btn-success text-white'
+      = link_to t('invoice.confirm'), thank_you_bookings_path, class: 'btn btn-success text-white'

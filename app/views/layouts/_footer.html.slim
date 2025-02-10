@@ -1,35 +1,53 @@
 footer.bg-base-200.py-10
-  .container.mx-auto.grid.grid-cols-1.md:grid-cols-2.gap-8.px-6.items-center
-    .pl-28.flex.flex-col.items-center.md:items-start.text-center.md:text-left
+  .container.px-10.mx-auto.grid.grid-cols-1.md:grid-cols-3.lg:grid-cols-4.gap-10.px-6.items-start.text-center.md:text-left
+    .flex.flex-col.items-center.pl-8.md:items-start
       = image_tag vite_asset_path('images/icons/coach_icon.png'), class: 'w-16 h-16', alt: 'Coach Icon'
       h2.text-lg.font-bold Alvin Coach
-      p.text-sm Copyright © 2025 Alvin Coach Ltd.
-      p.text-sm All rights reserved
+      p.text-sm.text-gray-500 Copyright © 2025 Alvin Coach Ltd.
+      p.text-sm.text-gray-500 All rights reserved
 
-    .flex.justify-around.w-full.text-center.md:text-left
-      .space-y-2
-        h3.text-lg.font-semibold Company
-        ul.space-y-1.text-sm
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" About us
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Blog
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Contact us
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Pricing
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Testimonials
-      .space-y-2
-        h3.text-lg.font-semibold Support
-        ul.space-y-1.text-sm
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Help center
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Terms of service
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Legal
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Privacy policy
-          li
-            a.text-gray-500.hover:text-gray-900 href="#" Status
+    // 🔹 Danh mục Company
+    .space-y-4.pl-8
+      h3.text-lg.font-semibold.text-gray-800 Company
+      ul.space-y-2.text-sm
+        li
+          = link_to "About us", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Blog", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Contact us", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Pricing", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Testimonials", "#", class: "text-gray-500 hover:text-gray-900 transition"
+
+    // 🔹 Danh mục Support
+    .space-y-4.pl-8
+      h3.text-lg.font-semibold.text-gray-800 Support
+      ul.space-y-2.text-sm
+        li
+          = link_to "Help center", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Terms of service", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Legal", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Privacy policy", "#", class: "text-gray-500 hover:text-gray-900 transition"
+        li
+          = link_to "Status", "#", class: "text-gray-500 hover:text-gray-900 transition"
+
+    // 🔹 Kết nối mạng xã hội
+    .space-y-4.pl-8
+      h3.text-lg.font-semibold.text-gray-800 Follow Us
+      .flex.justify-center.md:justify-start.space-x-4
+        = link_to "#", class: "w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300 transition"
+          svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook"
+            path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+        = link_to "#", class: "w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300 transition"
+          svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter"
+            path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"
+        = link_to "#", class: "w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300 transition"
+          svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram"
+            rect width="20" height="20" x="2" y="2" rx="5" ry="5"
+            path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+            line x1="17.5" x2="17.51" y1="6.5" y2="6.5"

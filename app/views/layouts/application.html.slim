@@ -16,6 +16,9 @@ html[lang="en"]
     = vite_client_tag
     = vite_javascript_tag "application", "data-turbo-track": "reload"
     link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js/dist/goong-js.js"
+    script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-geocoder/dist/goong-geocoder.js"
+    link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-geocoder/dist/goong-geocoder.css"
   body.w-fit.md:w-full data-controller="icons" class="dark" data-user-signed-in="#{user_signed_in? ? 'true' : 'false'}"
     #flash-messages
       - if flash.any?
