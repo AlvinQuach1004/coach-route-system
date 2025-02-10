@@ -86,3 +86,6 @@ group :test do
   gem 'simplecov', require: false
   gem 'rails-controller-testing'
 end
+
+gem 'noticed', '~> 2.6'
+gem 'js-routes'

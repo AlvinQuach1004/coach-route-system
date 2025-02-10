@@ -1,5 +1,6 @@
 require 'sidekiq-unique-jobs'
 require 'sidekiq/web'
+require 'sidekiq-scheduler'
 
 Sidekiq.configure_server do |config|
   config.redis = { url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/1') }

@@ -20,7 +20,6 @@ html[lang="en"]
     .drawer.lg:drawer-open
       input#my-drawer-2.drawer-toggle type="checkbox"
       .drawer-content.flex.flex-col.p-8
-        / In your admin.html.slim
         = turbo_frame_tag 'flash_message' do
           = render partial: 'layouts/flash'
         = render 'layouts/admin_navbar'

@@ -31,6 +31,7 @@ class Booking < ApplicationRecord
   has_many :tickets, dependent: :destroy, inverse_of: :booking
   belongs_to :start_stop, class_name: 'Stop', inverse_of: :start_stops
   belongs_to :end_stop, class_name: 'Stop', inverse_of: :end_stops
+  has_many :notification_mentions, as: :record, dependent: :destroy, class_name: 'Noticed::Event'
 
   # Constants
   module PaymentMethod

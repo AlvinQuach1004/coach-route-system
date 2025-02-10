@@ -4,3 +4,8 @@ concurrency: 10
   - low
   - medium
   - high
+:scheduler:
+  :schedule:
+    send_tomorrow_notifications:
+    cron: "0 8 * * *"
+    class: "SendTomorrowNotificationsJob"

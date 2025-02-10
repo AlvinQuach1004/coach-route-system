@@ -2,7 +2,8 @@
 
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   devise_for :users, only: :omniauth_callbacks, controllers: { omniauth_callbacks: 'authentication/omniauth_callbacks' }
-  scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
+  scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do # rubocop:disable Metrics/BlockLength
+    mount ActionCable.server => '/cable'
     resources :route_pages, only: [:index]
     resources :bookings do
       member do
@@ -43,6 +44,15 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
     resource :profile, only: [:show] do
       patch :update_field, on: :member
+    end
+
+    resources :notifications, only: [:index] do
+      member do
+        post :mark_as_read
+      end
+      collection do
+        post :mark_all_as_read
+      end
     end
 
     get '/locations/search', to: 'locations#search'

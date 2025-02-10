@@ -31,18 +31,20 @@ module Admin
     def create
       @schedule = Schedule.new(schedule_params)
       if @schedule.save
-        handle_success('Schedule was created successfully')
+        flash[:success] = 'Schedule was created successfully'
       else
-        handle_failure(@schedule)
+        flash[:warning] = 'Fail to create schedule'
       end
+      redirect_to admin_schedules_path
     end
 
     def update
       if @schedule.update(schedule_params)
-        handle_success('Schedule was updated successfully')
+        flash[:success] = 'Schedule was updated successfully'
       else
-        handle_failure(@schedule)
+        flash[:warning] = 'Fail to update schedule'
       end
+      redirect_to admin_schedules_path
     end
 
     def destroy
@@ -61,7 +63,8 @@ module Admin
           end
         end
       else
-        handle_failure(@schedule)
+        flash[:warning] = 'Fail to destroy schedule'
+        redirect_to admin_schedules_path
       end
     end
 
@@ -89,39 +92,6 @@ module Admin
         :price,
         tickets_attributes: [:id, :_destroy]
       )
-    end
-
-    def handle_success(message)
-      respond_to do |format|
-        format.html { redirect_to admin_schedules_path, flash: { success: message } }
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.update('modal_schedules', ''),
-            turbo_stream.update(
-              'flash_message',
-              partial: 'layouts/flash',
-              locals: { type: 'success', message: message }
-            )
-          ]
-        end
-      end
-    end
-
-    def handle_failure(resource)
-      error_message = resource.errors.full_messages.to_sentence.presence || 'An error occurred. Please try again.'
-
-      render turbo_stream: [
-        turbo_stream.update(
-          'schedules_table',
-          partial: 'admin/schedules/shared/schedules',
-          locals: { route: resource }
-        ),
-        turbo_stream.update(
-          'flash_message',
-          partial: 'layouts/flash',
-          locals: { type: 'warning', message: error_message }
-        )
-      ]
     end
   end
 end

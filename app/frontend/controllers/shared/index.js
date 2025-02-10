@@ -7,6 +7,8 @@ import './toast';
 import './modal';
 import './add_stop';
 import './profile_editor';
+import './notifications_channel';
+import './routes';
 
 const application = Application.start();
 

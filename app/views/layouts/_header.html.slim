@@ -12,6 +12,7 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
           = t('header.about')
     .container.flex.gap-4.w-full.justify-end
       = render 'shared/switch_locale'
+      = render 'shared/notifications' if user_signed_in?
       = render 'shared/switch_theme'
       - if !user_signed_in?
         .flex.gap-4.justify-center.items-center.mr-14

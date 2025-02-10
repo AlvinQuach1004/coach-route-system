@@ -185,4 +185,13 @@ vi:
         back: "Quay lại"
         next: "Tiếp tục"
   history:
-    title: "Lịch sử đặt vé"
+    information:
+      booked_date: "Ngày đặt vé"
+      coach_type: "Loại xe"
+      departure_date: "Ngày khởi hành"
+      departure_time: "Giờ khởi hành"
+      payment_method: "Phương thức thanh toán"
+      route: "Tuyến đường"
+      seats: "Ghế ngồi"
+      status: "Trạng thái"
+    no_bookings_found: "Không tìm thấy thông tin đặt vé nào"

@@ -11,7 +11,13 @@ module Admin
 
       respond_to do |format|
         format.html
-        format.turbo_stream { render turbo_stream: turbo_stream.update('modal_routes', '') }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            'routes_table',
+            partial: 'admin/coach_routes/shared/routes',
+            locals: { routes: @routes }
+          )
+        end
       end
     end
 
@@ -200,7 +206,11 @@ module Admin
         format.html { redirect_to admin_coach_routes_path, flash: { success: message } }
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.update('modal_routes', ''),
+            turbo_stream.update(
+              'routes_table',
+              partial: 'admin/coach_routes/shared/routes',
+              locals: { routes: @routes }
+            ),
             turbo_stream.update(
               'flash_message',
               partial: 'layouts/flash',

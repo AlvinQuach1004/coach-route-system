@@ -25,6 +25,7 @@ module RailsBoilerplate
   class Application < Rails::Application
     # Prevents Rails from trying to eager-load the contents of app/frontend
     config.javascript_path = 'frontend'
+    config.action_controller.forgery_protection_origin_check = false
 
     config.i18n.available_locales = [:en, :vi]
     config.i18n.default_locale = :en
@@ -52,6 +53,12 @@ module RailsBoilerplate
       host: ENV.fetch('APP_HOST', 'localhost:3000'),
       protocol: ENV.fetch('APP_PROTOCOL', 'http')
     }
+
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
+
+    config.autoload_paths += Rails.root.glob('app/notifiers/**/*.rb')
 
     config.i18n.default_locale = :en
     config.i18n.load_path += Rails.root.glob('config/locales/**/*.{rb, yml}')

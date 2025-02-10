@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
+  body.bg-gray-100
+    .container.mx-auto.p-4
+      h1.text-2xl.font-bold.mb-4 Trip Departure Reminder
+      p.mb-4
+        | Your trip is scheduled for tomorrow with coach 
+        strong = @coach.license_plate
+        | &nbsp;with type&nbsp;
+        strong = @coach.coach_type
+      .bg-white.rounded-lg.shadow.p-4.mb-4
+        h2.text-xl.font-semibold.mb-2 Trip Details
+        p
+          = "Departure: #{@schedule.formatted_departure_date} - #{@schedule.formatted_departure_time}"
+        p
+          | Route: #{@schedule.route.start_location.name} to #{@schedule.route.end_location.name}
