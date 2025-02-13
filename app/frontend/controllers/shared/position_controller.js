@@ -75,7 +75,7 @@ export default class extends Controller {
       showToast('Không tìm thấy tọa độ cho địa chỉ', 'warn');
       return null;
     } catch (error) {
-      showToast('Lỗi gọi API Goong', 'alert');
+      showToast(`Lỗi ${error}`, 'alert');
       return null;
     }
   }
@@ -250,7 +250,7 @@ export default class extends Controller {
       }
       return 'Không xác định';
     } catch (error) {
-      showToast('Lỗi khi lấy tỉnh thành', 'alert');
+      showToast(`Lỗi: ${error}`, 'alert');
       return 'Không xác định';
     }
   }
@@ -346,7 +346,7 @@ export default class extends Controller {
       }
       return 'Không xác định';
     } catch (error) {
-      showToast('Lỗi khi lấy địa chỉ', 'alert');
+      showToast(`Lỗi ${error}`, 'alert');
       return 'Không xác định';
     }
   }
