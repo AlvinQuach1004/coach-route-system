@@ -1,7 +1,7 @@
 class RoutePagesController < ApplicationController
   before_action :retrieve_keywords, only: :index
 
-  def index
+  def index # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @booking = Booking.new
 
     query = RoutePagesQuery.new(
@@ -11,6 +11,22 @@ class RoutePagesController < ApplicationController
 
     @schedules = query[:schedules]
     @total_schedules = query[:total]
+    @stops_with_location = @schedules.map do |schedule|
+      Stop.includes(:location)
+        .where(route_id: schedule.route_id)
+        .map do |stop|
+        {
+          id: stop.id,
+          route: stop.route_id,
+          address: stop.address,
+          latitude: stop.latitude_address,
+          longitude: stop.longitude_address,
+          province: stop.location&.name,
+          pickup: stop.is_pickup,
+          dropoff: stop.is_dropoff
+        }
+      end
+    end.flatten
 
     @pagy, @schedules = pagy(@schedules)
 
@@ -23,7 +39,13 @@ class RoutePagesController < ApplicationController
         render turbo_stream: turbo_stream.replace(
           'schedules',
           partial: 'route_pages/shared/route_card',
-          locals: { schedules: @schedules, booking: @booking, departure_search: @departure_search, destination_search: @destination_search }
+          locals: {
+            schedules: @schedules,
+            booking: @booking,
+            departure_search: @departure_search,
+            destination_search: @destination_search,
+            stops_with_location: @stops_with_location
+          }
         )
       end
     end

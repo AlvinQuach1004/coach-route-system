@@ -77,34 +77,20 @@ class RoutePagesQuery < ApplicationQuery
       return self if departure.blank?
 
       departure_location = Location.find_by('LOWER(name) = ?', departure.downcase)
+      return self unless departure_location
 
-      departure_stops = Stop.where(is_pickup: true)
-        .where('LOWER(address) ILIKE ?', "%#{departure.downcase}%")
-        .or(Stop.where(location_id: departure_location&.id, is_pickup: true))
-
-      route_ids = departure_stops.pluck(:route_id)
-
-      joins(route: :stops)
-        .where(routes: { id: route_ids })
-        .or(joins(route: :stops).where(stops: { location_id: departure_location&.id, is_pickup: true }))
-        .distinct
+      route_ids_for_departure = Stop.where(location_id: departure_location.id, is_pickup: true).pluck(:route_id)
+      joins(:route).where(route_id: route_ids_for_departure)
     end
 
     def filter_by_destination(destination)
       return self if destination.blank?
 
       destination_location = Location.find_by('LOWER(name) = ?', destination.downcase)
+      return self unless destination_location
 
-      destination_stops = Stop.where(is_dropoff: true)
-        .where('LOWER(address) ILIKE ?', "%#{destination.downcase}%")
-        .or(Stop.where(location_id: destination_location&.id, is_dropoff: true))
-
-      route_ids = destination_stops.pluck(:route_id)
-
-      joins(route: :stops)
-        .where(routes: { id: route_ids })
-        .or(joins(route: :stops).where(stops: { location_id: destination_location&.id, is_dropoff: true }))
-        .distinct
+      route_ids_for_destination = Stop.where(location_id: destination_location.id, is_dropoff: true).pluck(:route_id)
+      joins(:route).where(route_id: route_ids_for_destination)
     end
 
     def filter_by_date(date)

@@ -36,9 +36,8 @@ class Booking < ApplicationRecord
   # Constants
   module PaymentMethod
     STRIPE = 'stripe'.freeze
-    CASH = 'cash'.freeze
 
-    ALL = [STRIPE, CASH].freeze
+    ALL = [STRIPE].freeze
   end
 
   # Constants for payment status
@@ -80,10 +79,9 @@ class Booking < ApplicationRecord
   # Enumerize
   enum :payment_method,
     {
-      online: PaymentMethod::STRIPE,
-      cash: PaymentMethod::CASH
+      online: PaymentMethod::STRIPE
     },
-    default: PaymentMethod::CASH
+    default: PaymentMethod::STRIPE
 
   enum :payment_status,
     {

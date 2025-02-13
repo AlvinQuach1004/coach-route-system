@@ -1,125 +1,241 @@
-import { Controller } from "@hotwired/stimulus";
-import { Modal } from "daisyui";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["modal", "searchInput", "autocompleteResults", "map"];
+  static targets = [
+    'modal',
+    'input',
+    'mapContainer',
+    'selectedLocation',
+    'totalPriceStep2',
+    'pickupPosition',
+    'dropoffPosition',
+  ];
 
   connect() {
-    this.modal = new Modal(this.modalTarget);
-    this.initializeAutocomplete();
+    console.log('Connect to location controller');
+    this.apiKey = 'BemE3YmzC3a3QF06psGMIRSYhrxtyj0evFjZC2cz';
+    this.mapboxToken = 'pk.eyJ1IjoiZGF2aWRqcjQ3MiIsImEiOiJjbTZ5dnVkcngwa256MmxxMmxkZ2Z1cHdhIn0.-lr9S82GXuHpehX4Ak3Jpg';
+    this.mapKey = 'gJPUUiuXatYmoKHmd6H0LBpuTipCTfVgqGnDV1IQ';
+    this.maxResults = 5;
+    this.selectedAddress = '';
+    this.selectedLocationCoords = null;
+    this.selectedProvince = null;
+    this.selectedPickup = null;
+    this.selectedDropoff = null;
+    this.pricePerKm = 10000;
+    this.initMap();
   }
 
-  openPickupModal() {
-    this.modal.show();
-    this.initializeMap();
+  openModal() {
+    const headerContainer = document.querySelector('.header-container');
+    headerContainer.classList.remove('sticky');
+    this.modalTarget.classList.remove('hidden');
   }
 
-  closeModal() {
-    this.modal.hide();
+  closeModal(event) {
+    event.preventDefault();
+    const headerContainer = document.querySelector('.header-container');
+    headerContainer.classList.add('sticky');
+    this.modalTarget.classList.add('hidden');
+    this.clearSuggestions();
   }
 
-  confirmPickupLocation() {
-    const selectedLocation = this.selectedLocation;
-    console.log("Selected Location:", selectedLocation);
-    this.modal.hide();
-  }
+  async autocomplete() {
+    const query = this.inputTarget.value.trim();
+    if (query.length < 3) {
+      this.clearSuggestions();
+      return;
+    }
 
-  initializeAutocomplete() {
-    const searchInput = this.searchInputTarget;
-    const autocompleteResults = this.autocompleteResultsTarget;
-
-    searchInput.addEventListener("input", async (event) => {
-      const query = event.target.value;
-
-      if (query.length > 2) {
-        // Fetch autocomplete results from Goong API
-        const response = await fetch(
-          `https://rsapi.goong.io/Place/AutoComplete?api_key=YOUR_GOONG_API_KEY&input=${encodeURIComponent(query)}`
-        );
-        const data = await response.json();
-
-        // Clear previous results
-        autocompleteResults.innerHTML = "";
-
-        // Display new results
-        if (data.predictions && data.predictions.length > 0) {
-          data.predictions.forEach((prediction) => {
-            const resultItem = document.createElement("div");
-            resultItem.className = "p-2 hover:bg-base-200 cursor-pointer";
-            resultItem.textContent = prediction.description;
-            resultItem.addEventListener("click", () => {
-              this.handleAutocompleteSelect(prediction);
-            });
-            autocompleteResults.appendChild(resultItem);
-          });
-        } else {
-          const noResults = document.createElement("div");
-          noResults.className = "p-2 text-gray-500";
-          noResults.textContent = "No results found";
-          autocompleteResults.appendChild(noResults);
-        }
-      } else {
-        autocompleteResults.innerHTML = "";
-      }
-    });
-  }
-
-  handleAutocompleteSelect(prediction) {
-    // Set the selected location
-    this.selectedLocation = {
-      description: prediction.description,
-      placeId: prediction.place_id,
-    };
-
-    // Update the search input with the selected location
-    this.searchInputTarget.value = prediction.description;
-
-    // Clear autocomplete results
-    this.autocompleteResultsTarget.innerHTML = "";
-
-    // Fetch details of the selected location (e.g., coordinates)
-    this.fetchLocationDetails(prediction.place_id);
-  }
-
-  async fetchLocationDetails(placeId) {
-    const response = await fetch(
-      `https://rsapi.goong.io/Place/Detail?api_key=YOUR_GOONG_API_KEY&place_id=${placeId}`
-    );
+    const url = `https://rsapi.goong.io/Place/AutoComplete?api_key=${this.apiKey}&input=${encodeURIComponent(query)}`;
+    const response = await fetch(url);
     const data = await response.json();
 
-    if (data.result) {
-      const { lat, lng } = data.result.geometry.location;
-      this.selectedLocation.coordinates = { lat, lng };
-
-      // Update the map to show the selected location
-      this.updateMap(lng, lat);
+    if (data.predictions) {
+      this.renderSuggestions(data.predictions.slice(0, this.maxResults));
     }
   }
 
-  initializeMap() {
-    // Initialize the Goong map
-    this.goongMap = new window.Goong.Map({
-      container: this.mapTarget,
-      style: "https://tiles.goong.io/assets/goong_map_web.json",
-      center: [105.83991, 21.028], // Default center (Hanoi, Vietnam)
-      zoom: 12,
+  renderSuggestions(suggestions) {
+    this.clearSuggestions();
+
+    const list = document.createElement('ul');
+    list.classList.add(
+      'absolute',
+      'w-full',
+      'bg-white',
+      'border',
+      'shadow-lg',
+      'z-50',
+      'max-h-56',
+      'overflow-auto',
+      'rounded-md',
+    );
+
+    suggestions.forEach((place) => {
+      const item = document.createElement('li');
+      item.classList.add('p-2', 'cursor-pointer', 'hover:bg-gray-200');
+      item.textContent = place.description;
+      item.onclick = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        this.selectSuggestion(place);
+      };
+      list.appendChild(item);
     });
 
-    // Add a marker for the selected location
-    this.marker = new window.Goong.Marker({
-      draggable: true,
-    });
-
-    // Handle marker movement
-    this.marker.on("dragend", () => {
-      const { lng, lat } = this.marker.getLngLat();
-      this.selectedLocation.coordinates = { lng, lat };
-    });
+    this.inputTarget.parentNode.appendChild(list);
   }
 
-  updateMap(lng, lat) {
-    // Update the map center and marker position
-    this.goongMap.setCenter([lng, lat]);
-    this.marker.setLngLat([lng, lat]).addTo(this.goongMap);
+  clearSuggestions() {
+    const existingList = this.inputTarget.parentNode.querySelector('ul');
+    if (existingList) {
+      existingList.remove();
+    }
+  }
+
+  async selectSuggestion(place) {
+    this.inputTarget.value = place.description;
+    this.clearSuggestions();
+
+    const url = `https://rsapi.goong.io/Place/Detail?api_key=${this.apiKey}&place_id=${place.place_id}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.result) {
+      const { formatted_address } = data.result;
+      const { location } = data.result.geometry;
+
+      this.selectedLocationCoords = [location.lng, location.lat];
+      this.selectedAddress = formatted_address;
+      this.selectedProvince = data.result.compound.province;
+      console.log(this.selectedProvince);
+      this.addMarker();
+    }
+  }
+
+  async confirmSelection(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.selectedAddress) {
+      return;
+    }
+
+    this.selectedLocationTarget.textContent = this.selectedAddress;
+    this.closeModal(event);
+
+    const stopsData = JSON.parse(this.selectedLocationTarget.dataset.locationStops);
+    console.log('Stops data:', stopsData);
+
+    const normalizeProvince = (province) => {
+      return province
+        ? province
+            .replace(/^TP\.?\s*/, '')
+            .trim()
+            .toLowerCase()
+        : '';
+    };
+
+    const matchedStops = stopsData.filter(
+      (stop) => normalizeProvince(stop.province) === normalizeProvince(this.selectedProvince),
+    );
+
+    if (matchedStops.length > 0) {
+      this.selectedLocationTarget.classList.remove('text-red-500');
+      this.calculateDistance(matchedStops);
+    } else {
+      this.selectedLocationTarget.textContent = 'Không tìm thấy điểm dừng trong cùng tỉnh!';
+      this.selectedLocationTarget.classList.add('text-red-500');
+    }
+  }
+
+  async getCoordinatesFromAddress(address) {
+    const url = `https://rsapi.goong.io/Geocode?api_key=${this.apiKey}&address=${encodeURIComponent(address)}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.results && data.results.length > 0) {
+        return data.results[0].geometry.location;
+      } else {
+        console.error('Không tìm thấy tọa độ cho địa chỉ:', address);
+        return null;
+      }
+    } catch (error) {
+      console.error('Lỗi khi gọi API Goong:', error);
+      return null;
+    }
+  }
+
+  async calculateDistance(stops) {
+    const origins = `${this.selectedLocationCoords[1]},${this.selectedLocationCoords[0]}`;
+    const destinations = await Promise.all(
+      stops.map(async (stop) => {
+        const stopLocation = await this.getCoordinatesFromAddress(stop.address);
+        return stopLocation ? `${stopLocation.lat},${stopLocation.lng}` : null;
+      }),
+    );
+
+    const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinations}&vehicle=car&api_key=${this.apiKey}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.rows.length > 0 && data.rows[0].elements.length > 0) {
+        const distances = data.rows[0].elements.map((element, index) => ({
+          stop: stops[index],
+          distance: element.distance.value,
+        }));
+
+        distances.sort((a, b) => a.distance - b.distance);
+
+        if (distances.length > 0) {
+          const nearestDistance = distances[0].distance / 1000;
+          const nearestStop = distances[0].stop;
+
+          if (nearestDistance > 30) {
+            this.selectedLocationTarget.textContent = 'Điểm đón quá xa trạm !';
+            this.selectedLocationTarget.classList.add('text-red-500');
+          } else {
+            this.selectedLocationTarget.textContent = `${this.selectedAddress} (${nearestDistance.toFixed(2)} km)`;
+            this.selectedLocationTarget.classList.remove('text-red-500');
+          }
+
+          if (this.hasPickupPositionTarget) {
+            console.log('Nearest stop:', nearestStop, `Distance: ${nearestDistance} km`);
+            this.pickupPositionTarget.textContent = nearestStop.address;
+          }
+
+          if (this.hasDropoffPositionTarget) {
+            console.log('Nearest stop:', nearestStop, `Distance: ${nearestDistance} km`);
+            this.dropoffPositionTarget.textContent = nearestStop.address;
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching distance matrix:', error);
+    }
+  }
+
+  formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN');
+  }
+
+  addMarker() {
+    new mapboxgl.Marker().setLngLat(this.selectedLocationCoords).addTo(this.map);
+    this.map.flyTo({ center: this.selectedLocationCoords, zoom: 14 });
+  }
+
+  initMap() {
+    mapboxgl.accessToken = this.mapboxToken;
+    this.map = new mapboxgl.Map({
+      container: this.mapContainerTarget,
+      style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${this.mapKey}`,
+      center: [106.7009, 10.7754],
+      zoom: 12,
+    });
   }
 }

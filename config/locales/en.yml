@@ -45,23 +45,6 @@ en:
       status: Status
     no_bookings_found: No bookings found
     title: Booking history
-  invoice:
-    title: "Invoice"
-    heading: "Invoice Details"
-    icon_alt: "Coach Icon"
-    issued: "Issued Date"
-    due: "Due Date"
-    from: "From"
-    to: "To"
-    ticket: "Ticket"
-    quantity: "Quantity"
-    seat_number: "Seat Number"
-    payment_method: "Payment Method"
-    total: "Total"
-    total_quantity: "Total Quantity"
-    paid: "Paid"
-    rest: "Remaining Balance"
-    confirm: "Confirm Payment"
   home:
     description: The best place to book bus tickets
     from_to: "%{from} → %{to}"
@@ -80,6 +63,23 @@ en:
     title: Home
     view_routes: View Routes
     welcome: Welcome to
+  invoice:
+    confirm: Confirm Payment
+    due: Due Date
+    from: From
+    heading: Invoice Details
+    icon_alt: Coach Icon
+    issued: Issued Date
+    paid: Paid
+    payment_method: Payment Method
+    quantity: Quantity
+    rest: Remaining Balance
+    seat_number: Seat Number
+    ticket: Ticket
+    title: Invoice
+    to: To
+    total: Total
+    total_quantity: Total Quantity
   language_name: English
   route_pages:
     available: Available
@@ -91,6 +91,8 @@ en:
         upper_floor_label: Upper Floor
       legend: Legend
       locations:
+        cancel: cancel
+        confirm: confirm
         dropoff:
           change: Change
           position: Position
@@ -101,6 +103,7 @@ en:
           position: Position
           title: Pickup
           view_closest: View nearest pickup point?
+        select_location: Select location
       navigation:
         back: Back
         next: Next

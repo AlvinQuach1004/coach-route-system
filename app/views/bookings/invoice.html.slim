@@ -14,22 +14,18 @@
       .space-y-2
         p.text-gray-600 = t('invoice.issued')
         p.font-medium = @booking.created_at.strftime('%d %b, %Y')
-      
-      .space-y-2
-        p.text-gray-600 = t('invoice.due')
-        p.font-medium = @booking_date.strftime('%d %b, %Y')
 
       .space-y-2
         p.text-gray-600 = t('invoice.from')
         .font-medium
-          p = safe_join([@booking.start_stop.address, "-", @booking.start_stop.location.name])
+          p = safe_join([@booking.tickets[0].pick_up, "-", @booking.start_stop.location.name])
           - if @booking.start_stop.is_pickup
             p.mt-6 = current_user.phone_number
       
       .space-y-2
         p.text-gray-600 = t('invoice.to')
         .font-medium
-          p = safe_join([@booking.end_stop.address, "-", @booking.end_stop.location.name])
+          p = safe_join([@booking.tickets[0].drop_off, "-", @booking.end_stop.location.name])
     
     .mt-8
       table.w-full
@@ -46,11 +42,10 @@
             tr
               td.py-4
                 p.font-medium = safe_join([@booking.start_stop.location.name, "-", @booking.end_stop.location.name])
-                p.text-gray-600.text-sm = safe_join([ticket.pick_up, "-", ticket.drop_off])
               td.py-4.text-center = 1
               td.py-4.text-center = ticket.seat_number
               td.py-4.text-center = @booking.payment_method
-              td.py-4.text-right = number_to_currency(ticket.paid_amount, unit: "đ", delimiter: ".")
+              td.py-4.text-right = format_currency_vnd(ticket.paid_amount)
     
     .mt-8.space-y-3
       .flex.justify-between.py-2
@@ -60,16 +55,16 @@
       .flex.justify-between.py-2
         span.font-medium = t('invoice.total')
         - total_amount = @booking.tickets.sum(&:paid_amount)
-        span.font-medium = number_to_currency(total_amount, unit: "đ", delimiter: ".")
+        span.font-medium = format_currency_vnd(total_amount)
 
       .flex.justify-between.py-2.border-t.border-gray-200
         span.font-medium = t('invoice.paid')
-        span.font-medium = number_to_currency(total_amount, unit: "đ", delimiter: ".")
+        span.font-medium = format_currency_vnd(total_amount)
 
       .flex.justify-between.py-2.border-t.border-purple-500
         span.font-medium.text-purple-600 = t('invoice.rest')
-        - rest_amount = (@booking.payment_method == 'cash' ? 0 : total_amount)
-        span.font-medium.text-purple-600 = number_to_currency(rest_amount, unit: "đ", delimiter: ".")
+        - rest_amount = 0
+        span.font-medium.text-purple-600 = format_currency_vnd(rest_amount)
 
     .mt-8.flex.justify-end
       = link_to t('invoice.confirm'), thank_you_bookings_path, class: 'btn btn-success text-white'

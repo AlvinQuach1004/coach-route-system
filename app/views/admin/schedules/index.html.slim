@@ -27,7 +27,7 @@
         label.label.mb-2
           span.label-text.font-semibold Coach
         = select_tag :coach_id, 
-            options_from_collection_for_select(Coach.all, :id, :license_plate, params[:coach_id]), 
+            options_from_collection_for_select(Coach.all, :id, lambda { |c| "#{c.license_plate} - #{c.coach_type}" }, params[:coach_id]), 
             prompt: 'Select Coach', 
             class: 'select select-bordered w-full'
 

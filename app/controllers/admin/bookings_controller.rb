@@ -40,6 +40,7 @@ module Admin
     end
 
     def destroy
+      @booking.user.notifications.destroy
       @booking.destroy
       flash[:success] = 'Booking cancelled successfully.'
       redirect_to admin_bookings_path
