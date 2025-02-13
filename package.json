@@ -18,6 +18,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "choices.js": "^11.0.2",
     "lucide": "^0.453.0",
+    "mapbox-gl": "^3.9.4",
     "rollup": "^4.2.0",
     "stimulus-vite-helpers": "^3.1.0",
     "swiper": "^11.2.0",

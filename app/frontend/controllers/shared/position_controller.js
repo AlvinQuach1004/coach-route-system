@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { showToast } from './toast';
+import mapboxgl from 'mapbox-gl';
 
 export default class extends Controller {
   static targets = [
