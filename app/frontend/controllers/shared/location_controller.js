@@ -14,9 +14,9 @@ export default class extends Controller {
 
   connect() {
     console.log('Connect to location controller');
-    this.apiKey = 'BemE3YmzC3a3QF06psGMIRSYhrxtyj0evFjZC2cz';
-    this.mapboxToken = 'pk.eyJ1IjoiZGF2aWRqcjQ3MiIsImEiOiJjbTZ5dnVkcngwa256MmxxMmxkZ2Z1cHdhIn0.-lr9S82GXuHpehX4Ak3Jpg';
-    this.mapKey = 'gJPUUiuXatYmoKHmd6H0LBpuTipCTfVgqGnDV1IQ';
+    this.apiKey = import.meta.env.VITE_GOONG_API_KEY;
+    this.mapboxToken = import.meta.env.VITE_MAPBOX_API_KEY;
+    this.mapKey = import.meta.env.VITE_GOONG_MAP_KEY;
     this.maxResults = 5;
     this.selectedAddress = '';
     this.selectedLocationCoords = null;
