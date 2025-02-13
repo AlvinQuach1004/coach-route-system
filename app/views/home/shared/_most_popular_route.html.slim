@@ -1,19 +1,23 @@
 .text-center.mt-32.mb-11
   h2.text-4xl.font-bold.bg-base-100.underline.underline-offset-8.decoration-green-500
     = t('home.popular_routes')
-.container.mx-auto.mt-8.max-w-7xl.shadow-xl.rounded-md.bg-base-200.p-16.my-8
+
+.container.mx-auto.mt-8.max-w-7xl.shadow-xl.rounded-md.bg-base-200.p-6.sm:p-8.my-8
   .relative.overflow-hidden data-controller="carousel"
-    #carousel.flex.transition-transform.duration-500.ease-out.shadow-xl data-carousel-target="container"
-      - routes.each do |route|
-        .carousel-item.flex-shrink-0.w-1/4.p-2.relative data-carousel-target="slide"
-          = link_to route_pages_path(departure: route.start_location_name, destination: route.end_location_name), class: "block" do
-            = image_tag "https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp", class: "rounded-box w-full"
-            .card-body.p-6.absolute.bottom-0.left-0.right-0
-              h3.text-white.text-center.font-medium.text-lg.bg-black.bg-opacity-50.p-2.rounded 
+    #carousel.flex.p-4.transition-transform.duration-500.ease-out class="space-x-4 overflow-x-auto snap-x snap-mandatory md:overflow-visible md:flex-nowrap" data-carousel-target="container"
+      
+      - routes.each_with_index do |route, index|
+        .carousel-item.flex-shrink-0.w-full.transition-transform.hover:scale-105.duration-300.sm:w-1/2.md:w-1/3.lg:w-1/4.p-2.relative.snap-start data-carousel-target="slide"
+          = link_to route_pages_path(departure: route.start_location_name, destination: route.end_location_name), class: "block"
+            = image_tag vite_asset_path("images/most_coach_images/province_#{index + 1}.jpg"), class: "rounded-box w-full h-64 object-cover"
+            .card-body.p-4.absolute.bottom-4.left-0.right-0.text-white.text-center.rounded
+              h3.font-medium.text-lg
                 = t('home.from_to', from: route.start_location_name, to: route.end_location_name)
-    button.absolute.left-0.z-10.top-1/2.transform.-translate-y-1/2.bg-slate-200.text-black.font-bold.rounded-full.flex.items-center.justify-center.w-12.h-12 data-action="click->carousel#prev"
-      svg.text-center xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"
+
+    button class="absolute left-0 z-10 top-1/2 transform -translate-y-1/2 bg-slate-200 text-black font-bold rounded-full flex items-center justify-center w-10 h-10 hidden md:flex" data-action="click->carousel#prev"
+      svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         path d="m15 18-6-6 6-6"
-    button.absolute.right-0.z-10.top-1/2.transform.-translate-y-1/2.bg-slate-200.text-black.font-bold.rounded-full.flex.items-center.justify-center.w-12.h-12 data-action="click->carousel#next"
-      svg.text-center xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"
+
+    button class="absolute right-0 z-10 top-1/2 transform -translate-y-1/2 bg-slate-200 text-black font-bold rounded-full flex items-center justify-center w-10 h-10 hidden md:flex" data-action="click->carousel#next"
+      svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         path d="m9 18 6-6-6-6"

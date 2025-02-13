@@ -1,5 +1,4 @@
 vi:
-  language_name: "Tiếng Việt"
   activerecord:
     errors:
       models:
@@ -14,184 +13,206 @@ vi:
   common:
     create:
       exists: "%{model} đã tồn tại"
-      failed: Không thể tạo %{model}
-      success: Tạo %{model} thành công
+      failed: "Không thể tạo %{model}"
+      success: "%{model} đã được tạo thành công"
     delete:
-      failed: Không thể xóa %{model}
-      success: Xóa %{model} thành công
+      failed: "Không thể xóa %{model}"
+      success: "%{model} đã được xóa thành công"
     import:
-      failed: Không thể nhập %{model}
-      success: Nhập %{model} thành công
+      failed: "Không thể nhập %{model}"
+      success: "%{model} đã được nhập thành công"
     update:
-      failed: Không thể cập nhật %{model}
-      success: Cập nhật %{model} thành công
+      failed: "Không thể cập nhật %{model}"
+      success: "%{model} đã được cập nhật thành công"
   header:
-    routes: 'Tuyến đường'
-    history: 'Lịch sử'
-    about: 'Giới thiệu'
-    sign_up: 'Đăng ký'
-    log_in: 'Đăng nhập'
-    profile: 'Hồ sơ'
-    log_out: 'Đăng xuất'
-  home:
-    title: "Trang chủ"
-    welcome: "Chào mừng đến với"
-    ticket_terminal: "Hệ thống đặt vé"
-    description: "Nơi tốt nhất để đặt vé xe khách"
-    view_routes: "Xem lộ trình"
-    statistic:
-      title: "Thống kê hệ thống của chúng tôi"
-      description: "Chúng tôi đã đạt được điều này bằng sự nỗ lực và cống hiến"
-    stats:
-      members: "Thành viên"
-      routes: "Lộ trình"
-      bookings: "Đặt vé"
-      payments: "Thanh toán"
-    popular_routes: "Tuyến đường phổ biến"
-    most_popular_routes_of_week: "Các tuyến phổ biến trong tuần"
-    no_popular_routes: "Không tìm thấy tuyến đường phổ biến nào trong tuần này."
-    from_to: "%{from} → %{to}"
-  search_form:
-    departure_placeholder: "Điểm khởi hành"
-    destination_placeholder: "Điểm đến"
-    date_placeholder: "Chọn ngày"
-    search_button: "Tìm kiếm"
-    departure_label: "Nhập điểm khởi hành"
-    destination_label: "Nhập điểm đến"
-    date_label: "Nhập ngày"
-    exchange_button: "Đổi chỗ"
-  route_pages:
-    title: 'Tuyến đường'
-    coach_type: 'Loại xe'
-    available_seats: 'Số chỗ còn lại'
-    view_details: 'Xem chi tiết'
-    no_stops_available: 'Không có điểm dừng'
-    departure: 'Khởi hành'
-    available: 'Còn'
-    search_results_label: 'Kết quả tìm kiếm'
-    no_routes_found: 'Không tìm thấy chuyến đi'
-    sort: "Sắp xếp"
-    sort_options:
-      default: "Mặc định"
-      price_low_to_high: "Giá thấp đến cao"
-      price_high_to_low: "Giá cao đến thấp"
-    seats: 'chỗ'
-    book: 'Đặt vé'
-    keywords_label: 'Từ khóa tuyến'
-    filter_label: 'Lọc'
-    price_label: 'Giá vé'
-    category_label: 'Loại xe'
-    categories:
-      sleeper: 'Giường nằm'
-      limousine: 'Limousine'
-      room: 'Giường phòng'
-    trends:
-      latest: 'Mới nhất'
-      seat_available: 'Chỗ trống'
-    dropdown_detail:
-      tabs:
-        pickup: "Điểm đón"
-        images: "Hình ảnh"
-        policies: "Chính sách"
-        services: "Dịch vụ"
-      pickup:
-        title: "Tỉnh/Thành phố"
-        stop_pickup: "%{address} (điểm đón)"
-        stop_dropoff: "%{address} (điểm trả)"
-        stop_normal: "%{address}"
-      policies:
-        title: "Chính sách"
-        list:
-          - "Đổi vé giấy trước khi lên xe"
-          - "Không mang đồ ăn, thức ăn có mùi lên xe"
-          - "Không hút thuốc, uống rượu, sử dụng chất kích thích trên xe"
-          - "Không mang các vật dễ cháy nổ lên xe"
-          - "Không vứt rác trên xe"
-          - "Không làm ồn, gây mất trật tự trên xe"
-          - "Không mang giày, dép trên xe"
-        luggage:
-          title: "Hành lý xách tay"
-          rules:
-            - "Tổng trọng lượng hành lý không vượt quá 20 kg"
-            - "Không vận chuyển hàng hóa cồng kềnh"
-            - "Không hoàn tiền nếu hủy đơn hàng do vi phạm hành lý"
-        children:
-          title: "Trẻ em và phụ nữ có thai"
-          rules:
-            - "Trẻ em dưới 3 tuổi hoặc dưới 100 cm miễn phí vé nếu ngồi chung"
-            - "Trẻ em từ 3 tuổi hoặc cao từ 100 cm trở lên mua vé như người lớn"
-        bike_shipping:
-          title: "Gửi xe đạp/xe máy"
-          details: "Liên hệ tổng đài để biết cước phí và xác nhận chỗ trống."
-      services:
-        safety_belt:
-          title: "Dây đai an toàn"
-          description: "Trên xe có trang bị dây đai an toàn cho hành khách khi ngồi trên xe"
-        motorbike:
-          title: "Gửi kèm xe máy"
-          description: "Nhà xe cho khách gửi kèm theo xe máy"
-        water:
-          title: "Nước uống"
-          description: "Nhà xe có phục vụ nước cho hành khách"
-        bedding:
-          title: "Gối nằm và chăn"
-          description: "Trên xe có trang bị gối nằm và chăn"
-        hammer:
-          title: "Búa phá kính"
-          description: "Dùng để phá kính ô tô thoát hiểm trong trường hợp khẩn cấp"
-    bookings:
-      legend: "Chú thích"
-      seat_status:
-        empty: "Ghế trống"
-        booked: "Ghế đã đặt"
-        selected: "Ghế đã chọn"
-      floors:
-        lower_floor_label: "Tầng dưới"
-        upper_floor_label: "Tầng trên"
-      summary:
-        seats: "Ghế"
-        total: "Tổng cộng"
-      locations:
-        pickup:
-          title: "Điểm đón"
-          view_closest: "Xem điểm đón gần nhất?"
-          change: "Thay đổi"
-          position: "Vị trí"
-        dropoff:
-          title: "Điểm trả"
-          view_closest: "Xem điểm trả gần nhất?"
-          change: "Thay đổi"
-          position: "Vị trí"
-      totals:
-        total_tickets: "Tổng số vé"
-        total_price: "Tổng cộng"
-      payment:
-        title: "Phương thức thanh toán"
-        methods:
-          stripe: "Thẻ tín dụng"
-          cash: "Tiền mặt"
-        summary:
-          title: "Tổng quan"
-          price: "Giá vé"
-          quantity: "Số lượng"
-          from: "Từ"
-          to: "Đến"
-          departure_time: "Giờ khởi hành"
-          departure_date: "Ngày khởi hành"
-          pay_before: "Thanh toán trước"
-          total: "TỔNG CỘNG"
-        confirm: "Xác nhận đặt vé"
-      navigation:
-        back: "Quay lại"
-        next: "Tiếp tục"
+    about: Giới thiệu
+    history: Lịch sử
+    log_in: Đăng nhập
+    log_out: Đăng xuất
+    profile: Hồ sơ
+    routes: Tuyến đường
+    sign_up: Đăng ký
   history:
     information:
-      booked_date: "Ngày đặt vé"
-      coach_type: "Loại xe"
-      departure_date: "Ngày khởi hành"
-      departure_time: "Giờ khởi hành"
-      payment_method: "Phương thức thanh toán"
-      route: "Tuyến đường"
-      seats: "Ghế ngồi"
-      status: "Trạng thái"
-    no_bookings_found: "Không tìm thấy thông tin đặt vé nào"
+      booked_date: Ngày đặt vé
+      coach_type: Loại xe
+      departure_date: Ngày khởi hành
+      departure_time: Giờ khởi hành
+      payment_method: Phương thức thanh toán
+      route: Tuyến đường
+      seats: Chỗ ngồi
+      status: Trạng thái
+    no_bookings_found: Không tìm thấy lịch sử đặt vé
+    title: Lịch sử đặt vé
+  home:
+    description: Nơi tốt nhất để đặt vé xe khách
+    from_to: "%{from} → %{to}"
+    most_popular_routes_of_week: Các tuyến phổ biến nhất trong tuần
+    no_popular_routes: Không có tuyến phổ biến nào trong tuần này.
+    popular_routes: Tuyến đường phổ biến
+    statistic:
+      description: Chúng tôi đạt được điều này nhờ sự chăm chỉ và tận tâm
+      title: Thống kê hệ thống
+    stats:
+      bookings: Lượt đặt vé
+      members: Thành viên
+      payments: Thanh toán
+      routes: Tuyến đường
+    ticket_terminal: Hệ thống đặt vé xe
+    title: Trang chủ
+    view_routes: Xem tuyến đường
+    welcome: Chào mừng đến với
+  invoice:
+    confirm: Xác nhận thanh toán
+    due: Hạn thanh toán
+    from: Từ
+    heading: Chi tiết hóa đơn
+    icon_alt: Biểu tượng xe khách
+    issued: Ngày phát hành
+    paid: Đã thanh toán
+    payment_method: Phương thức thanh toán
+    quantity: Số lượng
+    rest: Số dư còn lại
+    seat_number: Số ghế
+    ticket: Vé
+    title: Hóa đơn
+    to: Đến
+    total: Tổng cộng
+    total_quantity: Tổng số lượng
+  language_name: Tiếng Việt
+  route_pages:
+    available: Còn chỗ
+    available_seats: Số ghế còn trống
+    book: Đặt vé
+    bookings:
+      floors:
+        lower_floor_label: Tầng dưới
+        upper_floor_label: Tầng trên
+      legend: Chú thích
+      locations:
+        cancel: Hủy bỏ
+        confirm: Xác nhận
+        select_location: Chọn vị trí
+        dropoff:
+          change: Thay đổi
+          position: Vị trí
+          title: Điểm xuống
+          view_closest: Xem điểm xuống gần nhất?
+        pickup:
+          change: Thay đổi
+          position: Vị trí
+          title: Điểm đón
+          view_closest: Xem điểm đón gần nhất?
+      navigation:
+        back: Quay lại
+        next: Tiếp theo
+      payment:
+        confirm: Xác nhận đặt vé
+        methods:
+          cash: Tiền mặt
+          stripe: Thẻ tín dụng
+        summary:
+          departure_date: Ngày khởi hành
+          departure_time: Giờ khởi hành
+          from: Từ
+          pay_before: Thanh toán trước
+          price: Giá vé
+          quantity: Số lượng
+          title: Tổng kết
+          to: Đến
+          total: TỔNG CỘNG
+        title: Phương thức thanh toán
+      seat_status:
+        booked: Ghế đã đặt
+        empty: Ghế trống
+        selected: Ghế đã chọn
+      summary:
+        seats: Ghế
+        total: Tổng cộng
+      totals:
+        total_price: Tổng giá vé
+        total_tickets: Tổng số vé
+    categories:
+      limousine: Limousine
+      room: Phòng
+      sleeper: Giường nằm
+    category_label: Loại xe
+    coach_type: Loại xe
+    departure: Khởi hành
+    dropdown_detail:
+      pickup:
+        stop_dropoff: "%{address} (Điểm xuống)"
+        stop_normal: "%{address}"
+        stop_pickup: "%{address} (Điểm đón)"
+        title: Tỉnh/Thành phố
+      policies:
+        bike_shipping:
+          details: Liên hệ dịch vụ khách hàng để biết giá và khả năng vận chuyển.
+          title: Vận chuyển xe đạp/xe máy
+        children:
+          rules:
+          - Trẻ em dưới 3 tuổi hoặc dưới 100 cm được miễn phí nếu ngồi chung ghế
+          - Trẻ trên 3 tuổi hoặc trên 100 cm cần mua vé riêng
+          title: Trẻ em và phụ nữ mang thai
+        list:
+        - Đổi vé giấy trước khi lên xe
+        - Không mang đồ ăn hoặc hàng hóa có mùi lên xe
+        - Không hút thuốc, uống rượu, hoặc sử dụng chất kích thích trên xe
+        - Không mang vật dễ cháy nổ lên xe
+        - Không xả rác trên xe
+        - Không gây tiếng ồn lớn hoặc mất trật tự
+        - Không đi giày dép trên xe
+        luggage:
+          rules:
+          - Tổng trọng lượng không quá 20kg
+          - Không chở hàng hóa cồng kềnh
+          - Không hoàn tiền nếu hủy vé do vi phạm hành lý
+          title: Hành lý xách tay
+        title: Chính sách
+      services:
+        bedding:
+          description: Có sẵn gối và chăn trên xe.
+          title: Gối và chăn
+        hammer:
+          description: Dùng để phá kính khi cần thoát hiểm.
+          title: Búa thoát hiểm
+        motorbike:
+          description: Khách hàng có thể gửi xe máy trên xe.
+          title: Vận chuyển xe máy
+        safety_belt:
+          description: Có dây an toàn cho hành khách.
+          title: Dây an toàn
+        water:
+          description: Miễn phí nước uống trên xe.
+          title: Nước uống
+      tabs:
+        images: Hình ảnh
+        pickup: Điểm đón
+        policies: Chính sách
+        services: Dịch vụ
+    filter_label: Bộ lọc
+    keywords_label: Từ khóa tuyến đường
+    no_routes_found: Không tìm thấy tuyến đường
+    no_stops_available: Không có điểm dừng
+    price_label: Giá vé
+    search_results_label: Kết quả tìm kiếm
+    seats: ghế
+    sort: Sắp xếp
+    sort_options:
+      default: Mặc định
+      price_high_to_low: Giá cao đến thấp
+      price_low_to_high: Giá thấp đến cao
+    title: Tuyến đường
+    trends:
+      latest: Mới nhất
+      seat_available: Ghế còn trống
+    view_details: Xem chi tiết
+  search_form:
+    date_label: Nhập ngày
+    date_placeholder: Chọn ngày
+    departure_label: Nhập điểm đi
+    departure_placeholder: Điểm khởi hành
+    destination_label: Nhập điểm đến
+    destination_placeholder: Điểm đến
+    exchange_button: Đổi chỗ
+    search_button: Tìm kiếm

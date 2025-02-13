@@ -31,7 +31,7 @@ class Schedule < ApplicationRecord
 
   # Callbacks
   after_create :update_coach_status
-  before_update :manage_coach_status, if: :coach_id_changed?
+  after_update :manage_coach_status, if: :coach_id_changed?
   after_destroy :reset_coach_status
 
   # Validations

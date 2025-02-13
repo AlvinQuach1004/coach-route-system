@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import { loadStripe } from '@stripe/stripe-js';
-import { payments_path } from './routes';
+import { bookings_path } from './routes';
+import { showToast } from './toast';
 
 export default class extends Controller {
   static targets = ['paymentMethodInput', 'submitButton'];
@@ -19,7 +20,6 @@ export default class extends Controller {
 
   updatePaymentMethod(event) {
     const method = event.target.value;
-    // Update hidden payment method field if it exists
     const paymentMethodField = document.querySelector('input[name="booking[payment_method]"]');
     if (paymentMethodField) {
       paymentMethodField.value = method;
@@ -42,11 +42,24 @@ export default class extends Controller {
 
   async handleStripePayment(form) {
     try {
-      // Disable submit button to prevent double submission
       this.submitButtonTarget.disabled = true;
 
-      // Create checkout session
-      const response = await fetch(payments_path(), {
+      const startStopId =
+        form.querySelector('[name="booking[start_stop_id]"]').value === ''
+          ? form.querySelector('[name="booking[start_stop_id]"]').dataset.defaultValue
+          : form.querySelector('[name="booking[start_stop_id]"]').value;
+      const endStopId =
+        form.querySelector('[name="booking[end_stop_id]"]').value === ''
+          ? form.querySelector('[name="booking[end_stop_id]"]').dataset.defaultValue
+          : form.querySelector('[name="booking[end_stop_id]"]').value;
+      const ticketPrice = form.querySelector('[name="booking[ticket_price]"]').value;
+      const pickupAddress = form.querySelector('[name="booking[pickup_address]"]').value || '';
+      const dropoffAddress = form.querySelector('[name="booking[dropoff_address]"]').value || '';
+
+      console.log('Start address:', startStopId);
+      console.log('End address:', endStopId);
+
+      const response = await fetch(bookings_path(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,26 +68,40 @@ export default class extends Controller {
         credentials: 'same-origin',
         body: JSON.stringify({
           booking: {
-            start_stop_id: form.querySelector('[name="booking[start_stop_id]"]').value,
-            end_stop_id: form.querySelector('[name="booking[end_stop_id]"]').value,
+            start_stop_id: startStopId,
+            end_stop_id: endStopId,
+            selected_seats: form.querySelector('[name="booking[selected_seats]"]').value,
+            ticket_price: ticketPrice,
+            pickup_address: pickupAddress,
+            dropoff_address: dropoffAddress,
           },
           schedule_id: form.querySelector('[name="schedule_id"]').value,
-          selected_seats: form.querySelector('[name="booking[selected_seats]"]').value,
         }),
       });
 
-      const { session_id: sessionId } = await response.json();
+      if (response.status === 422) {
+        const errorData = await response.json();
+        console.error('Booking error:', errorData);
+        showToast(errorData.error, 'alert');
+        this.submitButtonTarget.disabled = false;
+        return;
+      }
 
-      const result = await this.stripe.redirectToCheckout({
-        sessionId,
-      });
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const { session_id: sessionId } = await response.json();
+      const result = await this.stripe.redirectToCheckout({ sessionId });
 
       if (result.error) {
         console.error('Payment failed:', result.error);
+        showToast(result.error.message || 'Thanh toán thất bại!', 'alert');
         this.submitButtonTarget.disabled = false;
       }
     } catch (error) {
       console.error('Error processing payment:', error);
+      showToast(error.message || 'Đã xảy ra lỗi!', 'alert');
       this.submitButtonTarget.disabled = false;
     }
   }

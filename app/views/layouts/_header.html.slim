@@ -1,25 +1,51 @@
-div class='bg-base-100 header-container justify-around text-base-content sticky top-0 z-30 flex h-24 w-full bg-opacity-90 backdrop-blur transition-shadow duration-100 [transform:translate3d(0,0,0)]'
+div class='bg-base-100 header-container sticky justify-around text-base-content shadow-md top-0 z-20 flex h-16 lg:h-24 w-full bg-opacity-90 backdrop-blur transition-shadow duration-100 [transform:translate3d(0,0,0)]'
   .container.flex.justify-between.items-center.w-full
-    .navbar.w-full.ml-6
-      = link_to root_path, class: 'h-24 w-24' do
-        = image_tag vite_asset_path('images/icons/coach_icon.png'), class: '', alt: 'Coach Icon'
-      div class='flex flex-1 px-2 mx-2 gap-4'
+    .navbar.w-full
+      / Mobile dropdown menu
+      .dropdown
+        label.btn.btn-ghost.lg:hidden tabindex="0"
+          svg.h-5.w-5 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"
+        ul.menu.p-2.shadow.bg-base-100.rounded-box.w-52.menu-sm.dropdown-content.mt-3.z-[1]
+          li
+            = link_to route_pages_path, data: { turbo: false } do
+              = t('header.routes')
+          li
+            = link_to history_index_path do
+              = t('header.history')
+          li
+            = link_to root_path do
+              = t('header.about')
+
+      = link_to root_path, class: 'h-16 lg:h-24 w-16 lg:w-24 ml-2 lg:ml-6' do
+        = image_tag vite_asset_path('images/icons/coach_icon.png'), class: 'h-full w-full', alt: 'Coach Icon'
+
+      div class='hidden lg:flex flex-1 px-2 mx-2 gap-4'
         = link_to route_pages_path, class: 'btn btn-ghost btn-sm rounded-btn', data: { turbo: false } do
           = t('header.routes')
         = link_to history_index_path, class: 'btn btn-ghost btn-sm rounded-btn navbar-history-margin' do
           = t('header.history')
         = link_to root_path, class: 'btn btn-ghost btn-sm rounded-btn' do
           = t('header.about')
-    .container.flex.gap-4.w-full.justify-end
-      = render 'shared/switch_locale'
-      = render 'shared/notifications' if user_signed_in?
-      = render 'shared/switch_theme'
+
+    / Right side container
+    .flex.gap-2.lg:gap-4.items-center
+      / Switches visible on all screens
+      .flex.gap-2.lg:gap-4
+        = render 'shared/switch_locale'
+        = render 'shared/switch_theme'
+      
+      / Desktop notifications
+      .lg:flex.mr-2
+        = render 'shared/notifications' if user_signed_in?
+
       - if !user_signed_in?
-        .flex.gap-4.justify-center.items-center.mr-14
-          .m-1.normal-case[tabindex='0']
-          = link_to t('header.sign_up'), new_user_registration_path, class: 'btn btn-neutral btn-md rounded-btn'
-          = link_to t('header.log_in'), new_user_session_path, class: 'btn btn-accent btn-md rounded-btn'
+        / Login/Signup buttons - responsive design
+        .flex.gap-2.lg:gap-4.justify-center.items-center.mr-2.lg:mr-14
+          = link_to t('header.sign_up'), new_user_registration_path, class: 'btn btn-neutral btn-sm lg:btn-md rounded-btn'
+          = link_to t('header.log_in'), new_user_session_path, class: 'btn btn-accent btn-sm lg:btn-md rounded-btn'
       - else
+        / User dropdown - stays consistent across screens
         .dropdown.dropdown-end
           div class='btn btn-ghost btn-circle avatar' tabindex='0'
             div class='w-10 rounded-full'
@@ -27,6 +53,7 @@ div class='bg-base-100 header-container justify-around text-base-content sticky 
           ul class='mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52' tabindex='0'
             li
               = link_to profile_path, class: 'justify-between' do
-                = t('header.profile')
+                |  Profile
             li
-              = button_to t('header.log_out'), destroy_user_session_path, method: :delete, data: { turbo: false }
+              = button_to 'Log out', destroy_user_session_path, method: :delete, data: { turbo: false }
+              

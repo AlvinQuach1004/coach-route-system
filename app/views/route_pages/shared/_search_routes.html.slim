@@ -1,41 +1,38 @@
-.container.mt-10.rounded-box.bg-base-200.mx-auto.max-w-7xl.sm:max-w-5xl.md:max-w-6xl.px-4.sm:px-8.md:px-16.mt-20
-  = form_with url: route_pages_path, method: :get, class: 'form-search flex flex-col md:flex-row w-full form-control relative justify-center items-center gap-6 p-8 sm:p-12 md:p-16', local: true do |f|
-    
-    .flex.flex-col.sm:flex-row.sm:gap-6 data-controller="exchange"
-      div
-        label.form-control.w-full.max-w-xs
+.container.mt-10.py-14.rounded-box.bg-base-200.mx-auto.max-w-6xl.px-4.sm:px-8.md:px-16.mt-20
+  = form_with url: route_pages_path, method: :get, class: 'form-search form-control relative w-full', local: true do |f|
+    .flex.flex-col.sm:flex-row.items-center.gap-4.sm:gap-6.md:gap-8.w-full data-controller="exchange"
+      div.w-full.sm:w-auto.flex-1
+        label.form-control.w-full
           .label
-            span.label-text
-              = t('search_form.departure_label')
+            span.label-text = t('search_form.departure_label')
         .relative data-controller="suggestion-search"
           = f.text_field :departure,
               data: { exchange_target: "departure", action: "input->suggestion-search#fetchResults", suggestion_search_target: "input" },
-              class: "input input-bordered w-full max-w-md relative focus:outline-none focus:ring-2 focus:ring-gray-400",
+              class: "input input-bordered w-full",
               id: "departure",
               value: params[:departure],
               placeholder: t('search_form.departure_placeholder'),
               autocomplete: "off"
           ul#search-results class="absolute w-full bg-white border rounded-md shadow-lg hidden mt-2 overflow-auto max-h-60 z-50" data-suggestion-search-target="results"
-
           svg.w-6.h-6.text-gray-500.absolute.bottom-3.right-3 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
             path(stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z")
-      div.hidden.md:block
-        .flex.items-center.justify-center.relative.pt-8
-          button#exchange-btn.btn.btn-ghost.p-0.z-10 type='button' data-action="exchange#exchange"
-            svg.cursor-pointer xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-left"
-              path(d="m16 3 4 4-4 4")
-              path(d="M20 7H4")
-              path(d="m8 21-4-4 4-4")
-              path(d="M4 17h16")
-      div
-        label.form-control.w-full.max-w-xs
+
+      div.hidden.mt-10.md:flex.items-center.justify-center.relative
+        button#exchange-btn.btn.btn-ghost.p-0.z-10 type='button' data-action="exchange#exchange"
+          svg.cursor-pointer xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-left"
+            path(d="m16 3 4 4-4 4")
+            path(d="M20 7H4")
+            path(d="m8 21-4-4 4-4")
+            path(d="M4 17h16")
+
+      div.w-full.sm:w-auto.flex-1
+        label.form-control.w-full
           .label
-            span.label-text
-              = t('search_form.destination_label')
+            span.label-text = t('search_form.destination_label')
         .relative data-controller="suggestion-search"
           = f.text_field :destination,
             data: { exchange_target: "destination", action: "input->suggestion-search#fetchResults", suggestion_search_target: "input" },
-            class: 'input input-bordered w-full max-w-md relative focus:outline-none focus:ring-2 focus:ring-gray-400',
+            class: 'input input-bordered w-full',
             id: 'destination',
             value: params[:destination],
             placeholder: t('search_form.destination_placeholder'),
@@ -44,17 +41,17 @@
           svg.w-6.h-6.text-gray-500.absolute.bottom-3.right-3 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
             path(stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z")
             path(stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z")
-      div
+
+      div.w-full.sm:w-auto.flex-1
         .label
-          span.label-text
-            = t('search_form.date_label')
+          span.label-text = t('search_form.date_label')
         .relative data-controller="datepicker"
           = f.date_field :date, 
-            class: 'input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-gray-400',
+            class: 'input input-bordered w-full',
             data: { datepicker_target: 'input' },
             placeholder: t('search_form.date_placeholder')
-
           .absolute.right-3.top-3.-z-4.cursor-pointer data-action='click->datepicker#focusInput'
             svg.w-6.h-6.text-gray-500.datepicker-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
               path(stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z")
-    = f.button t('search_form.search_button'), class: "btn btn-accent w-24 mt-9", data: { turbo: false }
+
+      = f.button t('search_form.search_button'), class: "btn btn-accent relative top-4 w-full sm:w-32 mt-2 sm:mt-0"

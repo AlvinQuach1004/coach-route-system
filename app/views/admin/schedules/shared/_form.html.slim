@@ -14,7 +14,7 @@
 
             .form-control
               = f.label :coach_id, 'Coach', class: 'label'
-              = f.collection_select :coach_id, @coaches, :id, :license_plate, { prompt: 'Select Coach' }, class: 'select select-bordered w-full'
+              = f.collection_select :coach_id, @coaches, :id, ->(coach) { "#{coach.license_plate} - #{coach.coach_type}" }, { prompt: 'Select Coach' }, class: 'select select-bordered w-full'
 
             .form-control
               = f.label :departure_date, 'Departure Date', class: 'label'

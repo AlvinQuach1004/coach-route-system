@@ -1,9 +1,11 @@
 = turbo_frame_tag 'schedules' do
   - schedules.each_with_index do |schedule, index|
     div data-turbo-permanent="true"
-      .card.shadow-xl.p-4.flex.mb-4.bg-base-200.my-8.card-container data-controller="dropdown" data-schedule-id="#{schedule.id}" data-dropdown-target="cardContainer" id="schedule-card-#{schedule.id}"
+      .card.shadow-xl.p-4.flex.mb-4.bg-base-200.my-8.card-container data-controller="dropdown" data-schedule-id="#{schedule.id}" data-dropdown-target="cardContainer" id="schedule-card-#{schedule.id}" data-action="click->dropdown#toggle" data-dropdown-id-param="dropdown-#{schedule.id}"
         .flex.flex-col.md:flex-row
-          = image_tag "https://via.placeholder.com/150", alt: "Product", class: "w-full md:w-48 h-48 object-cover mb-4 md:mb-0 md:mr-4"
+          - coach_images = {'limousine' => vite_asset_path('images/coach/limousine/limousine.jpg'), 'room' => vite_asset_path('images/coach/room/room.jpg'), 'sleeper' => vite_asset_path('images/coach/sleeper/sleeper.jpg') }
+          - image_url = coach_images[schedule.coach.coach_type] || vite_asset_path('images/coach/default_coach.jpg')
+          = image_tag image_url, alt: "#{schedule.coach.coach_type}_image", class: "w-full rounded-md md:w-48 h-48 object-cover mb-4 md:mb-0 md:mr-4"
           .flex-1
             .flex.flex-col.justify-center.mb-2
               h3.font-bold.text-xl Xe Tuấn Hưng
@@ -53,7 +55,7 @@
               .relative
                 button.text-blue-500.pr-4.underline.w-full.md:max-w-52.hidden.md:mr-5.md:block type="button" data-controller="dropdown" data-action="click->dropdown#toggle" data-dropdown-id-param="dropdown-#{schedule.id}" = t('route_pages.view_details')
               = render partial: 'route_pages/shared/dropdown_route_detail', locals: { schedule: schedule }
-              = render partial: 'route_pages/shared/dropdown_book', locals: { schedule: schedule, booking: booking, departure_search: departure_search, destination_search: destination_search }
+              = render partial: 'route_pages/shared/dropdown_book', locals: { schedule: schedule, booking: booking, departure_search: departure_search, destination_search: destination_search, stops_with_location: stops_with_location }
               button.btn.btn-accent.w-full.md:w-24.mt-4.md:mt-0[
                 type="button"
                 data-controller="dropdown booking"

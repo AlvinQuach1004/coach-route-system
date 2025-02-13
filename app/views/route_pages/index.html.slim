@@ -1,38 +1,56 @@
 - provide(:title, t('route_pages.title'))
 = render 'route_pages/shared/search_routes'
+= form_with url: route_pages_path, method: :get, id: "filter-form", class: "px-4 pt-16", data: { controller: "filter" } do |f|
+  .flex.flex-col.md:flex-row.px-4.md:px-32.pb-16
+    .w-full.md:w-1/4.p-6.md:px-8.md:py-8.border-r
+      .md:hidden
+        details.dropdown
+          summary.btn.btn-outline.w-full = t('route_pages.filter_label')
+          .dropdown-content.mt-4.menu.p-4.shadow.bg-base-100.rounded-box.w-96.md:w-128.absolute.z-50
+            h2.text-lg.font-semibold.mb-4 = t('route_pages.keywords_label')
+            .space-y-3
+              - if @keywords.present?
+                = render 'route_pages/shared/keywords_filter', locals: @keywords
+            h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.filter_label')
+            .space-y-3
+              = render 'route_pages/shared/checkbox'
+            h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.price_label')
+            .flex.items-center.justify-end.mb-4
+              span.text-md.font-bold = "#{number_to_currency(params[:price] || 500000, unit: 'đ', precision: 0)}"
+            .flex.items-center.space-x-2.px-2
+              = range_field_tag :price, params[:price] || 500000, min: 0, max: 800000, step: 5000, class: "range w-full", data: { filter_target: "filter" }
+            h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.category_label')
+            .space-y-3
+              = render 'route_pages/shared/category_filter'
 
-= form_with url: route_pages_path, method: :get, id: "filter-form", class: 'px-4 pt-16', data: { controller: "filter" } do |f|
-  .flex.flex-col.md:flex-row.px-32.pb-16
-    .w-full.pt-0.pb-8.md:w-1/4.p-6.md:px-8.md:py-8.border-r
-      h2.text-lg.font-semibold.mb-4 = t('route_pages.keywords_label')
-      .space-y-3
-        - if @keywords.present?
-          = render 'route_pages/shared/keywords_filter', locals: @keywords
-      h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.filter_label')
-      .space-y-3
-        = render 'route_pages/shared/checkbox'
-      .flex.items-center.justify-between.mt-6.mb-4
-        h2.text-lg.font-semibold.my-auto = t('route_pages.price_label')
-        span.text-md.my-auto.font-bold = "#{number_to_currency(params[:price] || 500000, unit: 'đ', precision: 0)}"
-  
-      .flex.items-center.space-x-2.px-2
-        = range_field_tag :price, params[:price] || 500000, min: 0, max: 800000, step: 5000, class: "range w-full", data: { filter_target: "filter" }
-  
-      h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.category_label')
-      .space-y-3
-        = render 'route_pages/shared/category_filter'
-    
+      .hidden.md:block
+        h2.text-lg.font-semibold.mb-4 = t('route_pages.keywords_label')
+        .space-y-3
+          - if @keywords.present?
+            = render 'route_pages/shared/keywords_filter', locals: @keywords
+        h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.filter_label')
+        .space-y-3
+          = render 'route_pages/shared/checkbox'
+        .flex.items-center.justify-between.mb-2
+          h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.price_label')
+          span.text-md.font-bold.mt-2 = "#{number_to_currency(params[:price] || 500000, unit: 'đ', precision: 0)}"
+        .flex.items-center.space-x-2.px-2
+          = range_field_tag :price, params[:price] || 500000, min: 0, max: 800000, step: 5000, class: "range w-full", data: { filter_target: "filter" }
+        h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.category_label')
+        .space-y-3
+          = render 'route_pages/shared/category_filter'
+
     .w-full.routes-container.md:w-3/4.px-4.md:px-10.py-6
-      .flex.justify-between.items-center.mb-4
-        h2.font-bold.text-2xl
+      .flex.items-center.justify-between.w-full.md:w-auto.space-x-4
+        h2.font-bold.text-xl.whitespace-nowrap
           | #{t('route_pages.search_results_label')}: 
           = @pagy.count
         .flex.items-center.space-x-2
-          span = t('route_pages.sort')
-          = f.select :sort_by, options_for_select([[t('route_pages.sort_options.default'), 'default'], [t('route_pages.sort_options.price_low_to_high'), 'price_low_to_high'], [t('route_pages.sort_options.price_high_to_low'), 'price_high_to_low']], selected: params[:sort_by]), {}, { class: 'select select-bordered', data: { turbo_action: 'replace', filter_target: 'filter' } }
+          span.text-sm = t('route_pages.sort')
+          = f.select :sort_by, options_for_select([[t('route_pages.sort_options.default'), 'default'], [t('route_pages.sort_options.price_low_to_high'), 'price_low_to_high'], [t('route_pages.sort_options.price_high_to_low'), 'price_high_to_low']], selected: params[:sort_by]), {}, { class: 'select select-bordered text-left', data: { turbo_action: 'replace', filter_target: 'filter' } }
       - if @schedules.any?
-        = render partial: 'route_pages/shared/route_card', locals: { booking: @booking, schedules: @schedules, departure_search: @departure_search, destination_search: @destination_search }
+        = render partial: 'route_pages/shared/route_card', locals: { booking: @booking, schedules: @schedules, departure_search: @departure_search, destination_search: @destination_search, stops_with_location: @stops_with_location }
       - else
         = render partial: 'route_pages/shared/error_not_found'
       .mt-10.text-center
-        = pagy_nav(@pagy)    
+        = pagy_nav(@pagy)

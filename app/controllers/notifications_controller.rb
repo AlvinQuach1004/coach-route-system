@@ -26,7 +26,7 @@ class NotificationsController < ApplicationController
   end
 
   def mark_all_as_read
-    current_user.notifications.unread.where.update_all(read_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
+    current_user.notifications.unread.update_all(read_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
     @notifications = current_user.notifications.order(created_at: :desc).limit(20)
     @unread_count = 0
 

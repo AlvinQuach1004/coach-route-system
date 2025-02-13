@@ -63,6 +63,23 @@ en:
     title: Home
     view_routes: View Routes
     welcome: Welcome to
+  invoice:
+    confirm: Confirm Payment
+    due: Due Date
+    from: From
+    heading: Invoice Details
+    icon_alt: Coach Icon
+    issued: Issued Date
+    paid: Paid
+    payment_method: Payment Method
+    quantity: Quantity
+    rest: Remaining Balance
+    seat_number: Seat Number
+    ticket: Ticket
+    title: Invoice
+    to: To
+    total: Total
+    total_quantity: Total Quantity
   language_name: English
   route_pages:
     available: Available
@@ -74,6 +91,8 @@ en:
         upper_floor_label: Upper Floor
       legend: Legend
       locations:
+        cancel: cancel
+        confirm: confirm
         dropoff:
           change: Change
           position: Position
@@ -84,6 +103,7 @@ en:
           position: Position
           title: Pickup
           view_closest: View nearest pickup point?
+        select_location: Select location
       navigation:
         back: Back
         next: Next
@@ -115,7 +135,7 @@ en:
         total_tickets: Total tickets
     categories:
       limousine: Limousine
-      room: Private Room
+      room: Room
       sleeper: Sleeper
     category_label: Coach Type
     coach_type: Coach Type

@@ -1,93 +1,137 @@
-.dropdown-content-card.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown" id="dropdown-#{schedule.id}" data-dropdown-target="content"
-  .w-full.p-4.bg-base-100.rounded-lg.text-center
-  .w-full.p-4.bg-base-100.rounded-lg.text-center
-    div.tabs.tabs-bordered[role="tablist"]
+.dropdown-content-card[
+  data-controller="dropdown"
+  id="dropdown-#{schedule.id}"
+  data-dropdown-target="content"
+  class="hidden absolute top-full mt-4 shadow bg-base-100 rounded-box z-10 w-[calc(100%_-_2rem)] left-0 sm:w-[600px] sm:mx-auto sm:left-1/2 sm:-translate-x-1/2 md:w-[845.4px] md:transform-none md:left-auto md:right-0"]
+
+  / Tabs Container - reduced padding
+  .w-full.bg-base-100.rounded-lg.text-center.overflow-x-auto.p-2.sm:p-3
+    div.tabs.tabs-bordered.px-8[role="tablist"]
       - %w(pickup images policies services).each do |tab|
-        a.tab[role="tab"
+        a.tab[
+          role="tab"
           data-dropdown-target="tab"
           data-action="click->dropdown#showDetailTab"
           data-dropdown-id-param="#{tab}-#{schedule.id.gsub('-', '')}"
-          class="#{'tab-active' if tab == 'pickup'}"]
+          class="#{'tab-active' if tab == 'pickup'} min-w-[80px] sm:min-w-[100px]"]
           = t("route_pages.dropdown_detail.tabs.#{tab}")
 
-  // Tab Content: Drop/Pickup
-  div[data-dropdown-target="tabPanel" 
-    id="pickup-#{schedule.id.gsub('-', '')}" 
-    role="tabpanel" class="#{'hidden' unless 'pickup' == 'pickup'}"]
-    .flex.flex-col.mt-6
-      span.text-lg.font-semibold.text-gray-800.mb-4.text-center = t("route_pages.dropdown_detail.pickup.title")
+  / Tab Content: Drop/Pickup
+  div[
+    data-dropdown-target="tabPanel"
+    id="pickup-#{schedule.id.gsub('-', '')}"
+    role="tabpanel"
+    class="#{'hidden' unless 'pickup' == 'pickup'}"]
+    .flex.flex-col.mt-4.ml-8.sm:mt-6
+      span.text-base.sm:text-lg.font-semibold.text-gray-800.mb-4.text-center 
+        = t("route_pages.dropdown_detail.pickup.title")
       .divider.divider-horizontal
       - schedule.route.stops.each do |stop|
-        .flex.items-center.mt-4.ml-8
-          .w-4.h-4.rounded-full.bg-blue-600
-          .ml-4.text-lg.text-gray-700
+        .flex.items-center.mt-4.px-4.sm:px-8
+          .w-3.h-3.sm:w-4.sm:h-4.rounded-full.bg-blue-600
+          .ml-3.sm:ml-4.text-base.sm:text-lg.text-gray-700
             - if stop.is_pickup
               = t("route_pages.dropdown_detail.pickup.stop_pickup", address: stop.address)
             - elsif stop.is_dropoff
               = t("route_pages.dropdown_detail.pickup.stop_dropoff", address: stop.address)
-            - else 
+            - else
               = t("route_pages.dropdown_detail.pickup.stop_normal", address: stop.address)
       .divider.divider-horizontal.mt-4
-  
-  // Tab Content: Images (Carousel)
+
+  / Tab Content: Images
+  - image_prefix = schedule.coach.coach_type
+  - image_urls = (1..6).map { |i| vite_asset_path("images/coach/#{image_prefix}/#{image_prefix}_#{i}.jpg") }
   div[
     data-dropdown-target="tabPanel"
     id="images-#{schedule.id.gsub('-', '')}"
     role="tabpanel"
-    class="mx-auto relative hidden mt-4"]
-    section.max-w-2xl
+    class="mx-auto relative hidden mt-4 px-2 sm:px-4 md:px-8"]
+    section.max-w-full.md:max-w-2xl.mx-auto
       .carousel-container
         .carousel
           - (1..6).each do |i|
-            input type="radio" name="slides-#{schedule.id}" id="slide-#{i}-#{schedule.id}"
+            input[type="radio" name="slides-#{schedule.id}" id="slide-#{i}-#{schedule.id}"]
           ul.carousel__slides
-            - (1..6).each do |i|
+            - image_urls.each_with_index do |image_url, i|
               li.carousel__slide
                 figure
-                  div
-                    img src="https://picsum.photos/id/#{1040 + i}/800/450" alt="Picture #{1040 + i}"
-                  figcaption
-                    | Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    span.credit Photo: Example #{i}
-          ul.carousel__thumbnails.max-h-dhv
-            - (1..6).each do |i|
+                  .aspect-video.overflow-hidden
+                    = image_tag image_url, alt: "Picture #{i + 1}", class: "w-full h-full object-cover"
+                  figcaption.mt-2.text-sm.sm:text-base
+                    = t("route_pages.categories.#{image_prefix}")
+                    span.credit.ml-2 Photo: #{i + 1}
+          ul.carousel__thumbnails.grid.grid-cols-3.sm:grid-cols-6.gap-2.mt-4
+            - image_urls.each_with_index do |image_url, i|
               li
-                label for="slide-#{i}-#{schedule.id}"
-                  img src="https://picsum.photos/id/#{1040 + i}/150/150" alt=""
+                label.block.aspect-square[for="slide-#{i + 1}-#{schedule.id}"]
+                  = image_tag image_url, alt: "Thumbnail #{i + 1}", class: "w-full h-full object-cover rounded"
 
-  // Policy tab
+  / Tab Content: Policies
   div[
-    data-dropdown-target="tabPanel" 
-    id="policies-#{schedule.id.gsub('-', '')}" 
-    role="tabpanel" class="hidden bg-base-100"]
-    .rounded-lg.p-6.text-start.pl-14
-      h3.text-xl.font-bold.mb-4 = t("route_pages.dropdown_detail.policies.title")
-      ul.list-disc.list-inside
+    data-dropdown-target="tabPanel"
+    id="policies-#{schedule.id.gsub('-', '')}"
+    role="tabpanel"
+    class="hidden bg-base-100"]
+    .rounded-lg.p-4.sm:p-6.text-start.px-4.sm:px-8.md:px-14
+      h3.text-lg.sm:text-xl.font-bold.mb-4 = t("route_pages.dropdown_detail.policies.title")
+      ul.list-disc.list-inside.text-sm.sm:text-base
         - t("route_pages.dropdown_detail.policies.list").each do |policy|
           li.py-1 = policy
       .divider
-      h4.text-lg.font-bold.mt-6.mb-2 = t("route_pages.dropdown_detail.policies.luggage.title")
-      ul.list-disc.list-inside
+      h4.text-base.sm:text-lg.font-bold.mt-4.sm:mt-6.mb-2 = t("route_pages.dropdown_detail.policies.luggage.title")
+      ul.list-disc.list-inside.text-sm.sm:text-base
         - t("route_pages.dropdown_detail.policies.luggage.rules").each do |rule|
           li.py-1 = rule
       .divider
-      h4.text-lg.font-bold.mt-6.mb-2 = t("route_pages.dropdown_detail.policies.children.title")
-      ul.list-disc.list-inside
+      h4.text-base.sm:text-lg.font-bold.mt-4.sm:mt-6.mb-2 = t("route_pages.dropdown_detail.policies.children.title")
+      ul.list-disc.list-inside.text-sm.sm:text-base
         - t("route_pages.dropdown_detail.policies.children.rules").each do |rule|
           li.py-1 = rule
       .divider
-      h4.text-lg.font-bold.mt-6.mb-2 = t("route_pages.dropdown_detail.policies.bike_shipping.title")
-      span = t("route_pages.dropdown_detail.policies.bike_shipping.details")
+      h4.text-base.sm:text-lg.font-bold.mt-4.sm:mt-6.mb-2 = t("route_pages.dropdown_detail.policies.bike_shipping.title")
+      span.text-sm.sm:text-base = t("route_pages.dropdown_detail.policies.bike_shipping.details")
 
-  // Services tab
+  / Tab Content: Services
   div[
     data-dropdown-target="tabPanel"
     id="services-#{schedule.id.gsub('-', '')}"
     role="tabpanel"
-    class="hidden pb-12 bg-base-100"]
-    .rounded-lg.p-6.text-start.pl-14.pt-10
+    class="hidden pb-8.sm:pb-12 bg-base-100"]
+    .rounded-lg.p-4.sm:p-6.text-start.px-4.sm:px-8.md:px-14.pt-6.sm:pt-10
       - services = [:safety_belt, :motorbike, :water, :bedding, :hammer]
       - services.each do |service|
-        h4.text-lg.font-bold.mb-2 = t("route_pages.dropdown_detail.services.#{service}.title")
-        span = t("route_pages.dropdown_detail.services.#{service}.description")
-        .divider class=("mt-6" unless service == services.last)
+        h4.text-base.sm:text-lg.font-bold.mb-2 = t("route_pages.dropdown_detail.services.#{service}.title")
+        span.text-sm.sm:text-base = t("route_pages.dropdown_detail.services.#{service}.description")
+        .divider class=("mt-4.sm:mt-6" unless service == services.last)
+
+css:
+  .dropdown-content-card {
+    transition: all 0.3s ease;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+
+  @media (min-width: 768px) {
+    .dropdown-content-card {
+      width: 845.4px;
+      max-height: 980px;
+    }
+  }
+
+  .carousel-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .carousel__slides {
+    scroll-behavior: smooth;
+  }
+
+  .carousel__thumbnails img {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .carousel__thumbnails img:hover {
+    opacity: 0.8;
+  }

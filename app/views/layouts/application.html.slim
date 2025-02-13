@@ -13,13 +13,16 @@ html[lang="en"]
     link[rel="icon" href="/icon.svg" type="image/svg+xml"]
     link[rel="apple-touch-icon" href="/icon.png"]
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
+    / script src="https://cdn.goong.io/sdk/js/goong-js.js"
     = vite_client_tag
     = vite_javascript_tag "application", "data-turbo-track": "reload"
     link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-geocoder/dist/goong-geocoder.css"
   body.w-fit.md:w-full data-controller="icons" class="dark" data-user-signed-in="#{user_signed_in? ? 'true' : 'false'}"
     #flash-messages
       - if flash.any?
         = render partial: 'layouts/flash'
     = render "layouts/header"
     = yield
+    = turbo_frame_tag 'modal_location'
     = render "layouts/footer"

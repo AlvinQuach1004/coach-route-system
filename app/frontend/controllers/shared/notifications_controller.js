@@ -69,9 +69,10 @@ export default class extends Controller {
         'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
       },
     });
+
+    event.currentTarget.remove();
   }
 
-  // Hide dropdown when clicking outside
   disconnect() {
     this.contentTarget.classList.add('hidden');
   }

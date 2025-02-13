@@ -1,22 +1,25 @@
 = form_with model: booking, url: bookings_path, data: { turbo: false, filter_ignore: true }, method: :post do |f|
-  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-key-value=Rails.configuration.stripe[:publishable_key] data-payment-amount-value="#{schedule.price}" data-stepper-selected-seats-value="[]" data-stepper-available-seats-value=schedule.coach.capacity-schedule.tickets.count
+  - stops = stops_with_location.select { |stop| stop[:route] == schedule.route_id }
+  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment position" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-key-value=Rails.configuration.stripe[:publishable_key] data-payment-amount-value="#{schedule.price}" data-stepper-selected-seats-value="[]" data-position-stops="#{stops.to_json}" data-stepper-available-seats-value=schedule.coach.capacity-schedule.tickets.count
     / Hidden fields for booking params
     = f.hidden_field :payment_status, value: "pending"
-    = f.hidden_field :payment_method, value: "cash", data: { seat_selection_target: "paymentMethod" }
+    = f.hidden_field :payment_method, data: { seat_selection_target: "paymentMethod" }
     = f.hidden_field :selected_seats, data: { seat_selection_target: "selectedSeatsInput" }
-    = f.hidden_field :start_stop_id, 
-      value: departure_search.present? ? schedule.route.stops.find_by(location_id: departure_search.id, is_pickup: true)&.id : schedule.route.stops.first&.id
-    = f.hidden_field :end_stop_id,
-      value: destination_search.present? ? schedule.route.stops.find_by(location_id: destination_search.id, is_dropoff: true)&.id : schedule.route.stops.last&.id
+    = f.hidden_field :start_stop_id, data: { position_target: "startStopId", default_value: departure_search.present? ? schedule.route.stops.find_by(location_id: departure_search.id, is_pickup: true)&.id : schedule.route.stops.first&.id }
+    = f.hidden_field :end_stop_id, data: { position_target: "endStopId", default_value: destination_search.present? ? schedule.route.stops.find_by(location_id: destination_search.id, is_dropoff: true)&.id : schedule.route.stops.last&.id }
+    = f.hidden_field :ticket_price, data: { position_target: "ticketPrice" }
+    = f.hidden_field :pickup_address, data: { position_target: "pickupAddress" }
+    = f.hidden_field :dropoff_address, data: { position_target: "dropoffAddress" }
+
     = hidden_field_tag :schedule_id, schedule.id
 
     .container.bg-base-100.w-full.max-w-4xl.mt-8.dropdown-book-container
-      .progress-container.mx-auto data-stepper-target="progressContainer"
+      .progress-container.mx-auto data-stepper-target="progressContainer" data-position-target="stepper"
         #progress.progress data-stepper-target="progress"
-        .circle-step.active data-stepper-target="circleStep" 1
-        .circle-step data-stepper-target="circleStep" 2
-        .circle-step data-stepper-target="circleStep" 3
-        .circle-step data-stepper-target="circleStep" 4
+        .circle-step.active data-stepper-target="circleStep" data-position-target="circleStep" 1
+        .circle-step data-stepper-target="circleStep" data-position-target="circleStep" 2
+        .circle-step data-stepper-target="circleStep" data-position-target="circleStep" 3
+        .circle-step data-stepper-target="circleStep" data-position-target="circleStep" 4
       .step-tab.container.mx-auto.p-6.bg-base-100.w-full.max-w-6xl data-stepper-target="stepTab"
         .flex.justify-between.bg-none
           .w-1/4.mt-4.max-w-xl.mr-10
@@ -90,53 +93,171 @@
         .container.mx-auto.p-4.max-w-3xl.my-auto.h-full
           .grid.grid-cols-1.md:grid-cols-2.gap-6
             / Pickup Location Card
-            .card.bg-base-200.shadow-xl
-              .card-body
+            .card.bg-base-200.shadow-xl 
+              .card-body data-controller="location"
                 h2.card-title = t('route_pages.bookings.locations.pickup.title') 
-                p.text-sm.mb-2.mr-auto.text-start
+                div.text-start
                   = t('route_pages.bookings.locations.pickup.view_closest')
                   br
-                  - if schedule.route.stops.any? && departure_search.blank?
-                     span.text-gray-600 = schedule.route.stops.first.address
-                  - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
-                    - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
-                    - if stop.present?
-                      span.text-gray-600 = stop.address
-                  a.text-blue-500.hover:underline.ml-1 href="#" = t('route_pages.bookings.locations.pickup.change')
-                
+                  - filtered_stops = stops_with_location.select { |stop| stop[:route] == schedule.route_id && stop[:pickup] }
+                  span.text-gray-600 data-location-target="selectedLocation" data-location-stops="#{filtered_stops.to_json}"
+                    - if schedule.route.stops.any? && departure_search.blank?
+                      = schedule.route.stops.first.address
+                    - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
+                      - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
+                      - if stop.present?
+                        = stop.address
+
+                  / Location Change Link
+                  a.text-blue-500.hover:underline.ml-1.cursor-pointer data-action="click->location#openModal"
+                    = t('route_pages.bookings.locations.pickup.change')
+
+                  / Modal Overlay
+                  div.hidden.fixed.inset-0.z-50 data-location-target="modal"
+                    / Background Overlay
+                    .fixed.min-h-full.inset-0.bg-gray-600.z-30.bg-opacity-50.transition-opacity
+
+                      / Modal Content
+                      .fixed.inset-0.z-30.overflow-y-auto.p-6
+                        .flex.min-h-full.items-center.justify-center.p-4
+                          .relative.transform.bg-white.rounded-lg.shadow-xl.transition-all.w-96.max-w-md
+                            / Modal Header
+                            .px-4.py-3.border-b.border-gray-200
+                              h3.text-base.font-semibold.text-gray-900 = t('route_pages.bookings.locations.select_location')
+
+                            / Modal Body
+                            .p-4
+                              .absolute.inset-y-0.left-0.pl-3.flex.items-center.pointer-events-none
+                                svg.h-5.w-5.text-gray-400 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                  path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"
+                              div.relative
+                                svg.absolute.top-2.left-2 xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"
+                                  path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"
+                                  circle cx="12" cy="10" r="3"
+                                input#location-input.w-full.pl-10.py-2.border.rounded-md[
+                                  type="text"
+                                  placeholder="Nhập địa điểm..."
+                                  data-location-target="input"
+                                  data-action="input->location#autocomplete"
+                                ]
+
+                              / Map Container
+                              #goong-map.rounded-lg.shadow-inner.border.border-gray-200.mt-2[
+                                data-location-target="mapContainer"
+                                style="height: 250px; width: 100%;"
+                              ]
+                            / Modal Footer
+                            .px-4.py-3.border-t.border-gray-200.flex.justify-end.space-x-2
+                              button.px-3.py-2.text-sm.text-gray-700.bg-white.border.border-gray-300.rounded-md.shadow-sm.hover:bg-gray-50[
+                                data-action="click->location#closeModal"
+                              ] = t('route_pages.bookings.locations.cancel')
+
+                              button.px-3.py-2.text-sm.text-white.bg-blue-600.border.border-transparent.rounded-md.shadow-sm.hover:bg-blue-700 type="button" data-action="click->location#confirmSelection click->position#updatePickup" = t('route_pages.bookings.locations.confirm')
+                - location_address = 'Không có địa chỉ'
+                - if schedule.route.stops.any? && departure_search.blank?
+                  - location_address = schedule.route.stops.first.address
+                - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
+                  - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
+                  - if stop.present?
+                    - location_address = stop.address
+                  - else
+                    | Không có địa chỉ
+                - else
+                  | Không có địa chỉ
                 .mt-4
                   .flex.items-center.gap-2
                     span.text-xl.font-bold = schedule.departure_time.strftime("%H:%M")
                     span •
-                    - if schedule.route.stops.any? && departure_search.blank?
-                     span.text-gray-600 = schedule.route.stops.first.address
-                    - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
-                      - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
-                      - if stop.present?
-                        span.text-gray-600 = stop.address
+                    span.text-gray-600 = location_address
 
                   .mt-2.flex.items-start.gap-2
                     i.fas.fa-map-marker-alt.mt-1.text-gray-500
-                    p.text-gray-600.text-start
-                      | 119 B. Lý Thường Kiệt, Phường 6, Cà Mau, Vietnam
-                      a.text-blue-500.hover:underline.ml-1 href="#" = t('route_pages.bookings.locations.pickup.position')
+                    div.text-gray-600.text-start 
+                      span[data-location-target="pickupPosition" data-position-target="pickupLocation"]
+                        = location_address
+                      a.text-blue-500.hover:underline.ml-1[href="#" data-action="click->position#openPositionModal"] = t('route_pages.bookings.locations.pickup.position')
                   
-
-            / Drop-off Location Card
+                      .hidden.fixed.inset-0.bg-gray-600.bg-opacity-50.z-30.overflow-y-auto.h-full.w-full[data-position-target="positionModal"]
+                        .relative.top-20.mx-auto.p-5.border.w-96.shadow-lg.rounded-md.bg-white
+                          .mt-3.text-center
+                            h3.text-lg.leading-6.font-medium.text-gray-900 = t('route_pages.bookings.locations.pickup.position')
+                  
+                            / Map Container
+                            #position-map.mt-2.rounded-md[
+                              data-position-target="positionMapContainer"
+                              style="height: 300px; width: 100%;"
+                            ]
+                  
+                          / Action Buttons
+                          .flex.justify-center.gap-4.items-center.py-3
+                            button.bg-gray-500.hover:bg-gray-700.text-white.font-bold.py-2.px-4.rounded[data-action="click->position#closePositionModal"]
+                              = t('route_pages.bookings.locations.cancel')
+            - location_address = 'Không có địa chỉ'
+            - if schedule.route.stops.any? && destination_search.blank?
+              - location_address = schedule.route.stops.last.address
+            - elsif destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
+              - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
+              - if stop.present?
+                - location_address = stop.address
+              - else
+                | Không có địa chỉ
+            - else
+              | Không có địa chỉ
             .card.bg-base-200.shadow-xl
-              .card-body
+              .card-body data-controller="location"
                 h2.card-title = t('route_pages.bookings.locations.dropoff.title') 
-                p.text-sm.mb-2.mr-auto.text-start
-                  = t('route_pages.bookings.locations.dropoff.view_closest') 
+                div.text-start
+                  = t('route_pages.bookings.locations.dropoff.view_closest')
                   br
-                  - if schedule.route.stops.any? && destination_search.blank?
-                    span.text-gray-600.ml-1 = schedule.route.stops.last.address
-                  - elsif departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
-                    - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
-                    - if stop.present?
-                      span.text-gray-600 = stop.address
-                  a.text-blue-500.hover:underline.ml-1 href="#" = t('route_pages.bookings.locations.dropoff.change') 
-                
+                  - filtered_stops = stops_with_location.select { |stop| stop[:route] == schedule.route_id && stop[:dropoff] }
+                  span.text-gray-600 data-location-target="selectedLocation" data-location-stops="#{filtered_stops.to_json}"
+                    = location_address
+                  / Location Change Link
+                  a.text-blue-500.hover:underline.ml-1.cursor-pointer data-action="click->location#openModal"
+                    = t('route_pages.bookings.locations.dropoff.change')
+
+                  / Modal Overlay
+                  div.hidden.fixed.inset-0.z-50 data-location-target="modal"
+                    / Background Overlay
+                    .fixed.min-h-full.inset-0.bg-gray-600.z-30.bg-opacity-50.transition-opacity
+
+                      / Modal Content
+                      .fixed.inset-0.z-30.overflow-y-auto.p-6
+                        .flex.min-h-full.items-center.justify-center.p-4
+                          .relative.transform.bg-white.rounded-lg.shadow-xl.transition-all.w-96.max-w-md
+                            / Modal Header
+                            .px-4.py-3.border-b.border-gray-200
+                              h3.text-base.font-semibold.text-gray-900 = t('route_pages.bookings.locations.select_location')
+
+                            / Modal Body
+                            .p-4
+                              .absolute.inset-y-0.left-0.pl-3.flex.items-center.pointer-events-none
+                                svg.h-5.w-5.text-gray-400 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                  path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"
+                              div.relative
+                                svg.absolute.top-2.left-2 xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"
+                                  path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"
+                                  circle cx="12" cy="10" r="3"
+                                input#location-input.w-full.pl-10.py-2.border.rounded-md[
+                                  type="text"
+                                  placeholder="Nhập địa điểm..."
+                                  data-location-target="input"
+                                  data-action="input->location#autocomplete"
+                                ]
+
+                              / Map Container
+                              #goong-map.rounded-lg.shadow-inner.border.border-gray-200.mt-2[
+                                data-location-target="mapContainer"
+                                style="height: 250px; width: 100%;"
+                              ]
+
+                            / Modal Footer
+                            .px-4.py-3.border-t.border-gray-200.flex.justify-end.space-x-2
+                              button.px-3.py-2.text-sm.text-gray-700.bg-white.border.border-gray-300.rounded-md.shadow-sm.hover:bg-gray-50[
+                                data-action="click->location#closeModal"
+                              ] = t('route_pages.bookings.locations.cancel')
+
+                              button.px-3.py-2.text-sm.text-white.bg-blue-600.border.border-transparent.rounded-md.shadow-sm.hover:bg-blue-700 type="button" data-action="click->location#confirmSelection click->position#updateDropoff" = t('route_pages.bookings.locations.confirm')
                 .mt-4
                   .flex.items-center.gap-2
                     span.text-lg.font-bold
@@ -164,28 +285,42 @@
                           | No stops available - #{stop.address}
                     span •
                     - if schedule.route.stops.any? && destination_search.blank?
-                      span.text-primary.ml-1 = schedule.route.stops.last.address
+                      span.text-gray-600.ml-1 = schedule.route.stops.last.address
                     - if departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
                       - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
                       - if stop.present?
-                        span.text-gray-600 = stop.address
-
+                        span.text-gray-600.ml-1 = stop.address
                   .mt-2.flex.items-start.gap-2
                     i.fas.fa-map-marker-alt.mt-1.text-gray-500
-                    p.text-gray-600.text-start
-                      | 119 B. Lý Thường Kiệt, Phường 6, Cà Mau, Vietnam
-                      a.text-blue-500.hover:underline.ml-1 href="#" = t('route_pages.bookings.locations.dropoff.position') 
+                    div.text-gray-600.text-start
+                      span data-location-target="dropoffPosition" data-position-target="dropoffLocation"
+                        = location_address
+                      a.text-blue-500.hover:underline.ml-1[href="#" data-action="click->position#openPositionModal"] = t('route_pages.bookings.locations.dropoff.position')
+                  
+                      .hidden.fixed.inset-0.bg-gray-600.bg-opacity-50.z-30.overflow-y-auto.h-full.w-full[data-position-target="positionModal"]
+                        .relative.top-20.mx-auto.p-5.border.w-96.shadow-lg.rounded-md.bg-white
+                          .mt-3.text-center
+                            h3.text-lg.leading-6.font-medium.text-gray-900 = t('route_pages.bookings.locations.dropoff.position')
+                  
+                            / Map Container
+                            #position-map.mt-2.rounded-md[
+                              data-position-target="positionMapContainer"
+                              style="height: 300px; width: 100%;"
+                            ]
+                  
+                          / Action Buttons
+                          .flex.justify-center.gap-4.items-center.py-3
+                            button.bg-gray-500.hover:bg-gray-700.text-white.font-bold.py-2.px-4.rounded[data-action="click->position#closePositionModal"]
+                              = t('route_pages.bookings.locations.cancel') 
         
           .flex.flex-col.items-end.justify-center.mt-8.border-t.pt-4
             p.text-lg
               = "#{t('route_pages.bookings.totals.total_tickets')}: "
-              span.text-primary.font-bold.ml-2 data-seat-selection-target="totalQuantity"
+              span.text-primary.font-bold.ml-2 data-seat-selection-target="totalQuantity" data-position-target="totalQuantity"
             p.text-lg.ml-4.mt-2
               = "#{t('route_pages.bookings.totals.total_price')}: "
-              span.text-primary.font-bold.ml-2 data-seat-selection-target="totalPriceStep2"
+              span.text-primary.font-bold.ml-2 data-seat-selection-target="totalPriceStep2" data-position-target="totalPriceStep2"
                 | 0đ
-
-
       .step-tab.hidden.h-full data-stepper-target="stepTab"
         .container.mx-auto.p-4.max-w-4xl.h-full.my-auto
           .grid.grid-cols-1.lg:grid-cols-2.gap-8
@@ -200,13 +335,6 @@
                   .flex.items-center.ml-3.gap-2
                     = image_tag vite_asset_path('images/icons/Stripe.png'), class: "h-6 w-auto", alt: "Stripe"
                     span.text-gray-700 = t('route_pages.bookings.payment.methods.stripe')
-
-                / Cash Option
-                label.flex.items-center.p-4.border.rounded-lg.cursor-pointer.hover:bg-gray-50
-                  = f.radio_button :payment_method, 'cash', id: 'cash-option', class: 'radio radio-primary', data: { action: 'change->payment#updatePaymentMethod', payment_target: 'paymentMethodInput' }
-                  span.ml-3.text-gray-700 = t('route_pages.bookings.payment.methods.cash')
-
-                
             / Summary Section
             .card.bg-base-100.shadow-sm.border
               .card-body
@@ -216,34 +344,32 @@
                   / Price Row
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.price')
-                    span.text-gray-900 data-seat-selection-target="priceStep3" 0đ
+                    span.text-gray-900 data-seat-selection-target="priceStep3" data-position-target="priceStep3" 0đ
 
                   / Quantity Row
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.quantity')
-                    span.text-gray-900 data-seat-selection-target="totalQuantityStep3"
+                    span.text-gray-900 data-seat-selection-target="totalQuantityStep3" data-position-target="totalQuantityStep3"
 
                   / From Row
+                  / From Row (Tỉnh của điểm đón)
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.from')
-                    span.text-gray-900
-                    - if schedule.route.stops.any? && departure_search.blank?
-                      = schedule.route.stops.first.location.name
-                    - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
+                    span.text-gray-900 data-position-target="fromStep3"
+                    - if departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
                       - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
                       - if stop.present?
-                        span.text-gray-600 = stop.location.name
-
-                  / To Row
+                        = stop.location.name
+                  
+                  / To Row (Tỉnh của điểm trả)
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.to')
-                    span.text-gray-900
-                    - if schedule.route.stops.any? && destination_search.blank?
-                      = schedule.route.stops.last.location.name
-                    - if departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
+                    span.text-gray-900 data-position-target="toStep3"
+                    - if destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
                       - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
                       - if stop.present?
-                        span.text-gray-600 = stop.location.name
+                        = stop.location.name
+
 
                   / Departure Time Row
                   .flex.justify-between.items-center
@@ -262,9 +388,9 @@
                   / Total Row
                   .flex.justify-between.items-center.pt-4.border-t.mt-4
                     span.font-medium.text-gray-900 = t('route_pages.bookings.payment.summary.total')
-                    span.font-bold.text-gray-900 data-seat-selection-target="totalPriceStep3"
-                = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', id: "dropdown-book-btn-#{schedule.id}", data: { action: 'payment#processPayment', payment_target: 'submitButton' }
+                    span.font-bold.text-gray-900 data-seat-selection-target="totalPriceStep3" data-position-target="totalPriceStep3"
+                = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', id: "dropdown-book-btn-#{schedule.id}", data: { action: 'payment#processPayment', payment_target: 'submitButton', turbo: false }
 
       .flex.w-full.justify-between.items-end.px-4.mt-auto
-        button#prev.btn data-stepper-target="prev" data-action="click->stepper#prev" type="button" = t('route_pages.bookings.navigation.back')
-        button#next.btn data-stepper-target="next" data-action="click->stepper#next" type="button" = t('route_pages.bookings.navigation.next')
+        button#prev.btn data-stepper-target="prev" data-action="click->stepper#prev click->position#backStep click->position#updateStep3Data" type="button" = t('route_pages.bookings.navigation.back')
+        button#next.btn data-stepper-target="next" data-action="click->stepper#next click->position#nextStep click->position#updateStep3Data" type="button" = t('route_pages.bookings.navigation.next')

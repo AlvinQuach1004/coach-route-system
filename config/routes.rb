@@ -8,6 +8,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     resources :bookings do
       member do
         get :invoice
+        get :cancel
       end
       collection do
         get :error_payment
@@ -16,12 +17,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     end
 
     resources :history, only: [:index]
-
-    resources :payments, only: [:create] do
-      member do
-        get :cancel
-      end
-    end
 
     if Rails.env.development?
       get '/erd', to: 'docs#erd'
