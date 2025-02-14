@@ -45,12 +45,12 @@
                     | #{t('route_pages.no_stops_available')} - 
                     = schedule.route.end_location.name
           .flex.flex-col.items-end.justify-between.md:items-start.md:text-right.mt-4.md:mt-0
-            .w-full.text-end
+            .text-left.w-full.md:text-end
               span.text-2xl.text-primary.font-semibold.text-end.md:pr-2
                 | #{format_currency_vnd(schedule.price)}
             div.flex.flex-col.md:flex-row.justify-between.md:justify-start.items-center.md:items-end.w-full
-            .flex.w-full.items-center.justify-end.mb-4.mt-4.md:mt-6.md:mb-0
-              span.text-gray-500.text-end = "#{t('route_pages.available')}: #{schedule.coach.capacity - schedule.tickets.count} #{t('route_pages.seats')}"
+            .flex.w-full.mb-4.mt-4.md:mt-6.md:mb-0.items-center.justify-end
+              span.text-gray-500.md:text-end = "#{t('route_pages.available')}: #{schedule.coach.capacity - schedule.tickets_count} #{t('route_pages.seats')}"
             .flex.justify-between.items-center.w-full.md:w-auto.md:justify-start
               .relative
                 button.text-blue-500.pr-4.underline.w-full.md:max-w-52.hidden.md:mr-5.md:block type="button" data-controller="dropdown" data-action="click->dropdown#toggle" data-dropdown-id-param="dropdown-#{schedule.id}" = t('route_pages.view_details')
@@ -61,6 +61,6 @@
                 data-controller="dropdown booking"
                 data-action="click->dropdown#toggle click->booking#checkAvailability"
                 data-dropdown-id-param="dropdown-book-#{schedule.id}"
-                data-booking-available-seats-value=schedule.coach.capacity-schedule.tickets.count
+                data-booking-available-seats-value=schedule.coach.capacity-schedule.tickets_count
                 data-booking-dropdown-open-value="false"
               ] = t('route_pages.book')

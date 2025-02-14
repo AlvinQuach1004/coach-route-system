@@ -2,26 +2,24 @@
 .container.mx-auto.py-4
   .bg-base-100.rounded-box.shadow-lg.p-6
     / Header Section
-    .flex.justify-between.items-center.mb-6
-      .flex.items-center.gap-3
-        h2.text-2xl.font-bold Users List
-        span.badge.badge-primary = "Total: #{@total_users}"
+    .flex.flex-col.sm:flex-row.items-center.mb-6
+      h2.text-2xl.font-bold.text-center.sm:text-left = "Users List"
+      span.badge.badge-primary.mt-2.sm:mt-1.ml-6 = "Total: #{@total_users}"
 
     div class="flex flex-col sm:flex-row gap-4 mb-6"
-      = form_with url: admin_users_path, method: :get, data: { controller: "search-form", turbo_frame: "users_table" }, class:"flex gap-2 justify-between w-full" do |f|
+      = form_with url: admin_users_path, method: :get, data: { controller: "search-form", turbo_frame: "users_table" }, class:"flex flex-col md:flex-row gap-2 justify-between w-full" do |f|
         .form-control.max-w-xl.w-full
-          .input-group.flex.justify-between
+          .input-group.flex.flex-row.items-center.sm:flex-row.sm:items-center.sm:gap-4
             = f.text_field :search, \
               class: "input input-bordered w-full", \
               placeholder: "Search users...", \
               value: params[:search], \
               data: { action: "input->search-form#submit" }
-
-            button.btn.btn-square.ml-4
+            button.btn.btn-square.ml-2.sm:mt-0.sm:ml-4
               svg.h-5.w-5 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 
-        .flex.gap-2
+        .flex.gap-2.mt-4.sm:mt-0
           = f.select :role, \
             options_for_select([ \
               ['Select Role', ''], \
@@ -29,7 +27,7 @@
               ['Admin', 'admin'] \
             ], params[:role]), \
             {}, \
-            class: "select select-bordered", \
+            class: "select select-bordered w-full sm:w-auto", \
             data: { action: "change->search-form#submit" }
     
           = f.select :sort_by, \
@@ -41,8 +39,9 @@
               ['Email Z-A', 'email_desc'] \
             ], params[:sort_by]), \
             {}, \
-            class: "select select-bordered", \
+            class: "select select-bordered w-full sm:w-auto", \
             data: { action: "change->search-form#submit" }
+
     / Table Section
     = turbo_frame_tag "users_table" do
       = render partial: "admin/users/shared/users", locals: { users: @users }

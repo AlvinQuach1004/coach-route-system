@@ -368,3 +368,63 @@ section {
   background-color: var(--line-border-empty);
   cursor: not-allowed;
 }
+
+@media (max-width: 767px) {
+  .dropdown-content-card {
+    max-height: 85vh;
+    width: 100%;
+    max-width: 450px;
+  }
+
+  .dropdown-content-card-book {
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    background-color: white;
+    overflow-y: auto;
+  }
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.slides-container {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.slide {
+  scroll-snap-align: start;
+}
+
+/* Style for vertical tabs on mobile */
+@media (max-width: 640px) {
+  .tab {
+    width: 100%;
+    justify-content: center;
+    border-radius: 0;
+    transition: background-color 0.2s ease;
+  }
+
+  .tab-active {
+    background-color: theme('colors.base-200');
+    border-left: 2px solid theme('colors.primary');
+  }
+}
+
+/* Fix for tab borders */
+@media (min-width: 640px) {
+  .tabs-bordered .tab-bordered:not(:first-child) {
+    border-left-width: 0;
+  }
+
+  .tabs-bordered .tab-bordered.tab-active:not(:first-child) {
+    border-left-width: 1px;
+  }
+}

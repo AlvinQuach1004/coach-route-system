@@ -7,7 +7,7 @@ module Admin
 
     def call
       {
-        total: @scope.size,
+        total: filtered_scope.size,
         schedules: filtered_scope.distinct
       }
     end
@@ -15,10 +15,23 @@ module Admin
     private
 
     def filtered_scope
-      @scope
-        .extending(Scopes)
+      # Conditionally extend the scope to include the necessary associations based on params
+      scope = @scope
+      scope = include_route_associations(scope) if needs_route_associations?
+
+      scope.extending(Scopes)
         .search(@params[:search])
         .filter(@params)
+    end
+
+    # Check if the route associations need to be included
+    def needs_route_associations?
+      @params[:search].present? || @params[:route_id].present? || @params[:start_date].present?
+    end
+
+    def include_route_associations(scope)
+      # Include only necessary associations
+      scope.includes(route: [:start_location, :end_location])
     end
 
     module Scopes

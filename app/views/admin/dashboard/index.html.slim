@@ -39,10 +39,9 @@
             .stat-title Available Coaches
             .stat-value = @daily_stats[:available_coaches]
 
-      / Recent Bookings Table
       .lg:col-span-3.bg-base-100.p-4.rounded-box.shadow-lg
         h2.text-xl.font-bold.mb-4 Recent Bookings
-        .overflow-x-auto
+        .hidden.overflow-x-auto.md:block
           table.table
             thead
               tr
@@ -54,12 +53,25 @@
             tbody
               - @recent_bookings.each do |booking|
                 tr
-                  td = booking.id.first(8)
+                  td.font-bold = booking.id.first(8)
                   td = booking.user.email
                   td 
                     - route = booking.tickets.first.schedule.route
                     = "#{route.start_location.name} - #{route.end_location.name}"
-                  td = format_currency_vnd(booking.tickets.sum(&:paid_amount))
+                  td.text-green-600.font-semibold = format_currency_vnd(booking.tickets.sum(&:paid_amount))
                   td
                     .badge class="badge-#{booking.payment_status == Booking::PaymentStatus::COMPLETED  ? 'success' : 'warning'}"
                       = booking.payment_status.titleize
+        .block.md:hidden
+          - @recent_bookings.each do |booking|
+            .card.bg-base-200.shadow-md.mb-4
+              .card-body
+                h3.font-bold.text-lg = "Booking ID: #{booking.id.first(8)}"
+                p.text-sm.text-gray-600 = "Email: #{booking.user.email}"
+                p.text-sm.text-gray-600
+                  - route = booking.tickets.first.schedule.route
+                  = "Route: #{route.start_location.name} - #{route.end_location.name}"
+                span.font-semibold.text-green-600 = "#{format_currency_vnd(booking.tickets.sum(&:paid_amount))}"
+                p.text-sm.text-gray-600
+                  .badge class="badge-#{booking.payment_status == Booking::PaymentStatus::COMPLETED  ? 'success' : 'warning'}"
+                    = booking.payment_status.titleize

@@ -6,7 +6,6 @@ import { showToast } from './toast';
 export default class extends Controller {
   static targets = ['paymentMethodInput', 'submitButton'];
   static values = {
-    key: String,
     amount: Number,
   };
 
@@ -15,7 +14,7 @@ export default class extends Controller {
   }
 
   async initializeStripe() {
-    this.stripe = await loadStripe(this.keyValue);
+    this.stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
   }
 
   updatePaymentMethod(event) {

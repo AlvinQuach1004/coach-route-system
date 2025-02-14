@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_07_034404) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_13_071014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -223,6 +223,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_07_034404) do
     t.datetime "updated_at", null: false
     t.decimal "price"
     t.string "status", default: "scheduled"
+    t.integer "tickets_count", default: 0
     t.index ["coach_id"], name: "index_schedules_on_coach_id"
     t.index ["route_id"], name: "index_schedules_on_route_id"
   end
