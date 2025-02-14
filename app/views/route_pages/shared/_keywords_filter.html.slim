@@ -1,6 +1,6 @@
-.space-y-3
-  - @keywords.each do |label|
-    - keyword_value = "#{label.start_location_name}_#{label.end_location_name}"
-    .flex.items-center.space-x-2
-      = check_box_tag "keywords[]", keyword_value, params[:keywords]&.include?(keyword_value), class: 'checkbox checkbox-primary', data: { filter: 'keywords', turbo_frame: 'schedules', turbo_action: 'replace', filter_target: 'filter' }
-      span #{label.start_location_name} → #{label.end_location_name}
+- selected_keywords = params[:keywords] || []
+- @keywords.each do |label|
+  - keyword_value = "#{label.start_location_name}_#{label.end_location_name}"
+  .flex.items-center.space-x-2
+    = check_box_tag "keywords[]", keyword_value, selected_keywords.include?(keyword_value), class: 'checkbox checkbox-primary', data: { filter: 'keywords', turbo_frame: 'schedules', turbo_action: 'replace', filter_target: 'filter' }
+    span #{label.start_location_name} → #{label.end_location_name}

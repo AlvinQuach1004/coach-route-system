@@ -1,5 +1,5 @@
 .overflow-x-auto
-  table.table.table-zebra.w-full
+  table.table.table-zebra.w-full.hidden.md:table
     thead
       tr.bg-base-200.text-center
         th.rounded-tl-lg #
@@ -23,10 +23,10 @@
                 svg.h-4.w-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
                   path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"]
 
-              dialog.modal id="delete_modal-#{route.id}"
+              dialog.modal id="delete_modal_-#{route.id}"
                 .modal-box
                   h3.text-lg.font-bold Confirm Delete
-                  p.py-4 Are you sure you want to delete this route?
+                  p.py-4 Are you sure you want to delete this route ?
                   .modal-action
                     button.modal-close-button.btn.mr-2 Cancel
                     = button_to admin_coach_route_path(route),
@@ -35,8 +35,42 @@
                       data: { turbo: false } do
                       | Delete
 
-.mt-6.flex.justify-between.items-center
-  .text-sm.text-base-content/70
+.flex.flex-col.gap-4.md:hidden
+  - routes.each_with_index do |route, index|
+    .card.bg-base-100.shadow-xl.p-4
+      .flex.justify-between.items-center
+        .text-lg.font-bold = "Route ##{index + 1}"
+        .flex.gap-2
+          = link_to edit_admin_coach_route_path(route), class: "btn btn-sm btn-ghost", data: { turbo_frame: "modal_routes" } do
+            svg.h-4.w-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+              path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"]
+          button.modal-open-button.btn.btn-square.btn-sm.btn-ghost.text-error data-modal-id="delete_modal_mobile-#{route.id}"
+            svg.h-4.w-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+              path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"]
+          dialog.modal id="delete_modal_mobile-#{route.id}"
+            .modal-box
+              h3.text-lg.font-bold Confirm Delete
+              p.py-4 Are you sure you want to delete this route ?
+              .modal-action
+                button.modal-close-button.btn.mr-2 Cancel
+                = button_to admin_coach_route_path(route),
+                  method: :delete,
+                  class: "btn btn-error text-white inline",
+                  data: { turbo: false } do
+                  | Delete
+      .mt-2
+        .flex.gap-2
+          p.font-semibold Start: 
+          span.text-gray-600 = route.start_location.name
+        .flex.gap-2
+          p.font-semibold End: 
+          span.text-gray-600 = route.end_location.name
+        .flex.gap-2
+          p.font-semibold Created At: 
+          span.text-gray-600 = route.created_at.strftime("%B %d, %Y")
+
+.mt-6.flex.flex-col.justify-between.items-center.md:flex-row
+  .text-sm.text-center.text-base-content/70 class="md:text-left"
     | Showing 
     span.font-medium = "#{@pagy.from}"
     |  to 

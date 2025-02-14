@@ -3,9 +3,10 @@ module Admin
     before_action :set_route, only: %i[edit update destroy]
 
     def index
-      @routes = Route.includes(:start_location, :end_location, :stops)
-        .search(params[:search])
+      @routes = Route.search(params[:search])
         .sort_by_param(params[:sort_by])
+
+      @routes = @routes.includes(:start_location, :end_location, :stops) if need_associations?
       @total_routes = @routes.size
       @pagy, @routes = pagy(@routes, page: params[:page])
 
@@ -114,6 +115,10 @@ module Admin
     end
 
     private
+
+    def need_associations?
+      params[:search].present? || params[:sort_by].present?
+    end
 
     def set_route
       @route = Route.includes(:stops).find(params[:id])

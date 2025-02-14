@@ -205,19 +205,24 @@ export default class extends Controller {
           if (this.selectedPickup) {
             const province = await this.getProvinceFromCoordinates(this.selectedPickup);
             this.fromStep3Target.textContent = province;
-          } else {
+          } else if (
+            document.querySelector('.from-step-3') === null ||
+            document.querySelector('.from-step-3')?.textContent === ''
+          ) {
             const pickupLocationCoords = await this.getCoordinatesFromAddress(this.pickupLocationTarget.textContent);
             const pickupLocationProvince = await this.getProvinceFromCoordinates(pickupLocationCoords);
             this.fromStep3Target.textContent = pickupLocationProvince;
           }
         }
 
-        console.log('To: ', this.toStep3Target);
         if (this.hasDropoffLocationTarget) {
           if (this.selectedDropoff) {
             const province = await this.getProvinceFromCoordinates(this.selectedDropoff);
             this.toStep3Target.textContent = province;
-          } else {
+          } else if (
+            document.querySelector('.to-step-3') === null ||
+            document.querySelector('.to-step-3').textContent === ''
+          ) {
             const dropoffLocationCoords = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
             const dropoffLocationProvince = await this.getProvinceFromCoordinates(dropoffLocationCoords);
             this.toStep3Target.textContent = dropoffLocationProvince;

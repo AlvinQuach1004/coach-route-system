@@ -1,10 +1,9 @@
 .overflow-x-auto.bg-base-100.rounded-lg
-  table.table.table-zebra.w-full
+  table.table.table-zebra.w-full.hidden.md:table
     thead.text-center
       tr.bg-base-200
         th.rounded-tl-lg #
-        th.text-center
-          | Email
+        th.text-center Email
         th Created At
         th Updated At
         th.rounded-tr-lg Actions
@@ -16,9 +15,9 @@
           td
             .flex.items-center.gap-3
               .avatar.placeholder
-                .bg-neutral-focus.text-neutral-content.rounded-full.w-8
-                  span = user.email[0].upcase
-              = user.email
+                .bg-neutral-focus.text-neutral-content.rounded-full.w-8.h-8.flex.items-center.justify-center
+                  span.text-xs.md:text-base = user.email[0].upcase
+              span = user.email
           td = display_datetime(user.created_at)
           td = display_datetime(user.updated_at)
           td.mx-auto
@@ -34,7 +33,7 @@
               dialog.modal id="delete_modal-#{user.id}"
                 .modal-box
                   h3.text-lg.font-bold Confirm Delete
-                  p.py-4 Are you sure you want to delete this user?
+                  p.py-4 Are you sure you want to delete this user ?
                   .modal-action
                     button.modal-close-button.btn.mr-2 Cancel
                     = button_to admin_user_path(user),
@@ -43,14 +42,48 @@
                       data: { turbo: false } do
                       | Delete
 
-.mt-6.flex.justify-between.items-center
-        .text-sm.text-base-content/70
-          | Showing 
-          span.font-medium = "#{@pagy.from}"
-          |  to 
-          span.font-medium = "#{@pagy.to}"
-          |  of 
-          span.font-medium = "#{@pagy.count}"
-          |  users
-        .text-center.py-4
-          = pagy_nav(@pagy)
+// Mobile View - Hiển thị dưới dạng Card
+.grid.gap-4.md:hidden
+  - users.each.with_index do |user, index|
+    .bg-base-100.shadow-md.rounded-lg.p-4
+      .flex.items-center.justify-between
+        .font-bold.text-lg = "##{index + 1}"
+        .flex.gap-3.items-center
+          .avatar.placeholder
+            .bg-neutral-focus.text-neutral-content.rounded-full.w-10.h-10.flex.items-center.justify-center
+              span.text-base = user.email[0].upcase
+          .text-sm
+            .font-medium = user.email
+            .text-xs.text-base-content/60 Created: #{display_datetime(user.created_at)}
+            .text-xs.text-base-content/60 Updated: #{display_datetime(user.updated_at)}
+      .flex.justify-end.gap-2.mt-2
+        = link_to edit_admin_user_path(user), class: "btn btn-square btn-sm btn-ghost", data: { turbo_frame: 'modal_users' } do
+          svg.h-4.w-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+            path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"]
+
+        button.modal-open-button.btn.btn-square.btn-sm.btn-ghost.text-error data-modal-id="delete_modal_mobile-#{user.id}"
+          svg.h-4.w-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+            path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"]
+        dialog.modal id="delete_modal_mobile-#{user.id}"
+          .modal-box
+            h3.text-lg.font-bold Confirm Delete
+            p.py-4 Are you sure you want to delete this user ?
+            .modal-action
+              button.modal-close-button.btn.mr-2 Cancel
+              = button_to admin_user_path(user),
+                method: :delete,
+                class: "btn btn-error text-white inline",
+                data: { turbo: false } do
+                | Delete
+
+.mt-6.flex.flex-col.md:flex-row.justify-between.items-center
+  .text-sm.text-base-content/70.text-center.md:text-left
+    | Showing 
+    span.font-medium = "#{@pagy.from} "
+    | to 
+    span.font-medium = "#{@pagy.to} "
+    | of 
+    span.font-medium = "#{@pagy.count} "
+    | users
+  .py-4
+    = pagy_nav(@pagy)

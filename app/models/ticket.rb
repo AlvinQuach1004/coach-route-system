@@ -27,7 +27,7 @@
 class Ticket < ApplicationRecord
   # Associations
   belongs_to :booking, inverse_of: :tickets
-  belongs_to :schedule, inverse_of: :tickets
+  belongs_to :schedule, counter_cache: true, inverse_of: :tickets
 
   # Constants
   module Status

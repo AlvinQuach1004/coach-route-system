@@ -1,9 +1,9 @@
 - provide(:title, "Schedule Management")
 .container.mx-auto.p-4.mt-5
   .flex.justify-between.items-center.mb-6
-    .flex.items-center.gap-3
+    .flex.items-center.flex-col.justify-start.gap-3.md:flex-row
         h2.text-2xl.font-bold Schedules List
-        span.badge.badge-primary = "Total: #{@total_schedules}"
+        span.badge.badge-primary.mr-auto = "Total: #{@total_schedules}"
     = link_to 'Create New Schedule', new_admin_schedule_path, class: 'btn btn-primary', data: { turbo_frame: 'modal_schedules' }
 
   / Search and Filter Form

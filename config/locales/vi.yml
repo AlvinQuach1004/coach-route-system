@@ -134,7 +134,7 @@ vi:
         total_tickets: Tổng số vé
     categories:
       limousine: Limousine
-      room: Phòng
+      room: Giường phòng
       sleeper: Giường nằm
     category_label: Loại xe
     coach_type: Loại xe

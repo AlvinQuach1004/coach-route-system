@@ -1,6 +1,6 @@
 = form_with model: booking, url: bookings_path, data: { turbo: false, filter_ignore: true }, method: :post do |f|
   - stops = stops_with_location.select { |stop| stop[:route] == schedule.route_id }
-  .dropdown-content-card.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment position" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-key-value=Rails.configuration.stripe[:publishable_key] data-payment-amount-value="#{schedule.price}" data-stepper-selected-seats-value="[]" data-position-stops="#{stops.to_json}" data-stepper-available-seats-value=schedule.coach.capacity-schedule.tickets.count
+  .dropdown-content-card.dropdown-content-card-book.progress-btn-container.text-center.max-w-4xl.w-full.h-full.px-8.menu.p-2.shadow.bg-base-100.rounded-box.w-52.z-10.hidden.absolute.top-full.mt-4.right-0 data-controller="dropdown seat-selection stepper payment position" data-dropdown-target="content" data-stepper-target="container" id="dropdown-book-#{schedule.id}" data-seat-selection-price-value="#{schedule.price}" data-payment-amount-value="#{schedule.price}" data-stepper-selected-seats-value="[]" data-position-stops="#{stops.to_json}" data-stepper-available-seats-value=schedule.coach.capacity-schedule.tickets_count
     / Hidden fields for booking params
     = f.hidden_field :payment_status, value: "pending"
     = f.hidden_field :payment_method, data: { seat_selection_target: "paymentMethod" }
@@ -20,9 +20,9 @@
         .circle-step data-stepper-target="circleStep" data-position-target="circleStep" 2
         .circle-step data-stepper-target="circleStep" data-position-target="circleStep" 3
         .circle-step data-stepper-target="circleStep" data-position-target="circleStep" 4
-      .step-tab.container.mx-auto.p-6.bg-base-100.w-full.max-w-6xl data-stepper-target="stepTab"
-        .flex.justify-between.bg-none
-          .w-1/4.mt-4.max-w-xl.mr-10
+      .step-tab.container.mx-auto.px-6.pb-6.bg-base-100.w-full.max-w-6xl.md:p-6 data-stepper-target="stepTab"
+        .flex.flex-col.md:flex-row.justify-between.bg-none
+          .w-full.md:w-1/4.mt-4.max-w-xl.mr-0.md:mr-10
             h2.text-lg.font-bold.text-left.pl-4 = t('route_pages.bookings.legend')
             ul.pt-4
               - { "empty" => "bg-white border-gray-400", "booked" => "bg-gray-400 border-gray-400", "selected" => "bg-green-400 border-gray-400" }.each do |seat_type, color_classes|
@@ -36,24 +36,26 @@
                         svg.relative.h-14.w-8 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                           rect.absolute width="15" height="6" x="4" y="18" rx="2" ry="2"
                     span.whitespace-nowrap = t("route_pages.bookings.seat_status.#{seat_type}")
+          .card.border.border-gray-300.rounded-md.p-4.mt-4.text-center.block.md:hidden
+            .tabs
+              input#lower-tab(type="radio" name="floor-tab" checked class="hidden")
+              label.lower-tab.tab.tab-bordered.cursor-pointer = t('route_pages.bookings.floors.lower_floor_label')
 
-
-          .w-3/4.flex.justify-between
+              input#upper-tab(type="radio" name="floor-tab" class="hidden")
+              label.upper-tab.tab.tab-bordered.cursor-pointer = t('route_pages.bookings.floors.upper_floor_label')
+          .w-full.md:w-3/4.flex.flex-col.md:flex-row.justify-between class="md:flex"
             - seat_rows = schedule.seat_rows_by_type          
-
-            // Lower Floor
-            .w-1/2.rounded-md.bg-slate-300.p-4.relative.pr-14
-
-              h2.text-center.font-bold.pt-4.text-lg.ml-8 = t('route_pages.bookings.floors.lower_floor_label')     
-              svg.absolute.left-12.top-20 xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-life-buoy"
+              // Lower Floor
+            .lower-floor.block.w-full.md:w-1/2.rounded-md.bg-slate-300.p-4.relative.pr-0.md:pr-14.mt-4.md:mt-0
+              h2.text-center.font-bold.pt-4.text-lg.md:ml-8 = t('route_pages.bookings.floors.lower_floor_label')     
+              svg.absolute.left-14.top-20.md:left-12 xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-life-buoy"
                 circle cx="12" cy="12" r="10"
                 path d="m4.93 4.93 4.24 4.24"
                 path d="m14.83 9.17 4.24-4.24"
                 path d="m14.83 14.83 4.24 4.24"
                 path d="m9.17 14.83-4.24 4.24"
                 circle cx="12" cy="12" r="4"     
-
-              .grid.grid-cols-3.gap-x-14.gap-y-4.p-8.mt-8
+              .grid.grid-cols-3.md:gap-x-14.gap-y-4.p-8.mt-8
                 - seat_rows[:lower].each do |seat|                
                   .seat.w-10.h-16.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
                     data-seat-selection-target="seat"
@@ -64,11 +66,10 @@
                     data-tip="A#{seat} - #{format_currency_vnd(schedule.price)}"
                   ]
                     = image_tag vite_asset_path("images/seats/#{schedule.coach.coach_type}-icon.svg"), class: 'w-8 h-10'         
-
             // Upper Floor
-            .w-1/2.rounded-md.bg-slate-400.p-4.ml-6.pr-8
-              h2.text-center.font-bold.mb-4.pt-4.text-lg = t('route_pages.bookings.floors.upper_floor_label')   
-              .grid.grid-cols-3.gap-x-12.gap-y-4.p-8.mt-8.pr-14
+            .upper-floor.hidden.w-full.md:w-1/2.md:block.rounded-md.bg-slate-400.p-4.md:ml-6.pr-0.md:pr-14.mt-4.md:mt-0
+              h2.text-center.font-bold.mb-4.pt-4.text-lg.md:ml-8 = t('route_pages.bookings.floors.upper_floor_label')   
+              .grid.grid-cols-3.md:gap-x-14.gap-y-4.p-8.mt-8
                 - seat_rows[:upper].each do |seat|
                   .seat.w-10.h-16.border.border-gray-400.rounded.flex.items-center.justify-center.cursor-pointer.mx-auto.tooltip[
                     data-seat-selection-target="seat"
@@ -79,16 +80,18 @@
                     data-tip="B#{seat} - #{format_currency_vnd(schedule.price)}"
                   ]
                     = image_tag vite_asset_path("images/seats/#{schedule.coach.coach_type}-icon.svg"), class: "h-10 w-8"
+
+
+
         .divider.mt-10
-        .flex.justify-between.items-center
-          .flex.justify-start.items-center
-            p.text-semibold.text-lg = t('route_pages.bookings.summary.seats') 
+        .flex.flex-col.md:flex-row.justify-between.items-center.mt-4
+          .flex.justify-start.items-center.mb-2.md:mb-0
+            p.text-semibold.text-lg = t('route_pages.bookings.summary.seats')
             span#selected-seats.text-blue-500.font-bold.ml-4 data-seat-selection-target="selectedSeats"
           .flex.items-center.justify-between
-            p.text-lg.mr-8 = "#{t('route_pages.bookings.summary.total')}: "
+            p.text-lg.mr-4.md:mr-8 = "#{t('route_pages.bookings.summary.total')}: "
             span#total-price.font-bold.text-green-500.text-lg data-seat-selection-target="totalPrice"
               | 0₫
-
       .step-tab.hidden.h-full data-stepper-target="stepTab"
         .container.mx-auto.p-4.max-w-3xl.my-auto.h-full
           .grid.grid-cols-1.md:grid-cols-2.gap-6
@@ -359,7 +362,7 @@
                     - if departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
                       - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
                       - if stop.present?
-                        = stop.location.name
+                        span.from-step-3 = stop.location.name
                   
                   / To Row (Tỉnh của điểm trả)
                   .flex.justify-between.items-center
@@ -368,7 +371,7 @@
                     - if destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
                       - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
                       - if stop.present?
-                        = stop.location.name
+                        span.to-step-3 = stop.location.name
 
 
                   / Departure Time Row
@@ -391,6 +394,6 @@
                     span.font-bold.text-gray-900 data-seat-selection-target="totalPriceStep3" data-position-target="totalPriceStep3"
                 = f.submit 'Confirm Booking', class: 'btn btn-primary w-full mt-4', id: "dropdown-book-btn-#{schedule.id}", data: { action: 'payment#processPayment', payment_target: 'submitButton', turbo: false }
 
-      .flex.w-full.justify-between.items-end.px-4.mt-auto
+      .flex.w-full.justify-between.items-start.px-4.mt-auto.md:items-end
         button#prev.btn data-stepper-target="prev" data-action="click->stepper#prev click->position#backStep click->position#updateStep3Data" type="button" = t('route_pages.bookings.navigation.back')
         button#next.btn data-stepper-target="next" data-action="click->stepper#next click->position#nextStep click->position#updateStep3Data" type="button" = t('route_pages.bookings.navigation.next')

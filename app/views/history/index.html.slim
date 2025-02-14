@@ -5,65 +5,55 @@
     .text-md.text-gray-500
       = "Total: #{@total_bookings} Bookings"
 
-  .overflow-x-auto.rounded-lg.shadow-md
   - if @bookings.any?
-    table.table.w-full
-      thead
-        tr.bg-base-200
-          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
-            | #
-          th.px-6.py-4.font-medium.text-base-content
-            = t('history.information.route')
-          th.px-6.py-4.font-medium.text-base-content
-            = t('history.information.seats')
-          th.px-6.py-4.font-medium.text-base-content
-            = t('history.information.coach_type')
-          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
-            = t('history.information.booked_date')
-          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
-            = t('history.information.departure_date')
-          th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap
-            = t('history.information.departure_time')
-          th.px-6.py-4.font-medium.text-base-content
-            = t('history.information.payment_method')
-          th.px-6.py-4.font-medium.text-base-content.text-center
-            = t('history.information.status')
-      tbody.divide-y.divide-base-200
-      - @bookings.each_with_index do |booking, index|
-        tr.hover:bg-base-100
-          td.px-6.py-4.font-mono.text-sm
-            = index + 1
-          td.px-6.py-4
-            .flex.flex-col.gap-1
-              .flex.items-center.gap-2
-                svg.h-4.w-4.text-primary[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"]
-                  path[d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"]
-                span.text-sm.font-medium
-                  = booking.start_stop.location.name
-              .flex.items-center.gap-2
-                svg.h-4.w-4.text-primary[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"]
-                  path[d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"]
-                span.text-sm.font-medium
-                  = booking.end_stop.location.name
-          td.px-6.py-4
-            .flex.flex-wrap.gap-1
-              - booking.tickets.each do |ticket|
-                span.badge.badge-primary.badge-outline.text-xs
-                  = ticket.seat_number
-          td.px-6.py-4
-            = booking.tickets.first.schedule.coach.coach_type.capitalize
-          td.px-6.py-4.whitespace-nowrap.text-sm
-            = booking.created_at.strftime("%d/%m/%Y")
-          td.px-6.py-4.whitespace-nowrap.text-sm
-            = booking.tickets.first.schedule.formatted_departure_date
-          td.px-6.py-4.whitespace-nowrap.text-sm.text-center
-            = booking.tickets.first.schedule.formatted_departure_time
-          td.px-6.py-4.text-center.ml-6
-            div class="badge #{booking.online? ? 'badge-primary' : 'badge-ghost'}"
-              = booking.payment_method.capitalize
-          td.px-6.py-4.text-center
-            div class="badge #{booking.completed? ? 'badge-accent' : 'badge-warning'}"
-              = booking.payment_status.capitalize
+    .hidden.md:block
+      table.table.w-full
+        thead
+          tr.bg-base-200
+            th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap | #
+            th.px-6.py-4.font-medium.text-base-content = t('history.information.route')
+            th.px-6.py-4.font-medium.text-base-content = t('history.information.seats')
+            th.px-6.py-4.font-medium.text-base-content = t('history.information.coach_type')
+            th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap = t('history.information.booked_date')
+            th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap = t('history.information.departure_date')
+            th.px-6.py-4.font-medium.text-base-content.whitespace-nowrap = t('history.information.departure_time')
+            th.px-6.py-4.font-medium.text-base-content = t('history.information.payment_method')
+            th.px-6.py-4.font-medium.text-base-content.text-center = t('history.information.status')
+        tbody.divide-y.divide-base-200
+        - @bookings.each_with_index do |booking, index|
+          tr.hover:bg-base-100
+            td.px-6.py-4.font-mono.text-sm = index + 1
+            td.px-6.py-4
+              .flex.flex-col.gap-1
+                span.text-sm.font-medium = booking.start_stop.location.name
+                span.text-sm.font-medium = booking.end_stop.location.name
+            td.px-6.py-4
+              .flex.flex-wrap.gap-1
+                - booking.tickets.each do |ticket|
+                  span.badge.badge-primary.badge-outline.text-xs = ticket.seat_number
+            td.px-6.py-4 = booking.tickets.first.schedule.coach.coach_type.capitalize
+            td.px-6.py-4.whitespace-nowrap.text-sm = booking.created_at.strftime("%d/%m/%Y")
+            td.px-6.py-4.whitespace-nowrap.text-sm = booking.tickets.first.schedule.formatted_departure_date
+            td.px-6.py-4.whitespace-nowrap.text-sm.text-center = booking.tickets.first.schedule.formatted_departure_time
+            td.px-6.py-4.text-center.ml-6
+              div class="badge #{booking.online? ? 'badge-primary' : 'badge-ghost'}" = booking.payment_method.capitalize
+            td.px-6.py-4.text-center
+              div class="badge #{booking.completed? ? 'badge-accent' : 'badge-warning'}" = booking.payment_status.capitalize
+  
+    .block.md:hidden.space-y-4
+      - @bookings.each do |booking|
+        .bg-base-200.p-4.rounded-lg.shadow-md
+          .flex.justify-between.items-center
+            h2.text-lg.font-bold = booking.start_stop.location.name + " → " + booking.end_stop.location.name
+            div class="badge #{booking.completed? ? 'badge-accent' : 'badge-warning'}" = booking.payment_status.capitalize
+          .mt-2.space-y-1.text-sm.text-gray-600
+            p = "#{t('history.information.seats')}: #{booking.tickets.map(&:seat_number).join(', ')}"
+            p = "#{t('history.information.coach_type')}: #{booking.tickets.first.schedule.coach.coach_type.capitalize}"
+            p = "#{t('history.information.booked_date')}: #{booking.created_at.strftime('%d/%m/%Y')}"
+            p = "#{t('history.information.departure_date')}: #{booking.tickets.first.schedule.formatted_departure_date}"
+            p = "#{t('history.information.departure_time')}: #{booking.tickets.first.schedule.formatted_departure_time}"
+            p = "#{t('history.information.payment_method')}: #{booking.payment_method.capitalize}"
+
   - else
     .w-full.mx-auto
       p.text-gray-500.mx-auto.text-lg.font-medium = t('history.no_bookings_found')

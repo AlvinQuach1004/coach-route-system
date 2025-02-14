@@ -37,24 +37,25 @@ class RoutePagesQuery < ApplicationQuery
       }
 
       mapped_category = category_mapping[category] || category
+
       joins(:coach).where(coaches: { coach_type: mapped_category.downcase })
     end
 
     def filter_by_keywords(keywords)
       return self if keywords.blank?
 
-      location_names = keywords.flat_map { |keyword| keyword.split('_') }.uniq
+      keywords_array = Array(keywords) # Nếu nil, chuyển thành []
+
+      location_names = keywords_array.flat_map { |keyword| keyword.split('_') }.uniq
       locations = Location.where(name: location_names).pluck(:id, :name).to_h { |id, name| [name, id] }
 
-      query_conditions = keywords.filter_map do |keyword|
+      query_conditions = keywords_array.filter_map do |keyword|
         start_location_name, end_location_name = keyword.split('_')
         start_location_id = locations[start_location_name]
         end_location_id = locations[end_location_name]
         next if start_location_id.nil? || end_location_id.nil?
 
-        joins(:route).where(
-          routes: { start_location_id: start_location_id, end_location_id: end_location_id }
-        )
+        includes(:route).where(routes: { start_location_id: start_location_id, end_location_id: end_location_id })
       end
 
       query_conditions.any? ? query_conditions.reduce(:or) : self
@@ -66,10 +67,8 @@ class RoutePagesQuery < ApplicationQuery
 
       if trends.include?('Seat available')
         joins(:coach)
-          .joins('LEFT JOIN tickets ON tickets.schedule_id = schedules.id')
-          .select('schedules.*, coaches.capacity, COUNT(DISTINCT tickets.id) as booked_seats')
-          .group('schedules.id, coaches.id, routes.id')
-          .having('COUNT(DISTINCT tickets.id) < coaches.capacity')
+          .select('schedules.*, coaches.capacity, schedules.tickets_count AS booked_seats')
+          .where('schedules.tickets_count < coaches.capacity')
       end
     end
 

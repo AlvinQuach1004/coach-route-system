@@ -7,6 +7,7 @@
 #  departure_time :time
 #  price          :decimal(, )
 #  status         :string           default("scheduled")
+#  tickets_count  :integer          default(0)
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  coach_id       :uuid             not null

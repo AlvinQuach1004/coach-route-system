@@ -4,7 +4,7 @@ module Admin
     before_action :load_dependencies, only: [:new, :edit, :create, :update, :index]
 
     def index
-      query = Admin::ScheduleQuery.new(scope: Schedule.includes(route: [:start_location, :end_location], coach: []), params: params)
+      query = Admin::ScheduleQuery.new(scope: conditional_scope, params: params)
       result = query.call
 
       @total_schedules = result[:total]
@@ -69,6 +69,20 @@ module Admin
     end
 
     private
+
+    def conditional_scope
+      scope = Schedule.includes(coach: [])
+
+      if needs_route_associations?
+        scope = Schedule.includes(route: [:start_location, :end_location])
+      end
+
+      scope
+    end
+
+    def needs_route_associations?
+      params[:search].present? || params[:route_id].present? || params[:start_date].present?
+    end
 
     def set_schedule
       @schedule = Schedule.find(params[:id])

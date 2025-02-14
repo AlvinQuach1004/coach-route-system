@@ -2,18 +2,21 @@ class RoutePagesController < ApplicationController
   before_action :retrieve_keywords, only: :index
 
   def index # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    Rails.logger.debug { "Keywords params: #{params[:keywords].inspect}" }
     @booking = Booking.new
 
     query = RoutePagesQuery.new(
-      scope: Schedule.includes(:coach, :route),
+      scope: Schedule.includes(route: :stops),
       params: params
     ).call
 
     @schedules = query[:schedules]
     @total_schedules = query[:total]
-    @stops_with_location = @schedules.map do |schedule|
-      Stop.includes(:location)
+    @schedules_without_routes = Schedule.all
+    @stops_with_location = @schedules_without_routes.map do |schedule|
+      Stop.joins(:location)
         .where(route_id: schedule.route_id)
+        .select('stops.*, locations.name AS location_name')
         .map do |stop|
         {
           id: stop.id,
@@ -21,7 +24,7 @@ class RoutePagesController < ApplicationController
           address: stop.address,
           latitude: stop.latitude_address,
           longitude: stop.longitude_address,
-          province: stop.location&.name,
+          province: stop.location_name, # Sử dụng alias để lấy tên location
           pickup: stop.is_pickup,
           dropoff: stop.is_dropoff
         }

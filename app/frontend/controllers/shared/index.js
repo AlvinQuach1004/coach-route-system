@@ -9,6 +9,7 @@ import './add_stop';
 import './profile_editor';
 import './notifications_channel';
 import './routes';
+import './switch_floor';
 
 const application = Application.start();
 
