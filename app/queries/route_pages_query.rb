@@ -31,9 +31,9 @@ class RoutePagesQuery < ApplicationQuery
       return self if category.blank?
 
       category_mapping = {
-        'Giường nằm' => Coach::Capacity::SLEEPER,
-        'Giường phòng' => Coach::Capacity::ROOM,
-        'Limousine giường nằm' => Coach::Capacity::LIMOUSINE
+        'Giường nằm' => Coach::Type::SLEEPER,
+        'Giường phòng' => Coach::Type::ROOM,
+        'Limousine giường nằm' => Coach::Type::LIMOUSINE
       }
 
       mapped_category = category_mapping[category] || category

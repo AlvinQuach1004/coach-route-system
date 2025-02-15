@@ -34,6 +34,14 @@ class Coach < ApplicationRecord
     ALL = [AVAILABLE, INUSE, MAINTAINANCE].freeze
   end
 
+  module Type
+    SLEEPER = 'sleeper'.freeze
+    LIMOUSINE = 'limousine'.freeze
+    ROOM = 'room'.freeze
+
+    ALL = [SLEEPER, ROOM, LIMOUSINE].freeze
+  end
+
   # Enumerize
   enum :status,
     {

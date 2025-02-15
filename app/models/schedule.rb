@@ -106,7 +106,9 @@ class Schedule < ApplicationRecord
     previous_coach = Coach.find(coach_id_was)
     new_coach = coach
     # Update previous status to available if departure_date of schedules > current
-    previous_coach.available! if previous_coach.schedules.where(departure_date: Time.zone.today..).empty?
+    if previous_coach && previous_coach.schedules.where(departure_date: Time.zone.today..).empty?
+      previous_coach.available!
+    end
     new_coach.inuse! if new_coach.available?
   end
 end

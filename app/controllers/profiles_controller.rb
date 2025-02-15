@@ -23,7 +23,7 @@ class ProfilesController < ApplicationController
                success: false,
                html: render_to_string(
                  partial: 'layouts/flash',
-                 locals: { message: error_message, type: 'error' }, # Ensure correct variables
+                 locals: { message: error_message, type: 'error' },
                  formats: [:html]
                )
              },
