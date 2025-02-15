@@ -97,9 +97,17 @@ module Admin
       end
 
       def filter_by_price_range(relation, min_price, max_price)
-        return relation unless min_price.present? && max_price.present?
+        return relation if min_price.blank? && max_price.blank?
 
-        relation.where(price: min_price..max_price)
+        if min_price.present? && max_price.present?
+          relation.where(price: min_price..max_price)
+        elsif min_price.present?
+          relation.where(price: min_price..)
+        elsif max_price.present?
+          relation.where(price: ..max_price)
+        else
+          relation
+        end
       end
     end
   end
