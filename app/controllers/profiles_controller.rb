@@ -2,12 +2,7 @@ class ProfilesController < ApplicationController
   before_action :authenticate_user!
   layout :choose_layout
 
-  def show
-  rescue StandardError => e
-    Sentry.capture_exception(e)
-    flash[:error] = 'There was an error loading your profile. Please try again.'
-    redirect_to root_path
-  end
+  def show; end
 
   def update_field # rubocop:disable Metrics/MethodLength
     field = user_params.keys.first
@@ -36,8 +31,7 @@ class ProfilesController < ApplicationController
              },
         status: :unprocessable_entity
     end
-  rescue StandardError => e
-    Sentry.capture_exception(e)
+  rescue StandardError
     flash[:alert] = 'There was an error updating your profile. Please try again.'
     render json: {
              success: false,

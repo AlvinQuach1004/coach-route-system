@@ -21,7 +21,6 @@ module Admin
         end
       end
     rescue StandardError => e
-      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -29,7 +28,6 @@ module Admin
       @route = Route.new
       @route.stops.build
     rescue StandardError => e
-      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -39,7 +37,6 @@ module Admin
     rescue ActiveRecord::RecordNotFound
       handle_failure(t('admin.coach_routes.messages.not_found'))
     rescue StandardError => e
-      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -48,7 +45,6 @@ module Admin
       if params[:route][:stops_attributes].blank? || params[:route][:stops_attributes].values.all? { |stop| stop[:location_id].blank? }
         route_params_filtered = route_params.except(:stops_attributes)
       end
-      # Kiểm tra xem route đã tồn tại chưa
       @route = Route.find_or_initialize_by(
         start_location_id: route_params_filtered[:start_location_id],
         end_location_id: route_params_filtered[:end_location_id]
@@ -68,7 +64,6 @@ module Admin
         handle_failure(t('admin.coach_routes.messages.create_failure'))
       end
     rescue StandardError => e
-      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -107,7 +102,6 @@ module Admin
     rescue ActiveRecord::RecordNotFound
       handle_failure(t('admin.coach_routes.messages.not_found'))
     rescue StandardError => e
-      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -118,7 +112,6 @@ module Admin
       Sentry.capture_message("Route not found: #{params[:id]}")
       handle_failure(t('admin.coach_routes.messages.not_found'))
     rescue StandardError => e
-      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -131,7 +124,6 @@ module Admin
     def set_route
       @route = Route.includes(:stops).find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      Sentry.capture_message("Route not found: #{params[:id]}")
       handle_failure(t('admin.coach_routes.messages.not_found'))
     end
 
@@ -171,7 +163,6 @@ module Admin
         is_dropoff: true
       )
     rescue StandardError => e
-      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 

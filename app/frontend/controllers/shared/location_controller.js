@@ -1,6 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
 import mapboxgl from 'mapbox-gl';
-import * as Sentry from '@sentry/browser';
 
 export default class extends Controller {
   static targets = [
@@ -58,8 +57,7 @@ export default class extends Controller {
         this.renderSuggestions(data.predictions.slice(0, this.maxResults));
       }
     } catch (error) {
-      // Log the error to Sentry
-      Sentry.captureException(error);
+      console.log(error);
     }
   }
 
@@ -127,7 +125,6 @@ export default class extends Controller {
         throw new Error('No result found for this place');
       }
     } catch (error) {
-      Sentry.captureException(error);
       console.error('Error in selectSuggestion:', error);
     }
   }
@@ -171,7 +168,6 @@ export default class extends Controller {
       }
     } catch (error) {
       // Log the error to Sentry
-      Sentry.captureException(error);
     }
   }
 
@@ -189,7 +185,6 @@ export default class extends Controller {
         return null;
       }
     } catch (error) {
-      Sentry.captureException(error);
       console.error('Lỗi khi gọi API Goong:', error);
       return null;
     }
@@ -238,7 +233,6 @@ export default class extends Controller {
         }
       }
     } catch (error) {
-      Sentry.captureException(error);
       console.error('Error fetching distance matrix:', error);
     }
   }
@@ -251,9 +245,7 @@ export default class extends Controller {
     try {
       new mapboxgl.Marker().setLngLat(this.selectedLocationCoords).addTo(this.map);
       this.map.flyTo({ center: this.selectedLocationCoords, zoom: 14 });
-    } catch (error) {
-      Sentry.captureException(error);
-    }
+    } catch (error) {}
   }
 
   initMap() {
@@ -265,8 +257,6 @@ export default class extends Controller {
         center: [106.7009, 10.7754],
         zoom: 12,
       });
-    } catch (error) {
-      Sentry.captureException(error);
-    }
+    } catch (error) {}
   }
 }

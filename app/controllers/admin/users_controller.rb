@@ -47,7 +47,6 @@ module Admin
       @user = User.find(params[:id])
       authorize(@user)
     rescue ActiveRecord::RecordNotFound
-      Sentry.capture_message("User with #{params[:id]} not found")
       redirect_to admin_users_path, alert: t('admin.users.errors.not_found')
     end
 
@@ -68,7 +67,6 @@ module Admin
         end
       end
     rescue StandardError => e
-      Sentry.capture_exception(e)
       @user.errors.add(:base, "Error updating user: #{e.message}")
       false
     end

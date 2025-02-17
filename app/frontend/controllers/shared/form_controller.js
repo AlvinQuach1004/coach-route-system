@@ -1,6 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
 import { showToast } from './toast';
-import * as Sentry from '@sentry/browser';
 
 export default class extends Controller {
   static targets = ['form'];
@@ -10,21 +9,17 @@ export default class extends Controller {
   }
 
   handleFlashMessages() {
-    try {
-      const flashContainer = document.getElementById('flash-messages');
-      if (!flashContainer) return;
+    const flashContainer = document.getElementById('flash-messages');
+    if (!flashContainer) return;
 
-      const flashMessage = flashContainer.querySelector('[data-flash-message]');
-      if (flashMessage) {
-        const type = flashMessage.dataset.flashType;
-        const message = flashMessage.dataset.flashMessage;
+    const flashMessage = flashContainer.querySelector('[data-flash-message]');
+    if (flashMessage) {
+      const type = flashMessage.dataset.flashType;
+      const message = flashMessage.dataset.flashMessage;
 
-        showToast(message, type);
+      showToast(message, type);
 
-        flashMessage.remove();
-      }
-    } catch (error) {
-      Sentry.captureException(error);
+      flashMessage.remove();
     }
   }
 }

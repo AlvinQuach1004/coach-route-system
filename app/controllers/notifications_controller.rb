@@ -29,10 +29,6 @@ class NotificationsController < ApplicationController
         ]
       end
     end
-  rescue StandardError => e
-    Sentry.capture_exception(e)
-    flash[:alert] = 'There was an error marking the notification as read. Please try again.'
-    redirect_to notifications_path
   end
 
   def mark_all_as_read
@@ -49,9 +45,5 @@ class NotificationsController < ApplicationController
         )
       end
     end
-  rescue StandardError => e
-    Sentry.capture_exception(e)
-    flash[:alert] = 'There was an error marking all notifications as read. Please try again.'
-    redirect_to notifications_path
   end
 end

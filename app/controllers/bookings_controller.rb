@@ -23,7 +23,6 @@ class BookingsController < ApplicationController
       raise ActiveRecord::Rollback if @booking.blank?
     end
   rescue ActiveRecord::RecordInvalid, StandardError => e
-    Sentry.capture_exception(e)
     render json: { error: e.message }, status: :unprocessable_entity
   end
 

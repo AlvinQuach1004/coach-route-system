@@ -10,8 +10,6 @@ module Admin
         total: filtered_scope.size,
         schedules: filtered_scope.distinct
       }
-    rescue StandardError => e
-      Sentry.capture_exception(e, extra: { scope: @scope, params: @params })
     end
 
     private
