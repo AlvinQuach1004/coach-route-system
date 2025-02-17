@@ -59,3 +59,5 @@ coverage/**/*
 
 # Ignore erd file
 docs/erd.html
+
+/config/credentials/production.key
