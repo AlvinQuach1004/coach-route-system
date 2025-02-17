@@ -21,6 +21,7 @@ module Admin
         end
       end
     rescue StandardError => e
+      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -28,6 +29,7 @@ module Admin
       @route = Route.new
       @route.stops.build
     rescue StandardError => e
+      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -37,6 +39,7 @@ module Admin
     rescue ActiveRecord::RecordNotFound
       handle_failure(t('admin.coach_routes.messages.not_found'))
     rescue StandardError => e
+      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -65,6 +68,7 @@ module Admin
         handle_failure(t('admin.coach_routes.messages.create_failure'))
       end
     rescue StandardError => e
+      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -103,6 +107,7 @@ module Admin
     rescue ActiveRecord::RecordNotFound
       handle_failure(t('admin.coach_routes.messages.not_found'))
     rescue StandardError => e
+      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -110,8 +115,10 @@ module Admin
       @route.destroy!
       handle_success(t('admin.coach_routes.messages.delete_success'))
     rescue ActiveRecord::RecordNotFound
+      Sentry.capture_message("Route not found: #{params[:id]}")
       handle_failure(t('admin.coach_routes.messages.not_found'))
     rescue StandardError => e
+      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 
@@ -124,6 +131,7 @@ module Admin
     def set_route
       @route = Route.includes(:stops).find(params[:id])
     rescue ActiveRecord::RecordNotFound
+      Sentry.capture_message("Route not found: #{params[:id]}")
       handle_failure(t('admin.coach_routes.messages.not_found'))
     end
 
@@ -163,6 +171,7 @@ module Admin
         is_dropoff: true
       )
     rescue StandardError => e
+      Sentry.capture_exception(e)
       handle_failure(e.message)
     end
 

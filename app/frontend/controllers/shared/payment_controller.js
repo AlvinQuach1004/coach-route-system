@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { loadStripe } from '@stripe/stripe-js';
 import { bookings_path } from './routes';
 import { showToast } from './toast';
+import * as Sentry from '@sentry/browser';
 
 export default class extends Controller {
   static targets = ['paymentMethodInput', 'submitButton'];
@@ -103,7 +104,7 @@ export default class extends Controller {
         this.submitButtonTarget.disabled = false;
       }
     } catch (error) {
-      console.error('Error processing payment:', error);
+      Sentry.captureException(error);
       showToast(error.message || 'Đã xảy ra lỗi!', 'alert');
       this.submitButtonTarget.disabled = false;
     }

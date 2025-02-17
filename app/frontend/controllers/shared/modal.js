@@ -1,44 +1,61 @@
+import * as Sentry from '@sentry/browser';
+
 document.addEventListener('DOMContentLoaded', () => {
-  document.addEventListener('click', (event) => {
-    const openButton = event.target.closest('.modal-open-button');
-    if (openButton) {
-      event.preventDefault();
+  try {
+    document.addEventListener('click', (event) => {
+      try {
+        const openButton = event.target.closest('.modal-open-button');
+        if (openButton) {
+          event.preventDefault();
 
-      const modalId = openButton.dataset.modalId;
-      const modal = document.querySelector(`dialog.modal#${modalId}`);
+          const modalId = openButton.dataset.modalId;
+          const modal = document.querySelector(`dialog.modal#${modalId}`);
 
-      if (modal) {
-        // Close any other open modals
-        document.querySelectorAll('dialog.modal[open]').forEach((m) => m.close());
+          if (modal) {
+            // Close any open modals
+            document.querySelectorAll('dialog.modal[open]').forEach((m) => m.close());
 
-        // Show the modal
-        modal.showModal();
+            // Show the selected modal
+            modal.showModal();
+          }
+        }
+      } catch (error) {
+        Sentry.captureException(error); // Capture error if any
       }
-    }
-  });
+    });
 
-  // Delegate click event for modal close buttons
-  document.addEventListener('click', (event) => {
-    const closeButton = event.target.closest('.modal-close-button');
-    if (closeButton) {
-      event.preventDefault();
+    document.addEventListener('click', (event) => {
+      try {
+        const closeButton = event.target.closest('.modal-close-button');
+        if (closeButton) {
+          event.preventDefault();
 
-      // Find the parent modal and close it
-      const modal = closeButton.closest('dialog.modal');
-      if (modal) {
-        modal.close();
+          // Find the parent modal and close it
+          const modal = closeButton.closest('dialog.modal');
+          if (modal) {
+            modal.close();
+          }
+        }
+      } catch (error) {
+        Sentry.captureException(error); // Capture error if any
       }
-    }
-  });
+    });
 
-  // Delegate click event to close modal when clicking outside modal-box
-  document.addEventListener('click', (event) => {
-    const modal = event.target.closest('dialog.modal');
-    if (modal) {
-      const modalBox = modal.querySelector('.modal-box');
-      if (modalBox && !modalBox.contains(event.target)) {
-        modal.close();
+    // Delegate click event to close modal when clicking outside modal-box
+    document.addEventListener('click', (event) => {
+      try {
+        const modal = event.target.closest('dialog.modal');
+        if (modal) {
+          const modalBox = modal.querySelector('.modal-box');
+          if (modalBox && !modalBox.contains(event.target)) {
+            modal.close();
+          }
+        }
+      } catch (error) {
+        Sentry.captureException(error); // Capture error if any
       }
-    }
-  });
+    });
+  } catch (error) {
+    Sentry.captureException(error); // Capture error if any during DOMContentLoaded
+  }
 });

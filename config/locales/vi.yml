@@ -290,6 +290,7 @@ vi:
       profile: "Hồ sơ"
       log_out: "Đăng xuất"
     bookings:
+      not_found: "Không tìm thấy đặt vé"
       update:
           success: "Cập nhật trạng thái thanh toán thành công."
           failure: "Cập nhật trạng thái thanh toán thất bại."

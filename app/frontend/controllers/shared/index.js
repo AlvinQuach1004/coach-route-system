@@ -10,6 +10,7 @@ import './profile_editor';
 import './notifications_channel';
 import './routes';
 import './switch_floor';
+import * as Sentry from '@sentry/browser';
 
 const application = Application.start();
 
@@ -19,6 +20,10 @@ application.debug = false;
 window.Stimulus = application;
 
 const controllers = import.meta.glob('./**/*_controller.js', { eager: true });
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  tracesSampleRate: 1.0,
+});
 
 // Register Stimulus controllers
 registerControllers(application, controllers);

@@ -2,9 +2,14 @@ class ProfilesController < ApplicationController
   before_action :authenticate_user!
   layout :choose_layout
 
-  def show; end
+  def show
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+    flash[:error] = 'There was an error loading your profile. Please try again.'
+    redirect_to root_path
+  end
 
-  def update_field
+  def update_field # rubocop:disable Metrics/MethodLength
     field = user_params.keys.first
     if current_user.update(user_params)
       flash.now[:success] = t('profile.update_success', field: t("profile.#{field}"))
@@ -31,6 +36,18 @@ class ProfilesController < ApplicationController
              },
         status: :unprocessable_entity
     end
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+    flash[:alert] = 'There was an error updating your profile. Please try again.'
+    render json: {
+             success: false,
+             html: render_to_string(
+               partial: 'layouts/flash',
+               locals: { message: flash[:error], type: 'error' },
+               formats: [:html]
+             )
+           },
+      status: :unprocessable_entity
   end
 
   private

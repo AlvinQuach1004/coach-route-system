@@ -438,6 +438,9 @@ GEM
     sentry-ruby (5.22.1)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+    sentry-sidekiq (5.22.1)
+      sentry-ruby (~> 5.22.1)
+      sidekiq (>= 3.0)
     shoulda-matchers (6.4.0)
       activesupport (>= 5.2.0)
     sidekiq (7.3.7)
@@ -586,6 +589,7 @@ DEPENDENCIES
   seedbank
   sentry-rails
   sentry-ruby
+  sentry-sidekiq
   shoulda-matchers
   sidekiq
   sidekiq-scheduler

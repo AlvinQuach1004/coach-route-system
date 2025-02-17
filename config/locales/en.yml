@@ -38,6 +38,7 @@ en:
         payment_method: 'Payment Method:'
         payment_status: 'Payment Status:'
         route: 'Route:'
+      not_found: Booking not found
       pagination:
         bookings: bookings
         of: of

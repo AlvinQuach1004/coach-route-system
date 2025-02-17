@@ -22,6 +22,8 @@ module Admin
           )
         end
       end
+    rescue StandardError => e
+      Sentry.capture_exception(e)
     end
 
     def show; end
@@ -35,40 +37,44 @@ module Admin
       else
         handle_failure(t('.failure'))
       end
+    rescue StandardError => e
+      Sentry.capture_exception(e)
+      handle_failure(t('.failure'))
     end
 
     def destroy # rubocop:disable Metrics/AbcSize
       if @booking.pending? || @booking.completed?
-        refund_payment(@booking) if @booking.stripe_session_id.present?
+        begin
+          refund_payment(@booking) if @booking.stripe_session_id.present?
 
-        # Lưu các dữ liệu cần thiết trước khi xóa
-        booking_data = {
-          id: @booking.id,
-          user_id: @booking.user_id,
-          start_stop: { location: { name: @booking.start_stop.location.name } },
-          end_stop: { location: { name: @booking.end_stop.location.name } },
-          tickets: @booking.tickets.map do |ticket|
-            {
-              departure_date: ticket.departure_date,
-              departure_time: ticket.departure_time,
-              formatted_departure_date: ticket.formatted_departure_date,
-              formatted_departure_time: ticket.formatted_departure_time
-            }
-          end
-        }
+          booking_data = {
+            id: @booking.id,
+            user_id: @booking.user_id,
+            start_stop: { location: { name: @booking.start_stop.location.name } },
+            end_stop: { location: { name: @booking.end_stop.location.name } },
+            tickets: @booking.tickets.map do |ticket|
+              {
+                departure_date: ticket.departure_date,
+                departure_time: ticket.departure_time,
+                formatted_departure_date: ticket.formatted_departure_date,
+                formatted_departure_time: ticket.formatted_departure_time
+              }
+            end
+          }
 
-        if @booking.tickets.any?
-          schedule = @booking.tickets.first.schedule
+          schedule = @booking.tickets.any? ? @booking.tickets.first.schedule : nil
+          user = @booking.user
+
+          @booking.destroy
+
+          CancelBookingCableNotifier.with(booking: booking_data, schedule: schedule).deliver(user)
+          CancelBookingNotifier.with(booking: booking_data, schedule: schedule).deliver(user)
+
+          handle_success(t('.success'))
+        rescue StandardError => e
+          Sentry.capture_exception(e)
+          handle_failure(t('.failure'))
         end
-        user = @booking.user
-
-        @booking.destroy
-
-        # Truyền dữ liệu đã lưu vào notification
-        CancelBookingCableNotifier.with(booking: booking_data, schedule: schedule).deliver(user)
-        CancelBookingNotifier.with(booking: booking_data, schedule: schedule).deliver(user)
-
-        handle_success(t('.success'))
       else
         handle_failure(t('.failure'))
       end
@@ -78,6 +84,9 @@ module Admin
 
     def set_booking
       @booking = Booking.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      Sentry.capture_exception(e)
+      handle_failure(t('admin.bookings.not_found'))
     end
 
     def booking_params
@@ -91,6 +100,7 @@ module Admin
         Stripe::Refund.create(payment_intent: payment_intent)
       end
     rescue Stripe::StripeError => e
+      Sentry.capture_exception(e)
       Rails.logger.error "Stripe refund error: #{e.message}"
     end
 

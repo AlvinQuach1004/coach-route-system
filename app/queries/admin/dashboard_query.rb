@@ -13,6 +13,8 @@ module Admin
         recent_bookings: generate_recent_bookings,
         daily_stats: generate_daily_stats
       }
+    rescue StandardError => e
+      Sentry.capture_exception(e, extra: { scope: @scope, params: @params })
     end
 
     private

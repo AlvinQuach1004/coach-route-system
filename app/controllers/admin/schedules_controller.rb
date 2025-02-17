@@ -80,6 +80,7 @@ module Admin
     def set_schedule
       @schedule = Schedule.find(params[:id])
     rescue ActiveRecord::RecordNotFound
+      Sentry.capture_message("Schedule not found: #{params[:id]}")
       handle_failure(t('admin.schedules.errors.not_found'), redirect: admin_schedules_path)
     end
 

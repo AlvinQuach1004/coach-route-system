@@ -55,14 +55,14 @@ div class="bg-base-100 rounded-lg mt-10 block md:hidden"
         .flex.gap-2
           span.font-semibold
           = "#{t('admin.bookings.table.departure')}: #{booking.tickets.first&.schedule&.formatted_departure_date} - #{booking.tickets.first&.schedule&.formatted_departure_time}"
-        .flex.gap-2
+        .flex.gap-2.mt-2
           span.font-semibold
           - case booking.payment_method
           - when 'cash'
             span.badge.badge-primary = t('admin.bookings.payment_methods.cash')
           - when 'online'
             span.badge.badge-accent = t('admin.bookings.payment_methods.online')
-        .flex.gap-2
+        .flex.gap-2.mt-2
           span.font-semibold
           - case booking.payment_status
           - when 'pending'

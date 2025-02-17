@@ -49,6 +49,7 @@ gem 'pagy'
 gem 'stackprof'
 gem 'sentry-ruby'
 gem 'sentry-rails'
+gem 'sentry-sidekiq'
 
 gem 'web-console'
 

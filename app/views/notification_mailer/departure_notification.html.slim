@@ -7,15 +7,18 @@ html
       h1.text-2xl.font-bold.mb-4 = t("mailer.trip_reminder.subject")
       p.mb-4
         = t("mailer.trip_reminder.message", 
-            license_plate: @coach.license_plate, 
-            coach_type: @coach.coach_type)
+            license_plate: params[:coach][:license_plate], 
+            coach_type: params[:coach][:coach_type])
+
       .bg-white.rounded-lg.shadow.p-4.mb-4
         h2.text-xl.font-semibold.mb-2 = t("mailer.trip_reminder.trip_details")
+        
         p
           = t("mailer.trip_reminder.departure", 
-              departure_date: @schedule.formatted_departure_date, 
-              departure_time: @schedule.formatted_departure_time)
+              departure_date: params[:booking][:tickets].first[:formatted_departure_date], 
+              departure_time: params[:booking][:tickets].first[:formatted_departure_time])
+
         p
           = t("mailer.trip_reminder.route", 
-              start_location: @booking.start_stop.location.name, 
-              end_location: @booking.end_stop.location.name)
+              start_location: params[:booking][:start_stop][:location][:name],
+              end_location: params[:booking][:end_stop][:location][:name])

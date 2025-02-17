@@ -9,7 +9,7 @@ class NotificationMailer < ApplicationMailer
 
     mail(
       to: @recipient.email,
-      subject: "Trip Reminder: Coach #{@coach.license_plate} departing tomorrow"
+      subject: "Trip Reminder: Coach #{@coach[:license_plate]} departing tomorrow"
     )
   end
 

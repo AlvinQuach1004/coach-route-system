@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import { showToast } from './toast';
 import mapboxgl from 'mapbox-gl';
+import * as Sentry from '@sentry/browser';
 
 export default class extends Controller {
   static targets = [
@@ -44,30 +45,40 @@ export default class extends Controller {
 
   async updatePickup() {
     setTimeout(async () => {
-      if (!this.hasPickupLocationTarget) return;
+      try {
+        if (!this.hasPickupLocationTarget) return;
 
-      const address = this.pickupLocationTarget.textContent.trim();
-      console.log('Địa chỉ điểm đón:', address);
+        const address = this.pickupLocationTarget.textContent.trim();
+        console.log('Địa chỉ điểm đón:', address);
 
-      if (address) {
-        this.selectedPickup = await this.getCoordinatesFromAddress(address);
-        await this.calculateTotalPrice();
-        await this.updatePickupDepartureAndArrivalTime();
+        if (address) {
+          this.selectedPickup = await this.getCoordinatesFromAddress(address);
+          await this.calculateTotalPrice();
+          await this.updatePickupDepartureAndArrivalTime();
+        }
+      } catch (error) {
+        // Capture the error with Sentry
+        Sentry.captureException(error);
       }
     }, 500);
   }
 
   async updateDropoff() {
     setTimeout(async () => {
-      if (!this.hasDropoffLocationTarget) return;
+      try {
+        if (!this.hasDropoffLocationTarget) return;
 
-      const address = this.dropoffLocationTarget.textContent.trim();
-      console.log('Địa chỉ điểm trả:', address);
+        const address = this.dropoffLocationTarget.textContent.trim();
+        console.log('Địa chỉ điểm trả:', address);
 
-      if (address) {
-        this.selectedDropoff = await this.getCoordinatesFromAddress(address);
-        await this.calculateTotalPrice();
-        await this.updateDropoffDepartureAndArrivalTime();
+        if (address) {
+          this.selectedDropoff = await this.getCoordinatesFromAddress(address);
+          await this.calculateTotalPrice();
+          await this.updateDropoffDepartureAndArrivalTime();
+        }
+      } catch (error) {
+        // Capture the error with Sentry
+        Sentry.captureException(error);
       }
     }, 500);
   }
@@ -85,7 +96,7 @@ export default class extends Controller {
       showToast('Không tìm thấy tọa độ cho địa chỉ', 'warn');
       return null;
     } catch (error) {
-      showToast(`Lỗi ${error}`, 'alert');
+      Sentry.captureException(error);
       return null;
     }
   }
@@ -127,6 +138,7 @@ export default class extends Controller {
         }
       }
     } catch (error) {
+      Sentry.captureException(error);
       showToast(`Lỗi: ${error} khi tính khoảng cách`, 'alert');
     }
   }
@@ -155,89 +167,99 @@ export default class extends Controller {
         return 0;
       })
       .catch((error) => {
-        showToast(`Lỗi: ${error} khi tính khoảng cách`, 'alert');
+        Sentry.captureException(error);
         return 0;
       });
   }
 
   calculateTicketPrice(distance) {
-    if (!distance || isNaN(distance)) {
-      showToast('Khoảng cách không hợp lệ!', 'warn');
+    try {
+      if (!distance || isNaN(distance)) {
+        showToast('Khoảng cách không hợp lệ!', 'warn');
+        return 0;
+      }
+
+      const quantity = parseInt(this.totalQuantityTarget.textContent) || 1;
+      const ticketPrice = Math.ceil(distance * this.pricePerKm * quantity);
+
+      return ticketPrice;
+    } catch (error) {
+      // Capture the error with Sentry
+      Sentry.captureException(error);
       return 0;
     }
-
-    const quantity = parseInt(this.totalQuantityTarget.textContent) || 1;
-    const ticketPrice = Math.ceil(distance * this.pricePerKm * quantity);
-
-    return ticketPrice;
   }
 
   async updateStep3Data(event) {
-    event.preventDefault();
+    try {
+      event.preventDefault();
 
-    setTimeout(async () => {
-      if (this.stepIndex === 2) {
-        console.log('Đang ở Step 2: Lấy khoảng cách & tính giá vé');
-        console.log('Stops: ', this.stops);
+      setTimeout(async () => {
+        if (this.stepIndex === 2) {
+          console.log('Đang ở Step 2: Lấy khoảng cách & tính giá vé');
+          console.log('Stops: ', this.stops);
 
-        if (this.hasPickupLocationTarget && this.hasDropoffLocationTarget) {
-          console.log('Lấy vị trí đón và trả');
+          if (this.hasPickupLocationTarget && this.hasDropoffLocationTarget) {
+            console.log('Lấy vị trí đón và trả');
 
-          const pickupLocation = await this.getCoordinatesFromAddress(this.pickupLocationTarget.textContent);
-          const dropoffLocation = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
+            const pickupLocation = await this.getCoordinatesFromAddress(this.pickupLocationTarget.textContent);
+            const dropoffLocation = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
 
-          if (pickupLocation && dropoffLocation) {
-            const distance = await this.calculateDistance(pickupLocation, dropoffLocation);
+            if (pickupLocation && dropoffLocation) {
+              const distance = await this.calculateDistance(pickupLocation, dropoffLocation);
+              const ticketPrice = this.calculateTicketPrice(distance);
 
-            const ticketPrice = this.calculateTicketPrice(distance);
-
-            if (this.hasTotalPriceStep2Target) {
-              this.totalPriceStep2Target.textContent = `${this.formatCurrency(ticketPrice)}₫`;
+              if (this.hasTotalPriceStep2Target) {
+                this.totalPriceStep2Target.textContent = `${this.formatCurrency(ticketPrice)}₫`;
+              }
             }
           }
         }
-      }
 
-      if (this.stepIndex === 3) {
-        if (this.hasPriceStep3Target && this.hasTotalPriceStep2Target && this.hasTotalQuantityTarget) {
-          const totalPrice = parseFloat(this.totalPriceStep2Target.textContent.replace(/[^\d]/g, '')) || 0;
-          const totalQuantity = parseInt(this.totalQuantityTarget.textContent, 10) || 1;
-          const pricePerTicket = totalPrice / totalQuantity;
+        if (this.stepIndex === 3) {
+          if (this.hasPriceStep3Target && this.hasTotalPriceStep2Target && this.hasTotalQuantityTarget) {
+            const totalPrice = parseFloat(this.totalPriceStep2Target.textContent.replace(/[^\d]/g, '')) || 0;
+            const totalQuantity = parseInt(this.totalQuantityTarget.textContent, 10) || 1;
+            const pricePerTicket = totalPrice / totalQuantity;
 
-          this.priceStep3Target.textContent = `${this.formatCurrency(pricePerTicket)}₫`;
-        }
-
-        let quantity = this.hasTotalQuantityTarget ? parseInt(this.totalQuantityTarget.textContent, 10) : 1;
-        if (this.hasTotalQuantityStep3Target) {
-          this.totalQuantityStep3Target.textContent = quantity;
-        }
-
-        if (this.hasPickupLocationTarget) {
-          if (this.selectedPickup) {
-            const province = await this.getProvinceFromCoordinates(this.selectedPickup);
-            this.fromStep3Target.textContent = province;
+            this.priceStep3Target.textContent = `${this.formatCurrency(pricePerTicket)}₫`;
           }
-        }
 
-        if (this.hasDropoffLocationTarget) {
-          if (this.selectedDropoff) {
-            const province = await this.getProvinceFromCoordinates(this.selectedDropoff);
-            this.toStep3Target.textContent = province;
+          let quantity = this.hasTotalQuantityTarget ? parseInt(this.totalQuantityTarget.textContent, 10) : 1;
+          if (this.hasTotalQuantityStep3Target) {
+            this.totalQuantityStep3Target.textContent = quantity;
           }
-        }
 
-        console.log('Total: ', this.totalPriceStep3Target);
-        if (this.hasTotalPriceStep3Target && this.hasTotalPriceStep2Target) {
-          let pricePerTicket = parseFloat(this.priceStep3Target.textContent.replace(/[^\d]/g, '')) || 0;
-          let totalPrice = pricePerTicket * quantity;
-          this.totalPriceStep3Target.textContent = `${this.formatCurrency(totalPrice)}₫`;
+          if (this.hasPickupLocationTarget) {
+            if (this.selectedPickup) {
+              const province = await this.getProvinceFromCoordinates(this.selectedPickup);
+              this.fromStep3Target.textContent = province;
+            }
+          }
+
+          if (this.hasDropoffLocationTarget) {
+            if (this.selectedDropoff) {
+              const province = await this.getProvinceFromCoordinates(this.selectedDropoff);
+              this.toStep3Target.textContent = province;
+            }
+          }
+
+          console.log('Total: ', this.totalPriceStep3Target);
+          if (this.hasTotalPriceStep3Target && this.hasTotalPriceStep2Target) {
+            let pricePerTicket = parseFloat(this.priceStep3Target.textContent.replace(/[^\d]/g, '')) || 0;
+            let totalPrice = pricePerTicket * quantity;
+            this.totalPriceStep3Target.textContent = `${this.formatCurrency(totalPrice)}₫`;
+          }
+          this.updateStopIds();
+          await this.updateHiddenFields();
+        } else {
+          console.log('Chưa đến Step 3');
         }
-        this.updateStopIds();
-        await this.updateHiddenFields();
-      } else {
-        console.log('Chưa đến Step 3');
-      }
-    }, 500);
+      }, 500);
+    } catch (error) {
+      // Capture the error with Sentry
+      Sentry.captureException(error);
+    }
   }
 
   async getProvinceFromCoordinates(coords) {
@@ -252,6 +274,7 @@ export default class extends Controller {
       }
       return 'Không xác định';
     } catch (error) {
+      Sentry.captureException(error);
       showToast(`Lỗi: ${error}`, 'alert');
       return 'Không xác định';
     }
@@ -262,76 +285,104 @@ export default class extends Controller {
   }
 
   openPositionModal(event) {
-    event.preventDefault();
-    this.positionModalTarget.classList.remove('hidden');
-    const headerContainer = document.querySelector('.header-container');
-    headerContainer.classList.remove('sticky');
+    try {
+      event.preventDefault();
+      this.positionModalTarget.classList.remove('hidden');
+      const headerContainer = document.querySelector('.header-container');
+      headerContainer.classList.remove('sticky');
 
-    // Get the address from the clicked route's context
-    const addressElement = event.target.closest('div').querySelector('[data-position-target]');
-    if (addressElement) {
-      const address = addressElement.textContent.trim();
-      this.showLocationOnMap(address);
+      // Get the address from the clicked route's context
+      const addressElement = event.target.closest('div').querySelector('[data-position-target]');
+      if (addressElement) {
+        const address = addressElement.textContent.trim();
+        this.showLocationOnMap(address);
+      }
+    } catch (error) {
+      // Log the error to Sentry
+      Sentry.captureException(error);
+      showToast('Something went wrong while opening the position modal. Please try again.', 'alert');
     }
   }
 
   closePositionModal(event) {
-    event.preventDefault();
-    const headerContainer = document.querySelector('.header-container');
-    headerContainer.classList.add('sticky');
-    this.positionModalTarget.classList.add('hidden');
+    try {
+      event.preventDefault();
+      const headerContainer = document.querySelector('.header-container');
+      headerContainer.classList.add('sticky');
+      this.positionModalTarget.classList.add('hidden');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   async showLocationOnMap(address) {
-    const url = `https://rsapi.goong.io/Geocode?address=${encodeURIComponent(address)}&api_key=${this.apiKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.results.length > 0) {
-      const { lat, lng } = data.results[0].geometry.location;
-      this.selectedLocation = [lng, lat];
-      this.initPositionMap();
-    } else {
-      showToast('Không tìm thấy vị trí!', 'alert');
+    try {
+      const url = `https://rsapi.goong.io/Geocode?address=${encodeURIComponent(address)}&api_key=${this.apiKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.results.length > 0) {
+        const { lat, lng } = data.results[0].geometry.location;
+        this.selectedLocation = [lng, lat];
+        this.initPositionMap();
+      } else {
+        showToast('Không tìm thấy vị trí!', 'alert');
+      }
+    } catch (error) {
+      Sentry.captureException(error);
+      showToast('Something went wrong while fetching the location. Please try again.', 'alert');
     }
   }
 
   initPositionMap() {
-    if (this.positionMap) {
-      this.positionMap.remove();
+    try {
+      if (this.positionMap) {
+        this.positionMap.remove();
+      }
+
+      this.positionMap = new mapboxgl.Map({
+        container: this.positionMapContainerTarget,
+        style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${this.mapKey}`,
+        center: this.selectedLocation,
+        zoom: 14,
+      });
+
+      new mapboxgl.Marker().setLngLat(this.selectedLocation).addTo(this.positionMap);
+    } catch (error) {
+      Sentry.captureException(error);
     }
-
-    this.positionMap = new mapboxgl.Map({
-      container: this.positionMapContainerTarget,
-      style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${this.mapKey}`,
-      center: this.selectedLocation,
-      zoom: 14,
-    });
-
-    new mapboxgl.Marker().setLngLat(this.selectedLocation).addTo(this.positionMap);
   }
 
   updateStopIds() {
-    this.updateStopId(this.fromStep3Target, this.startStopIdTarget, 'pickup');
-    this.updateStopId(this.toStep3Target, this.endStopIdTarget, 'dropoff');
+    try {
+      this.updateStopId(this.fromStep3Target, this.startStopIdTarget, 'pickup');
+      this.updateStopId(this.toStep3Target, this.endStopIdTarget, 'dropoff');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   updateStopId(locationElement, stopIdElement, stopType) {
-    const locationName = locationElement.textContent.trim();
-    if (!locationName) return;
+    try {
+      const locationName = locationElement.textContent.trim();
+      if (!locationName) return;
 
-    const isPickup = stopType === 'pickup';
-    const normalizeText = (text) => text.normalize('NFC').toLowerCase().replace(/\s+/g, ' ').trim();
-    const stop = this.stops.find((s) => {
-      const normalizedProvince = normalizeText(s.province);
-      const normalizedLocation = normalizeText(locationName);
+      const isPickup = stopType === 'pickup';
+      const normalizeText = (text) => text.normalize('NFC').toLowerCase().replace(/\s+/g, ' ').trim();
+      const stop = this.stops.find((s) => {
+        const normalizedProvince = normalizeText(s.province);
+        const normalizedLocation = normalizeText(locationName);
 
-      return s[isPickup ? 'pickup' : 'dropoff'] && normalizedProvince.includes(normalizedLocation);
-    });
+        return s[isPickup ? 'pickup' : 'dropoff'] && normalizedProvince.includes(normalizedLocation);
+      });
 
-    if (stop) {
-      stopIdElement.value = stop.id;
-    } else {
-      stopIdElement.value = stopIdElement.dataset.defaultValue || '';
+      if (stop) {
+        stopIdElement.value = stop.id;
+      } else {
+        stopIdElement.value = stopIdElement.dataset.defaultValue || '';
+      }
+    } catch (error) {
+      Sentry.captureException(error);
     }
   }
 
@@ -347,6 +398,7 @@ export default class extends Controller {
       }
       return 'Không xác định';
     } catch (error) {
+      Sentry.captureException(error);
       showToast(`Lỗi ${error}`, 'alert');
       return 'Không xác định';
     }
@@ -380,105 +432,114 @@ export default class extends Controller {
 
       return { newTime, newDate };
     } catch (error) {
-      console.error('Error in calculateArrivalDate:', error.message);
+      Sentry.captureException(error);
       return { newTime: '00:00', newDate: '01/01/1970' }; // Trả về giá trị mặc định nếu có lỗi
     }
   }
 
   async updatePickupDepartureAndArrivalTime() {
-    setTimeout(async () => {
-      let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
+    try {
+      setTimeout(async () => {
+        let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
 
-      if (this.selectedPickup) {
-        const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
+        if (this.selectedPickup) {
+          const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
 
-        // Tính khoảng cách và thời gian từ minStop đến selectedPickup
-        console.log('Min stop province: ', minStop.province);
-        const distanceToPickup = await this.calculateDistance(coordsMinStopProvince, this.selectedPickup);
-        console.log('Distance: ', distanceToPickup);
-        const timeRangeToPickup = Math.ceil((distanceToPickup * 1000) / this.coachSpeed);
-        console.log(timeRangeToPickup);
-        const { newTime: pickupTime, newDate: pickupDate } = this.calculateArrivalDate(
-          minStop.departure_time,
-          minStop.departure_date,
-          timeRangeToPickup,
-        );
-        console.log(this.dropoffLocationTarget);
-        const coordsDropoffLocation = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
-        const distanceDropoff = await this.calculateDistance(this.selectedPickup, coordsDropoffLocation);
-        const timeRangeToDropoff = Math.ceil((distanceDropoff * 1000) / this.coachSpeed);
-        const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
-          pickupTime,
-          pickupDate,
-          timeRangeToDropoff,
-        );
-        this.pickupDateTimeTarget.textContent = `${pickupTime} (${pickupDate})`;
-        this.dropoffDateTimeTarget.textContent = `${dropoffTime} (${dropoffDate})`;
-        this.departureDateStep3Target.textContent = pickupDate;
-        this.departureTimeStep3Target.textContent = pickupTime;
-        this.dateBeforeDepartureTarget.textContent = this.subtractOneDay(pickupDate);
-      }
-    }, 500);
+          // Tính khoảng cách và thời gian từ minStop đến selectedPickup
+          console.log('Min stop province: ', minStop.province);
+          const distanceToPickup = await this.calculateDistance(coordsMinStopProvince, this.selectedPickup);
+          console.log('Distance: ', distanceToPickup);
+          const timeRangeToPickup = Math.ceil((distanceToPickup * 1000) / this.coachSpeed);
+          console.log(timeRangeToPickup);
+          const { newTime: pickupTime, newDate: pickupDate } = this.calculateArrivalDate(
+            minStop.departure_time,
+            minStop.departure_date,
+            timeRangeToPickup,
+          );
+          console.log(this.dropoffLocationTarget);
+          const coordsDropoffLocation = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
+          const distanceDropoff = await this.calculateDistance(this.selectedPickup, coordsDropoffLocation);
+          const timeRangeToDropoff = Math.ceil((distanceDropoff * 1000) / this.coachSpeed);
+          const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
+            pickupTime,
+            pickupDate,
+            timeRangeToDropoff,
+          );
+          this.pickupDateTimeTarget.textContent = `${pickupTime} (${pickupDate})`;
+          this.dropoffDateTimeTarget.textContent = `${dropoffTime} (${dropoffDate})`;
+          this.departureDateStep3Target.textContent = pickupDate;
+          this.departureTimeStep3Target.textContent = pickupTime;
+          this.dateBeforeDepartureTarget.textContent = this.subtractOneDay(pickupDate);
+        }
+      }, 500);
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   subtractOneDay(dateString) {
-    // Chuyển đổi từ dd/mm/yyyy sang YYYY-MM-DD để tạo đối tượng Date
-    let parts = dateString.split('/'); // Tách ngày, tháng, năm
-    let date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // YYYY-MM-DD
+    let parts = dateString.split('/');
+    let date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
 
-    // Trừ đi 1 ngày
     date.setDate(date.getDate() - 1);
 
-    // Format lại về dd/mm/yyyy
     let day = date.getDate().toString().padStart(2, '0');
-    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
     let year = date.getFullYear();
 
     return `${day}/${month}/${year}`;
   }
 
   async updateDropoffDepartureAndArrivalTime() {
-    setTimeout(async () => {
-      let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
-      if (this.selectedDropoff) {
-        const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
+    try {
+      setTimeout(async () => {
+        let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
+        if (this.selectedDropoff) {
+          const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
 
-        // Tính khoảng cách và thời gian từ minStop đến selectedDropoff
-        const distanceToDropoff = await this.calculateDistance(coordsMinStopProvince, this.selectedDropoff);
-        const timeRangeToDropoff = Math.ceil((distanceToDropoff * 1000) / this.coachSpeed);
-        const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
-          minStop.departure_time,
-          minStop.departure_date,
-          timeRangeToDropoff,
-        );
+          // Tính khoảng cách và thời gian từ minStop đến selectedDropoff
+          const distanceToDropoff = await this.calculateDistance(coordsMinStopProvince, this.selectedDropoff);
+          const timeRangeToDropoff = Math.ceil((distanceToDropoff * 1000) / this.coachSpeed);
+          const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
+            minStop.departure_time,
+            minStop.departure_date,
+            timeRangeToDropoff,
+          );
 
-        // Cập nhật thời gian trả khách
-        this.dropoffDateTimeTarget.textContent = `${dropoffDate} (${dropoffTime})`;
-      }
-    }, 500);
+          // Cập nhật thời gian trả khách
+          this.dropoffDateTimeTarget.textContent = `${dropoffDate} (${dropoffTime})`;
+        }
+      }, 500);
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   async updateHiddenFields() {
-    if (this.hasTicketPriceTarget && this.hasPriceStep3Target) {
-      this.ticketPriceTarget.value = this.priceStep3Target.textContent.replace(/[^\d]/g, '') || '0';
-    }
+    try {
+      if (this.hasTicketPriceTarget && this.hasPriceStep3Target) {
+        this.ticketPriceTarget.value = this.priceStep3Target.textContent.replace(/[^\d]/g, '') || '0';
+      }
 
-    if (this.hasPickupAddressTarget && this.selectedPickup) {
-      const pickupAddress = await this.getAddressFromCoordinates(this.selectedPickup);
-      this.pickupAddressTarget.value = pickupAddress;
-    }
+      if (this.hasPickupAddressTarget && this.selectedPickup) {
+        const pickupAddress = await this.getAddressFromCoordinates(this.selectedPickup);
+        this.pickupAddressTarget.value = pickupAddress;
+      }
 
-    if (this.hasDropoffAddressTarget && this.selectedDropoff) {
-      const dropoffAddress = await this.getAddressFromCoordinates(this.selectedDropoff);
-      this.dropoffAddressTarget.value = dropoffAddress;
-    }
-    this.departureDateTarget.value = this.departureDateStep3Target.textContent;
-    this.departureTimeTarget.value = this.departureTimeStep3Target.textContent;
+      if (this.hasDropoffAddressTarget && this.selectedDropoff) {
+        const dropoffAddress = await this.getAddressFromCoordinates(this.selectedDropoff);
+        this.dropoffAddressTarget.value = dropoffAddress;
+      }
+      this.departureDateTarget.value = this.departureDateStep3Target.textContent;
+      this.departureTimeTarget.value = this.departureTimeStep3Target.textContent;
 
-    console.log('Updated hidden fields: ', {
-      ticketPrice: this.ticketPriceTarget?.value,
-      pickupAddress: this.pickupAddressTarget?.value,
-      dropoffAddress: this.dropoffAddressTarget?.value,
-    });
+      console.log('Updated hidden fields: ', {
+        ticketPrice: this.ticketPriceTarget?.value,
+        pickupAddress: this.pickupAddressTarget?.value,
+        dropoffAddress: this.dropoffAddressTarget?.value,
+      });
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 }

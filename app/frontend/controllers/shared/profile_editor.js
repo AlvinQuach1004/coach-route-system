@@ -1,4 +1,5 @@
 import { showToast } from './toast';
+import * as Sentry from '@sentry/browser';
 
 function initializeProfileEditor() {
   document.querySelectorAll('.inline-edit-field').forEach((field) => {
@@ -11,16 +12,25 @@ function initializeProfileEditor() {
 
     // Show edit form
     editBtn.addEventListener('click', () => {
-      display.classList.add('hidden');
-      form.classList.remove('hidden');
-      input.focus();
+      try {
+        display.classList.add('hidden');
+        form.classList.remove('hidden');
+        input.focus();
+      } catch (error) {
+        Sentry.captureException(error);
+        console.error('Error showing edit form:', error);
+      }
     });
 
     // Cancel edit
     cancelBtn.addEventListener('click', () => {
-      input.value = display.textContent.trim();
-      display.classList.remove('hidden');
-      form.classList.add('hidden');
+      try {
+        input.value = display.textContent.trim();
+        display.classList.remove('hidden');
+        form.classList.add('hidden');
+      } catch (error) {
+        Sentry.captureException(error);
+      }
     });
 
     // Save changes
@@ -52,28 +62,32 @@ function initializeProfileEditor() {
       })
         .then((response) => response.json())
         .then((data) => {
-          // Handle both flash messages and toast notifications
-          if (data.html) {
-            // Process flash messages from the partial
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.html;
-            const flashElement = tempDiv.firstElementChild;
+          try {
+            // Handle both flash messages and toast notifications
+            if (data.html) {
+              // Process flash messages from the partial
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = data.html;
+              const flashElement = tempDiv.firstElementChild;
 
-            if (flashElement) {
-              const type = flashElement.dataset.flashType;
-              const message = flashElement.dataset.flashMessage;
-              showToast(message, type);
+              if (flashElement) {
+                const type = flashElement.dataset.flashType;
+                const message = flashElement.dataset.flashMessage;
+                showToast(message, type);
+              }
             }
-          }
 
-          if (data.success) {
-            display.textContent = data.new_value;
-            display.classList.remove('hidden');
-            form.classList.add('hidden');
+            if (data.success) {
+              display.textContent = data.new_value;
+              display.classList.remove('hidden');
+              form.classList.add('hidden');
+            }
+          } catch (error) {
+            Sentry.captureException(error);
           }
         })
         .catch((error) => {
-          console.error('Error:', error);
+          Sentry.captureException(error);
           showToast('An error occurred while saving changes', 'alert');
         })
         .finally(() => {

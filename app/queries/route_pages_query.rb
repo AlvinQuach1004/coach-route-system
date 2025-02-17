@@ -9,6 +9,8 @@ class RoutePagesQuery < ApplicationQuery
       total: @scope.size,
       schedules: filtered_scope
     }
+  rescue StandardError => e
+    Sentry.capture_exception(e, extra: { scope: @scope, params: @params })
   end
 
   private

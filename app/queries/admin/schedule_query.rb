@@ -10,6 +10,8 @@ module Admin
         total: filtered_scope.size,
         schedules: filtered_scope.distinct
       }
+    rescue StandardError => e
+      Sentry.capture_exception(e, extra: { scope: @scope, params: @params })
     end
 
     private
@@ -69,7 +71,9 @@ module Admin
         begin
           parsed_date = Date.parse(start_date.to_s)
           relation.where(departure_date: parsed_date)
-        rescue ArgumentError
+        rescue ArgumentError => e
+          # Report the error to Sentry
+          Sentry.capture_exception(e, extra: { start_date: start_date })
           relation
         end
       end
@@ -80,7 +84,9 @@ module Admin
         begin
           parsed_time = Time.zone.parse(departure_time.to_s)
           relation.where(departure_time: parsed_time)
-        rescue ArgumentError
+        rescue ArgumentError => e
+          # Report the error to Sentry
+          Sentry.capture_exception(e, extra: { departure_time: departure_time })
           relation
         end
       end

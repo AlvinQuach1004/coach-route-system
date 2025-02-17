@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import mapboxgl from 'mapbox-gl';
+import * as Sentry from '@sentry/browser';
 
 export default class extends Controller {
   static targets = [
@@ -42,18 +43,23 @@ export default class extends Controller {
   }
 
   async autocomplete() {
-    const query = this.inputTarget.value.trim();
-    if (query.length < 3) {
-      this.clearSuggestions();
-      return;
-    }
+    try {
+      const query = this.inputTarget.value.trim();
+      if (query.length < 3) {
+        this.clearSuggestions();
+        return;
+      }
 
-    const url = `https://rsapi.goong.io/Place/AutoComplete?api_key=${this.apiKey}&input=${encodeURIComponent(query)}`;
-    const response = await fetch(url);
-    const data = await response.json();
+      const url = `https://rsapi.goong.io/Place/AutoComplete?api_key=${this.apiKey}&input=${encodeURIComponent(query)}`;
+      const response = await fetch(url);
+      const data = await response.json();
 
-    if (data.predictions) {
-      this.renderSuggestions(data.predictions.slice(0, this.maxResults));
+      if (data.predictions) {
+        this.renderSuggestions(data.predictions.slice(0, this.maxResults));
+      }
+    } catch (error) {
+      // Log the error to Sentry
+      Sentry.captureException(error);
     }
   }
 
@@ -96,60 +102,76 @@ export default class extends Controller {
   }
 
   async selectSuggestion(place) {
-    this.inputTarget.value = place.description;
-    this.clearSuggestions();
+    try {
+      this.inputTarget.value = place.description;
+      this.clearSuggestions();
 
-    const url = `https://rsapi.goong.io/Place/Detail?api_key=${this.apiKey}&place_id=${place.place_id}`;
-    const response = await fetch(url);
-    const data = await response.json();
+      const url = `https://rsapi.goong.io/Place/Detail?api_key=${this.apiKey}&place_id=${place.place_id}`;
+      const response = await fetch(url);
 
-    if (data.result) {
-      const { formatted_address } = data.result;
-      const { location } = data.result.geometry;
+      if (!response.ok) {
+        throw new Error(`Failed to fetch place details: ${response.statusText}`);
+      }
 
-      this.selectedLocationCoords = [location.lng, location.lat];
-      this.selectedAddress = formatted_address;
-      this.selectedProvince = data.result.compound.province;
-      console.log(this.selectedProvince);
-      this.addMarker();
+      const data = await response.json();
+
+      if (data.result) {
+        const { formatted_address } = data.result;
+        const { location } = data.result.geometry;
+
+        this.selectedLocationCoords = [location.lng, location.lat];
+        this.selectedAddress = formatted_address;
+        this.selectedProvince = data.result.compound.province;
+        this.addMarker();
+      } else {
+        throw new Error('No result found for this place');
+      }
+    } catch (error) {
+      Sentry.captureException(error);
+      console.error('Error in selectSuggestion:', error);
     }
   }
 
   async confirmSelection(event) {
-    event.preventDefault();
-    event.stopPropagation();
+    try {
+      event.preventDefault();
+      event.stopPropagation();
 
-    if (!this.selectedAddress) {
-      return;
-    }
+      if (!this.selectedAddress) {
+        return;
+      }
 
-    this.selectedLocationTarget.textContent = this.selectedAddress;
-    this.closeModal(event);
+      this.selectedLocationTarget.textContent = this.selectedAddress;
+      this.closeModal(event);
 
-    const stopsData = JSON.parse(this.selectedLocationTarget.dataset.locationStops);
-    console.log('Stops data:', stopsData);
+      const stopsData = JSON.parse(this.selectedLocationTarget.dataset.locationStops);
+      console.log('Stops data:', stopsData);
 
-    const normalizeProvince = (province) => {
-      return province
-        ? province
-            .replace(/^TP\.?\s*/, '')
-            .trim()
-            .toLowerCase()
-        : '';
-    };
+      const normalizeProvince = (province) => {
+        return province
+          ? province
+              .replace(/^TP\.?\s*/, '')
+              .trim()
+              .toLowerCase()
+          : '';
+      };
 
-    const matchedStops = stopsData.filter(
-      (stop) => normalizeProvince(stop.province) === normalizeProvince(this.selectedProvince),
-    );
-    const nextButton = document.querySelector('#next');
-    if (matchedStops.length > 0) {
-      this.selectedLocationTarget.classList.remove('text-red-500');
-      this.calculateDistance(matchedStops);
-      nextButton.disabled = false;
-    } else {
-      this.selectedLocationTarget.textContent = 'Không tìm thấy điểm dừng trong cùng tỉnh!';
-      this.selectedLocationTarget.classList.add('text-red-500');
-      nextButton.disabled = true;
+      const matchedStops = stopsData.filter(
+        (stop) => normalizeProvince(stop.province) === normalizeProvince(this.selectedProvince),
+      );
+      const nextButton = document.querySelector('#next');
+      if (matchedStops.length > 0) {
+        this.selectedLocationTarget.classList.remove('text-red-500');
+        this.calculateDistance(matchedStops);
+        nextButton.disabled = false;
+      } else {
+        this.selectedLocationTarget.textContent = 'Không tìm thấy điểm dừng trong cùng tỉnh!';
+        this.selectedLocationTarget.classList.add('text-red-500');
+        nextButton.disabled = true;
+      }
+    } catch (error) {
+      // Log the error to Sentry
+      Sentry.captureException(error);
     }
   }
 
@@ -167,6 +189,7 @@ export default class extends Controller {
         return null;
       }
     } catch (error) {
+      Sentry.captureException(error);
       console.error('Lỗi khi gọi API Goong:', error);
       return null;
     }
@@ -221,6 +244,7 @@ export default class extends Controller {
         }
       }
     } catch (error) {
+      Sentry.captureException(error);
       console.error('Error fetching distance matrix:', error);
     }
   }
@@ -230,17 +254,25 @@ export default class extends Controller {
   }
 
   addMarker() {
-    new mapboxgl.Marker().setLngLat(this.selectedLocationCoords).addTo(this.map);
-    this.map.flyTo({ center: this.selectedLocationCoords, zoom: 14 });
+    try {
+      new mapboxgl.Marker().setLngLat(this.selectedLocationCoords).addTo(this.map);
+      this.map.flyTo({ center: this.selectedLocationCoords, zoom: 14 });
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 
   initMap() {
-    mapboxgl.accessToken = this.mapboxToken;
-    this.map = new mapboxgl.Map({
-      container: this.mapContainerTarget,
-      style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${this.mapKey}`,
-      center: [106.7009, 10.7754],
-      zoom: 12,
-    });
+    try {
+      mapboxgl.accessToken = this.mapboxToken;
+      this.map = new mapboxgl.Map({
+        container: this.mapContainerTarget,
+        style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${this.mapKey}`,
+        center: [106.7009, 10.7754],
+        zoom: 12,
+      });
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }
 }
