@@ -238,10 +238,8 @@ export default class extends Controller {
   }
 
   addMarker() {
-    try {
-      new mapboxgl.Marker().setLngLat(this.selectedLocationCoords).addTo(this.map);
-      this.map.flyTo({ center: this.selectedLocationCoords, zoom: 14 });
-    } catch (error) {}
+    new mapboxgl.Marker().setLngLat(this.selectedLocationCoords).addTo(this.map);
+    this.map.flyTo({ center: this.selectedLocationCoords, zoom: 14 });
   }
 
   initMap() {
