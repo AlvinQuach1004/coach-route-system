@@ -76,7 +76,7 @@ export default class extends Controller {
             pickup_address: pickupAddress,
             dropoff_address: dropoffAddress,
             departure_date: departureDate,
-            departure_time: departureTime
+            departure_time: departureTime,
           },
           schedule_id: form.querySelector('[name="schedule_id"]').value,
         }),

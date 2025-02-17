@@ -77,11 +77,11 @@ consumer.subscriptions.create('Noticed::NotificationChannel', {
       Your booking has been successfully canceled.
       <br>
       <span class="text-xs text-base-content/60">
-        Route: ${data.booking.start_stop.location.name} - ${data.booking.end_stop.location.name }
+        Route: ${data.booking.start_stop.location.name} - ${data.booking.end_stop.location.name}
       </span>
       <br>
       <span class="text-xs text-base-content/60">
-        Departure: ${formatDate(data.booking.tickets[0].departure_date)} - ${formatTime(data.booking.tickets[0].departure_time) }
+        Departure: ${formatDate(data.booking.tickets[0].departure_date)} - ${formatTime(data.booking.tickets[0].departure_time)}
       </span>
       `;
     }

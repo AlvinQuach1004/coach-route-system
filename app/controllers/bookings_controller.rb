@@ -144,7 +144,7 @@ class BookingsController < ApplicationController
               'route_pages.bookings.stripe.product_description',
               seat: seat_number,
               route: "#{start_location.location.name} - #{end_location.location.name}",
-              coach: @schedule.coach.coach_type,
+              coach: @schedule.coach.coach_type
             )
           }
         },
