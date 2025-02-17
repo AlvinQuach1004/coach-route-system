@@ -73,7 +73,7 @@ module Admin
     def update_user_roles
       return true if params[:user][:role].blank?
 
-      @user.roles = []
+      @user.roles.destroy_all
       @user.add_role(params[:user][:role].downcase)
       true
     rescue StandardError => e
