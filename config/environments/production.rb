@@ -74,7 +74,6 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Store files locally.
-  config.active_storage.service = :amazon
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
