@@ -224,7 +224,7 @@ export default class extends Controller {
             const province = await this.getProvinceFromCoordinates(this.selectedDropoff);
             this.toStep3Target.textContent = province;
           } else {
-            console.log("Selected drop off: ", this.selectedDropoff);
+            console.log('Selected drop off: ', this.selectedDropoff);
             const coordsDropoffTarget = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
             const province = await this.getProvinceFromCoordinates(coordsDropoffTarget);
             this.toStep3Target.textContent = province;
