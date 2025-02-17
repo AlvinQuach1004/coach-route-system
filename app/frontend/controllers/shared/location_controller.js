@@ -196,17 +196,11 @@ export default class extends Controller {
   }
 
   async calculateDistance(stops) {
-    const origins = `${this.selectedLocationCoords[1]},${this.selectedLocationCoords[0]}`;
-    const destinations = await Promise.all(
-      stops.map(async (stop) => {
-        const stopLocation = await this.getCoordinatesFromAddress(stop.address);
-        return stopLocation ? `${stopLocation.lat},${stopLocation.lng}` : null;
-      }),
-    );
-
-    const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinations}&vehicle=car&api_key=${this.apiKey}`;
-
     try {
+      const origins = `${this.selectedLocationCoords[1]},${this.selectedLocationCoords[0]}`;
+      const destinations = await this.getCoordinatesFromAddress(stops[0].address);
+      const destinationsCoords = `${destinations.lat},${destinations.lng}`;
+      const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinationsCoords}&vehicle=hd&api_key=${this.apiKey}`;
       const response = await fetch(url);
       const data = await response.json();
 

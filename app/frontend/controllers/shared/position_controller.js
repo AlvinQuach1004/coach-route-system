@@ -118,7 +118,7 @@ export default class extends Controller {
 
     const origins = `${this.selectedPickup.lat},${this.selectedPickup.lng}`;
     const destinations = `${this.selectedDropoff.lat},${this.selectedDropoff.lng}`;
-    const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinations}&vehicle=car&api_key=${this.apiKey}`;
+    const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinations}&vehicle=hd&api_key=${this.apiKey}`;
 
     try {
       const response = await fetch(url);
