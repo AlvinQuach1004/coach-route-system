@@ -1,0 +1,202 @@
+{
+  "images/dbdiagram.png": {
+    "file": "assets/dbdiagram-BrmdMhaZ.png",
+    "src": "images/dbdiagram.png"
+  },
+  "images/example.svg": {
+    "file": "assets/example-COXR3YvY.svg",
+    "src": "images/example.svg"
+  },
+  "images/signup-signin.png": {
+    "file": "assets/signup-signin-CIyWOyLA.png",
+    "src": "images/signup-signin.png"
+  },
+  "images/thank-you.png": {
+    "file": "assets/thank-you-B8Ab4vXp.png",
+    "src": "images/thank-you.png"
+  },
+  "images/ticket_terminal_thumbnail.png": {
+    "file": "assets/ticket_terminal_thumbnail-zfEXLmH5.png",
+    "src": "images/ticket_terminal_thumbnail.png"
+  },
+  "images/workflow.png": {
+    "file": "assets/workflow-BAYLbvcn.png",
+    "src": "images/workflow.png"
+  },
+  "images/coach/default_coach.jpg": {
+    "file": "assets/default_coach-CP8uZAw0.jpg",
+    "src": "images/coach/default_coach.jpg"
+  },
+  "images/icons/Stripe.png": {
+    "file": "assets/Stripe-N5ibaCf9.png",
+    "src": "images/icons/Stripe.png"
+  },
+  "images/icons/alert-check.svg": {
+    "file": "assets/alert-check-NSoz_YUV.svg",
+    "src": "images/icons/alert-check.svg"
+  },
+  "images/icons/alert-error.svg": {
+    "file": "assets/alert-error-NVnVn4vt.svg",
+    "src": "images/icons/alert-error.svg"
+  },
+  "images/icons/alert-info.svg": {
+    "file": "assets/alert-info-uE67mXXF.svg",
+    "src": "images/icons/alert-info.svg"
+  },
+  "images/icons/alert-warning.svg": {
+    "file": "assets/alert-warning-D6sWGfDj.svg",
+    "src": "images/icons/alert-warning.svg"
+  },
+  "images/icons/coach_icon.png": {
+    "file": "assets/coach_icon-J2scSGab.png",
+    "src": "images/icons/coach_icon.png"
+  },
+  "images/icons/en.svg": {
+    "file": "assets/en-CWs4f-B6.svg",
+    "src": "images/icons/en.svg"
+  },
+  "images/icons/vi.svg": {
+    "file": "assets/vi-C1LCm_00.svg",
+    "src": "images/icons/vi.svg"
+  },
+  "images/most_coach_images/province_1.jpg": {
+    "file": "assets/province_1-DsHuazBI.jpg",
+    "src": "images/most_coach_images/province_1.jpg"
+  },
+  "images/most_coach_images/province_2.jpg": {
+    "file": "assets/province_2-daf0UFtZ.jpg",
+    "src": "images/most_coach_images/province_2.jpg"
+  },
+  "images/most_coach_images/province_3.jpg": {
+    "file": "assets/province_3-CDBPxzYV.jpg",
+    "src": "images/most_coach_images/province_3.jpg"
+  },
+  "images/most_coach_images/province_4.jpg": {
+    "file": "assets/province_4-D3Pn9_Hk.jpg",
+    "src": "images/most_coach_images/province_4.jpg"
+  },
+  "images/most_coach_images/province_5.jpg": {
+    "file": "assets/province_5-C_oc2uuq.jpg",
+    "src": "images/most_coach_images/province_5.jpg"
+  },
+  "images/most_coach_images/province_6.jpg": {
+    "file": "assets/province_6-DgHlk3lP.jpg",
+    "src": "images/most_coach_images/province_6.jpg"
+  },
+  "images/most_coach_images/province_7.jpg": {
+    "file": "assets/province_7-qVWeN2S6.jpg",
+    "src": "images/most_coach_images/province_7.jpg"
+  },
+  "images/most_coach_images/province_8.jpg": {
+    "file": "assets/province_8-BhdEt5h9.jpg",
+    "src": "images/most_coach_images/province_8.jpg"
+  },
+  "images/seats/limousine-icon.svg": {
+    "file": "assets/limousine-icon-BYT1_504.svg",
+    "src": "images/seats/limousine-icon.svg"
+  },
+  "images/seats/room-icon.svg": {
+    "file": "assets/room-icon-CuV783n-.svg",
+    "src": "images/seats/room-icon.svg"
+  },
+  "images/seats/sleeper-icon.svg": {
+    "file": "assets/sleeper-icon-CofpUQQb.svg",
+    "src": "images/seats/sleeper-icon.svg"
+  },
+  "images/top_coach_images/coach_image_1.jpeg": {
+    "file": "assets/coach_image_1-CYSf6p8O.jpeg",
+    "src": "images/top_coach_images/coach_image_1.jpeg"
+  },
+  "images/top_coach_images/coach_image_2.jpeg": {
+    "file": "assets/coach_image_2-BPidsGEk.jpeg",
+    "src": "images/top_coach_images/coach_image_2.jpeg"
+  },
+  "images/top_coach_images/coach_image_3.jpeg": {
+    "file": "assets/coach_image_3-DgUFZuHl.jpeg",
+    "src": "images/top_coach_images/coach_image_3.jpeg"
+  },
+  "images/coach/limousine/limousine.jpg": {
+    "file": "assets/limousine-BYfUld5K.jpg",
+    "src": "images/coach/limousine/limousine.jpg"
+  },
+  "images/coach/limousine/limousine_1.jpg": {
+    "file": "assets/limousine_1-C4xBxgwa.jpg",
+    "src": "images/coach/limousine/limousine_1.jpg"
+  },
+  "images/coach/limousine/limousine_2.jpg": {
+    "file": "assets/limousine_2-CGVR8UOi.jpg",
+    "src": "images/coach/limousine/limousine_2.jpg"
+  },
+  "images/coach/limousine/limousine_3.jpg": {
+    "file": "assets/limousine_3-BAbSQMHP.jpg",
+    "src": "images/coach/limousine/limousine_3.jpg"
+  },
+  "images/coach/limousine/limousine_4.jpg": {
+    "file": "assets/limousine_4-CC88wCCZ.jpg",
+    "src": "images/coach/limousine/limousine_4.jpg"
+  },
+  "images/coach/limousine/limousine_5.jpg": {
+    "file": "assets/limousine_5-DiMPb6b6.jpg",
+    "src": "images/coach/limousine/limousine_5.jpg"
+  },
+  "images/coach/limousine/limousine_6.jpg": {
+    "file": "assets/limousine_6-z6wgCUqO.jpg",
+    "src": "images/coach/limousine/limousine_6.jpg"
+  },
+  "images/coach/room/room.jpg": {
+    "file": "assets/room-R0V-jeHm.jpg",
+    "src": "images/coach/room/room.jpg"
+  },
+  "images/coach/room/room_1.jpg": {
+    "file": "assets/room_1-o6MML-p2.jpg",
+    "src": "images/coach/room/room_1.jpg"
+  },
+  "images/coach/room/room_2.jpg": {
+    "file": "assets/room_2-CH4sWXlW.jpg",
+    "src": "images/coach/room/room_2.jpg"
+  },
+  "images/coach/room/room_3.jpg": {
+    "file": "assets/room_3-C3cAZ12t.jpg",
+    "src": "images/coach/room/room_3.jpg"
+  },
+  "images/coach/room/room_4.jpg": {
+    "file": "assets/room_4-CfiEjC6M.jpg",
+    "src": "images/coach/room/room_4.jpg"
+  },
+  "images/coach/room/room_5.jpg": {
+    "file": "assets/room_5-C5otlcXW.jpg",
+    "src": "images/coach/room/room_5.jpg"
+  },
+  "images/coach/room/room_6.jpg": {
+    "file": "assets/room_6-D5qLO8eB.jpg",
+    "src": "images/coach/room/room_6.jpg"
+  },
+  "images/coach/sleeper/sleeper.jpg": {
+    "file": "assets/sleeper-DoAhuzGD.jpg",
+    "src": "images/coach/sleeper/sleeper.jpg"
+  },
+  "images/coach/sleeper/sleeper_1.jpg": {
+    "file": "assets/sleeper_1-CFc-yhPm.jpg",
+    "src": "images/coach/sleeper/sleeper_1.jpg"
+  },
+  "images/coach/sleeper/sleeper_2.jpg": {
+    "file": "assets/sleeper_2-D7Vuukrv.jpg",
+    "src": "images/coach/sleeper/sleeper_2.jpg"
+  },
+  "images/coach/sleeper/sleeper_3.jpg": {
+    "file": "assets/sleeper_3-DRl0lp8w.jpg",
+    "src": "images/coach/sleeper/sleeper_3.jpg"
+  },
+  "images/coach/sleeper/sleeper_4.jpg": {
+    "file": "assets/sleeper_4-Mv59ssmN.jpg",
+    "src": "images/coach/sleeper/sleeper_4.jpg"
+  },
+  "images/coach/sleeper/sleeper_5.jpg": {
+    "file": "assets/sleeper_5-BY2onQkd.jpg",
+    "src": "images/coach/sleeper/sleeper_5.jpg"
+  },
+  "images/coach/sleeper/sleeper_6.jpg": {
+    "file": "assets/sleeper_6-DXozxmPB.jpg",
+    "src": "images/coach/sleeper/sleeper_6.jpg"
+  }
+}

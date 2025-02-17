@@ -4,7 +4,9 @@ import ViteRails from "vite-plugin-rails"
 export default defineConfig({
   plugins: [
     ViteRails({
-      envVars: { RAILS_ENV: "development" },
+      envVars: {
+        RAILS_ENV: process.env.NODE_ENV || "development"
+      },
       envOptions: { defineOn: "import.meta.env" },
       fullReload: {
         additionalPaths: [],
@@ -16,5 +18,11 @@ export default defineConfig({
       '@images': '/app/frontend/images',
       'toastify-js': 'toastify-js/src/toastify.js'
     }
-  }
+  },
+  build: {
+    outDir: 'public/vite',
+    manifest: true,
+    assetsDir: '',
+  },
 })
+
