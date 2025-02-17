@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: coach-route-system
+    env: ruby
+    buildCommand: "bundle install && yarn install && bundle exec rake assets:precompile"
+    startCommand: "bundle exec puma -C config/puma.rb"
+    envVars:
+      - key: DATABASE_URL
+        value: "postgresql://coach_route_system_user:8R2RINx2Bl17evSPcR8j5gJkGVfdeNsR@dpg-cuplagdsvqrc73f31cbg-a.oregon-postgres.render.com/coach_route_system"
+    plan: starter
