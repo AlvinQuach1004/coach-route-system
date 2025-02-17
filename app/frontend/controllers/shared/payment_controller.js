@@ -54,6 +54,8 @@ export default class extends Controller {
       const ticketPrice = form.querySelector('[name="booking[ticket_price]"]').value;
       const pickupAddress = form.querySelector('[name="booking[pickup_address]"]').value || '';
       const dropoffAddress = form.querySelector('[name="booking[dropoff_address]"]').value || '';
+      const departureDate = form.querySelector('[name="booking[departure_date]"]').value || '';
+      const departureTime = form.querySelector('[name="booking[departure_time]"]').value || '';
 
       console.log('Start address:', startStopId);
       console.log('End address:', endStopId);
@@ -73,6 +75,8 @@ export default class extends Controller {
             ticket_price: ticketPrice,
             pickup_address: pickupAddress,
             dropoff_address: dropoffAddress,
+            departure_date: departureDate,
+            departure_time: departureTime,
           },
           schedule_id: form.querySelector('[name="schedule_id"]').value,
         }),
@@ -99,7 +103,6 @@ export default class extends Controller {
         this.submitButtonTarget.disabled = false;
       }
     } catch (error) {
-      console.error('Error processing payment:', error);
       showToast(error.message || 'Đã xảy ra lỗi!', 'alert');
       this.submitButtonTarget.disabled = false;
     }

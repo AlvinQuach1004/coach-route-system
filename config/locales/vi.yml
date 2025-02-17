@@ -32,6 +32,19 @@ vi:
     profile: Hồ sơ
     routes: Tuyến đường
     sign_up: Đăng ký
+    profile: "Hồ sơ"
+    log_out: "Đăng xuất"
+  profile:
+    title: "Hồ sơ"
+    description: "Quản lý thông tin tài khoản của bạn"
+    email: "Email"
+    phone_number: "Số điện thoại"
+    not_provided: "Chưa cung cấp"
+    account_created: "Tài khoản được tạo"
+    enter_email: "Nhập email của bạn"
+    enter_phone_number: "Nhập số điện thoại của bạn"
+    update_success: "%{field} đã được cập nhật thành công"
+    update_error: "Cập nhật %{field} thất bại"
   history:
     information:
       booked_date: Ngày đặt vé
@@ -69,10 +82,11 @@ vi:
     heading: Chi tiết hóa đơn
     icon_alt: Biểu tượng xe khách
     issued: Ngày phát hành
+    departure: Ngày xuất phát
     paid: Đã thanh toán
     payment_method: Phương thức thanh toán
     quantity: Số lượng
-    rest: Số dư còn lại
+    rest: Số tiền cần trả
     seat_number: Số ghế
     ticket: Vé
     title: Hóa đơn
@@ -80,11 +94,52 @@ vi:
     total: Tổng cộng
     total_quantity: Tổng số lượng
   language_name: Tiếng Việt
+  notifications:
+    title: "Thông báo"
+    mark_as_read: "Đánh dấu tất cả là đã đọc"
+    no_notifications: "Không có thông báo"
+    departure: "Xe khách %{license_plate} sắp khởi hành."
+    route: "Lộ trình: %{start_location} → %{end_location}"
+    departure_time: "Khởi hành: %{departure_date} - %{departure_time}"
+    payment_reminder: "Nhắc nhở thanh toán cho đặt vé ##{booking_id} cho lịch trình vào %{departure_date} - %{departure_time}"
+    amount_due: "Số tiền cần thanh toán: %{amount}"
+    your_tickets: "Vé của bạn:"
+    seat: "Ghế %{seat_number} - %{price}"
+    booking_cancelled: "Đặt vé của bạn đã được hủy thành công."
+    time_ago: "%{time_ago} trước"
+    just_now: "Vừa xong"
+    mark_all_as_read: "Đánh dấu tất cả đã đọc"
+  mailer:
+    cancel_booking:
+      subject: "Thông báo hủy đặt chỗ"
+      greeting: "Chào %{email},"
+      message: "Đặt chỗ của bạn cho chuyến đi vào %{departure_date} - %{departure_time} đã bị hủy."
+      trip_details: "Chi tiết chuyến đi"
+      route: "Tuyến đường: %{start_location} → %{end_location}"
+      support_message: "Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi."
+    trip_reminder:
+      subject: "Nhắc nhở chuyến đi"
+      message: "Chuyến đi của bạn được lên lịch vào ngày mai với xe %{license_plate} loại %{coach_type}."
+      trip_details: "Chi tiết chuyến đi"
+      departure: "Khởi hành: %{departure_date} - %{departure_time}"
+      route: "Tuyến đường: %{start_location} đến %{end_location}"
   route_pages:
     available: Còn chỗ
     available_seats: Số ghế còn trống
     book: Đặt vé
     bookings:
+      errors:
+        not_logged_in: "Bạn phải đăng nhập để thực hiện hành động này."
+        limit_reached: "Bạn chỉ có thể đặt chỗ tối đa 3 lần trong ngày."
+        payment_failed: "Thanh toán thất bại. Đặt chỗ của bạn đã bị hủy."
+        invalid_booking: "Đặt chỗ hoặc phiên thanh toán không hợp lệ."
+      success:
+        created: "Đặt chỗ thành công."
+        paid: "Thanh toán thành công! Đặt chỗ của bạn đã hoàn tất."
+        cancelled: "Thanh toán đã bị hủy."
+      stripe:
+        product_name: "Đặt chỗ vé #%{booking_id}"
+        product_description: "Ghế: %{seat}, Tuyến: %{route}, Xe: %{coach}"
       floors:
         lower_floor_label: Tầng dưới
         upper_floor_label: Tầng trên
@@ -216,3 +271,299 @@ vi:
     destination_placeholder: Điểm đến
     exchange_button: Đổi chỗ
     search_button: Tìm kiếm
+  admin:
+    update:
+        success: "Trạng thái thanh toán đã được cập nhật thành công."
+        failure: "Cập nhật trạng thái thanh toán thất bại."
+    destroy:
+      success: "Đặt chỗ đã bị hủy và hoàn tiền thành công."
+      failure: "Không thể hủy đặt chỗ."
+    sidebar:
+      title: "Quản lý hệ thống"
+      dashboard: "Bảng phân tích"
+      users: "Quản lý người dùng"
+      routes: "Quản lý tuyến đường"
+      schedules: "Quản lý lịch trình"
+      bookings: "Quản lý đặt vé"
+    navbar:
+      dashboard: "Bảng phân tích"
+      profile: "Hồ sơ"
+      log_out: "Đăng xuất"
+    bookings:
+      not_found: "Không tìm thấy đặt vé"
+      update:
+          success: "Cập nhật trạng thái thanh toán thành công."
+          failure: "Cập nhật trạng thái thanh toán thất bại."
+      destroy:
+        success: "Hủy và hoàn tiền đặt vé thành công."
+        failure: "Hủy và hoàn tiền đặt vé thất bại."
+      table:
+        number: "#"
+        email: "Email"
+        route: "Tuyến"
+        departure: "Khởi hành"
+        payment_method: "Phương thức thanh toán"
+        payment_status: "Trạng thái thanh toán"
+        action: "Hành động"
+      payment_methods:
+        cash: "Tiền mặt"
+        online: "Trực tuyến"
+      payment_statuses:
+        pending: "Đang chờ"
+        completed: "Hoàn thành"
+        failed: "Thất bại"
+      mobile_view:
+        booking_number: "Đặt vé #"
+        email: "Email:"
+        route: "Tuyến:"
+        departure: "Khởi hành:"
+        payment_method: "Phương thức thanh toán:"
+        payment_status: "Trạng thái thanh toán:"
+      pagination:
+        showing: "Hiển thị"
+        to: "đến"
+        of: "trên tổng số"
+        bookings: "đặt vé"
+      index:
+        title: "Quản lý Đặt vé"
+        heading: "Đặt vé"
+        total: "Tổng"
+        search_placeholder: "Tìm kiếm tuyến..."
+        status_select: "Chọn Trạng thái"
+        status_pending: "Đang chờ"
+        status_completed: "Hoàn thành"
+        status_failed: "Thất bại"
+        start_date: "Ngày Bắt đầu"
+        end_date: "Ngày Kết thúc"
+        search_button: "Tìm kiếm"
+        reset_button: "Đặt lại"
+        no_bookings: "Không tìm thấy đặt vé nào"
+        no_bookings_hint: "Vui lòng kiểm tra lại sau hoặc điều chỉnh tiêu chí tìm kiếm của bạn."
+      show:
+        title: "Đặt Vé %{id}"
+        details: "Chi Tiết Đặt Vé"
+        booking_info: "Thông Tin Đặt Vé"
+        booking_id: "Mã Đặt Vé"
+        created_at: "Ngày Tạo"
+        payment_method: "Phương Thức Thanh Toán"
+        payment_status: "Trạng Thái Thanh Toán"
+        customer_info: "Thông Tin Khách Hàng"
+        email: "Email"
+        phone: "Số Điện Thoại"
+        journey_details: "Chi Tiết Hành Trình"
+        from: "Từ"
+        to: "Đến"
+        tickets: "Vé"
+        seat: "Ghế"
+        amount: "Số Tiền"
+        schedule: "Lịch Trình"
+        time: "Thời Gian"
+        back: "Quay Lại"
+        confirm_cancel: "Xác Nhận Hủy"
+        confirm_cancel_message: "Bạn có chắc chắn muốn hủy đặt vé này không?"
+        cancel_booking: "Hủy Đặt Vé"
+        cancel: "Hủy"
+        confirm: "Xác Nhận"
+    coach_routes:
+      messages:
+          create_success: "Tạo tuyến xe thành công"
+          create_failure: "Không thể tạo tuyến xe"
+          update_success: "Cập nhật tuyến xe thành công"
+          update_failure: "Không thể cập nhật tuyến xe"
+          delete_success: "Xóa tuyến xe thành công"
+          delete_failure: "Không thể xóa tuyến xe"
+          already_exists: "Tuyến xe đã tồn tại"
+          not_found: "Không tìm thấy tuyến xe"
+      modal_routes:
+        new_route: "Tuyến mới"
+        edit_route: "Chỉnh sửa tuyến"
+        start_location: "Điểm bắt đầu"
+        select_start_location: "Chọn điểm bắt đầu"
+        start_address: "Địa chỉ bắt đầu"
+        enter_start_address: "Nhập địa chỉ bắt đầu"
+        end_location: "Điểm kết thúc"
+        select_end_location: "Chọn điểm kết thúc"
+        end_address: "Địa chỉ kết thúc"
+        enter_end_address: "Nhập địa chỉ kết thúc"
+        stops: "Điểm dừng"
+        stop_location: "Điểm dừng"
+        select_stop_location: "Chọn điểm dừng"
+        stop_address: "Địa chỉ điểm dừng"
+        enter_stop_address: "Nhập địa chỉ điểm dừng"
+        stop_order: "Thứ tự điểm dừng"
+        estimated_minutes: "Ước tính (phút)"
+        pickup: "Đón khách"
+        dropoff: "Trả khách"
+        cancel: "Hủy"
+        save: "Lưu"
+      routes:
+        number: "#"
+        start_location: "Điểm bắt đầu"
+        end_location: "Điểm kết thúc"
+        created_at: "Ngày tạo"
+        actions: "Hành động"
+        edit: "Chỉnh sửa"
+        delete: "Xóa"
+        confirm_delete_title: "Xác nhận xóa"
+        confirm_delete_message: "Bạn có chắc chắn muốn xóa tuyến đường này không?"
+        cancel: "Hủy"
+        pagination:
+          showing: "Hiển thị"
+          to: "đến"
+          of: "trong tổng số"
+          routes: "tuyến đường"
+        mobile:
+          route_number: "Tuyến đường #%{index}"
+          start: "Bắt đầu:"
+          end: "Kết thúc:"
+          created_at: "Ngày tạo:"
+      index: 
+        title: "Quản lý tuyến đường"
+        list_title: "Danh sách tuyến đường"
+        total: "Tổng số: %{count}"
+        add_new: "Thêm tuyến đường mới"
+        search_placeholder: "Tìm kiếm tuyến đường..."
+        sort_by: "Sắp xếp theo"
+        sort_options:
+          newest: "Mới nhất"
+          oldest: "Cũ nhất"
+          start_location: "Điểm bắt đầu"
+          end_location: "Điểm kết thúc"
+    dashboard:
+      title: "Bảng phân tích"
+      revenue_overview: "Tổng quan doanh thu"
+      coach_status: "Trạng thái xe khách"
+      popular_routes: "Các tuyến phổ biến"
+      todays_overview: "Tổng quan hôm nay"
+      active_routes: "Tuyến đường đang hoạt động"
+      todays_bookings: "Đặt vé hôm nay"
+      available_coaches: "Xe khách có sẵn"
+      recent_bookings: "Đặt vé gần đây"
+      booking_id: "Mã đặt vé"
+      customer: "Khách hàng"
+      customer_email: "Email"
+      route: "Tuyến đường"
+      amount: "Số tiền"
+      status: "Trạng thái"
+    schedules:
+      table:
+        route: "Tuyến đường"
+        coach: "Xe khách"
+        departure_date: "Ngày khởi hành"
+        departure_time: "Giờ khởi hành"
+        price: "Giá"
+        status: "Trạng thái"
+        actions: "Thao tác"
+      scheduled: "Đã lên lịch"
+      ongoing: "Đang diễn ra"
+      completed: "Đã hoàn thành"
+      cancelled: "Đã hủy"
+      delayed: "Bị hoãn"
+      delete:
+        title: "Xóa lịch trình"
+        confirm_message: "Bạn có chắc chắn muốn xóa lịch trình này không?"
+      actions:
+        cancel: "Hủy"
+        delete: "Xóa"
+      pagination:
+        showing: "Hiển thị"
+        to: "đến"
+        of: "trong tổng số"
+        schedules: "lịch trình"
+      form:
+        new_schedule: "Lịch trình mới"
+        edit_schedule: "Cập nhật lịch trình"
+        route: "Tuyến đường"
+        select_route: "Chọn tuyến đường"
+        coach: "Xe khách"
+        select_coach: "Chọn xe khách"
+        departure_date: "Ngày khởi hành"
+        departure_time: "Giờ khởi hành"
+        price: "Giá vé"
+        cancel: "Hủy"
+        save: "Lưu lịch trình"
+      index:
+        title: "Quản lý lịch trình"
+        list_title: "Danh sách lịch trình"
+        total: "Tổng số: %{count}"
+        create_new: "Tạo lịch trình mới"
+        search: "Tìm kiếm"
+        search_placeholder: "Tìm kiếm theo địa điểm hoặc xe khách"
+        filters:
+          route: "Tuyến đường"
+          coach: "Xe khách"
+          start_date: "Ngày khởi hành"
+          end_time: "Giờ khởi hành"
+          min_price: "Giá tối thiểu"
+          max_price: "Giá tối đa"
+        buttons:
+          apply_filter: "Áp dụng bộ lọc"
+          reset: "Đặt lại"
+    users:
+      create:
+        success: "Tạo người dùng thành công."
+        failure: "Không thể tạo người dùng."
+      update:
+        success: "Cập nhật người dùng thành công."
+        failure: "Không thể cập nhật người dùng."
+      destroy:
+        success: "Xóa người dùng thành công."
+        failure: "Không thể xóa người dùng."
+        self_deletion: "Bạn không thể xóa tài khoản của chính mình."
+      errors:
+        not_found: "Không tìm thấy người dùng."
+        update: "Lỗi cập nhật người dùng: %{message}"
+        role_update: "Lỗi cập nhật vai trò: %{message}"
+        general: "Đã xảy ra lỗi. Vui lòng thử lại."
+      title: "Quản lý Người dùng"
+      list_title: "Danh sách Người dùng"
+      total: "Tổng số: %{count}"
+      created_at: "Ngày tạo"
+      updated_at: "Ngày cập nhật"
+      actions: "Hành động"
+      search: "Tìm kiếm"
+      search_placeholder: "Nhập email để tìm kiếm..."
+      confirm_delete: "Xác nhận xóa"
+      delete_message: "Bạn có chắc chắn muốn xóa người dùng này?"
+      buttons:
+        edit: "Chỉnh sửa"
+        delete: "Xóa"
+        cancel: "Hủy"
+        apply_filter: "Áp dụng bộ lọc"
+        reset: "Đặt lại"
+      pagination:
+        showing: "Hiển thị"
+        to: "đến"
+        of: "trong tổng số"
+        users: "người dùng"
+      edit:
+        title: "Chỉnh sửa người dùng"
+        subtitle: "Cập nhật thông tin người dùng"
+        email: "Địa chỉ Email"
+        email_required: "Bắt buộc"
+        role: "Vai trò"
+        phone_number: "Số điện thoại"
+        phone_placeholder: "Số điện thoại"
+        change_password: "Đổi mật khẩu"
+        new_password: "Mật khẩu mới"
+        new_password_optional: "Không bắt buộc"
+        confirm_password: "Xác nhận mật khẩu mới"
+        leave_blank: "Để trống nếu không muốn thay đổi"
+        member_since: "Thành viên từ"
+        cancel: "Hủy"
+        save_changes: "Lưu thay đổi"
+      index:
+        title: "Quản lý người dùng"
+        users_list: "Danh sách người dùng"
+        total_users: "Tổng số: %{count}"
+        search_placeholder: "Tìm kiếm người dùng..."
+        select_role: "Chọn vai trò"
+        roles:
+          customer: "Khách hàng"
+          admin: "Quản trị viên"
+        select_sort: "Sắp xếp theo"
+        sort_options:
+          newest: "Mới nhất"
+          oldest: "Cũ nhất"
+          email_asc: "Email A-Z"
+          email_desc: "Email Z-A"

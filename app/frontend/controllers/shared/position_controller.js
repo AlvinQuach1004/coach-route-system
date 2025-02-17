@@ -20,6 +20,13 @@ export default class extends Controller {
     'ticketPrice',
     'pickupAddress',
     'dropoffAddress',
+    'pickupDateTime',
+    'dropoffDateTime',
+    'departureDateStep3',
+    'departureTimeStep3',
+    'departureDate',
+    'departureTime',
+    'dateBeforeDeparture',
     'next',
   ];
 
@@ -31,6 +38,7 @@ export default class extends Controller {
     this.selectedDropoff = null;
     this.stepIndex = 1;
     this.pricePerKm = 1000;
+    this.coachSpeed = 666.67;
     this.stops = JSON.parse(this.element.dataset.positionStops || '[]');
   }
 
@@ -44,6 +52,7 @@ export default class extends Controller {
       if (address) {
         this.selectedPickup = await this.getCoordinatesFromAddress(address);
         await this.calculateTotalPrice();
+        await this.updatePickupDepartureAndArrivalTime();
       }
     }, 500);
   }
@@ -58,6 +67,7 @@ export default class extends Controller {
       if (address) {
         this.selectedDropoff = await this.getCoordinatesFromAddress(address);
         await this.calculateTotalPrice();
+        await this.updateDropoffDepartureAndArrivalTime();
       }
     }, 500);
   }
@@ -75,7 +85,7 @@ export default class extends Controller {
       showToast('Không tìm thấy tọa độ cho địa chỉ', 'warn');
       return null;
     } catch (error) {
-      showToast(`Lỗi ${error}`, 'alert');
+      showToast(error.message, 'alert');
       return null;
     }
   }
@@ -97,7 +107,7 @@ export default class extends Controller {
 
     const origins = `${this.selectedPickup.lat},${this.selectedPickup.lng}`;
     const destinations = `${this.selectedDropoff.lat},${this.selectedDropoff.lng}`;
-    const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinations}&vehicle=car&api_key=${this.apiKey}`;
+    const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinations}&vehicle=hd&api_key=${this.apiKey}`;
 
     try {
       const response = await fetch(url);
@@ -107,9 +117,6 @@ export default class extends Controller {
         const distance = data.rows[0].elements[0].distance.value / 1000;
         const totalPrice = Math.ceil(distance * this.pricePerKm * parseInt(this.totalQuantityTarget.textContent));
 
-        console.log(`📏 Khoảng cách: ${distance.toFixed(2)} km`);
-        console.log(`💰 Tổng giá: ${totalPrice.toLocaleString()} VND`);
-
         if (this.hasTotalPriceStep2Target) {
           this.totalPriceStep2Target.textContent = `${this.formatCurrency(totalPrice)}₫`;
         } else {
@@ -117,7 +124,7 @@ export default class extends Controller {
         }
       }
     } catch (error) {
-      showToast(`Lỗi: ${error} khi tính khoảng cách`, 'alert');
+      showToast(`Error: ${error}`, 'alert');
     }
   }
 
@@ -145,7 +152,7 @@ export default class extends Controller {
         return 0;
       })
       .catch((error) => {
-        showToast(`Lỗi: ${error} khi tính khoảng cách`, 'alert');
+        showToast(error.message, 'alert');
         return 0;
       });
   }
@@ -168,6 +175,7 @@ export default class extends Controller {
     setTimeout(async () => {
       if (this.stepIndex === 2) {
         console.log('Đang ở Step 2: Lấy khoảng cách & tính giá vé');
+        console.log('Stops: ', this.stops);
 
         if (this.hasPickupLocationTarget && this.hasDropoffLocationTarget) {
           console.log('Lấy vị trí đón và trả');
@@ -177,7 +185,6 @@ export default class extends Controller {
 
           if (pickupLocation && dropoffLocation) {
             const distance = await this.calculateDistance(pickupLocation, dropoffLocation);
-
             const ticketPrice = this.calculateTicketPrice(distance);
 
             if (this.hasTotalPriceStep2Target) {
@@ -205,13 +212,10 @@ export default class extends Controller {
           if (this.selectedPickup) {
             const province = await this.getProvinceFromCoordinates(this.selectedPickup);
             this.fromStep3Target.textContent = province;
-          } else if (
-            document.querySelector('.from-step-3') === null ||
-            document.querySelector('.from-step-3')?.textContent === ''
-          ) {
-            const pickupLocationCoords = await this.getCoordinatesFromAddress(this.pickupLocationTarget.textContent);
-            const pickupLocationProvince = await this.getProvinceFromCoordinates(pickupLocationCoords);
-            this.fromStep3Target.textContent = pickupLocationProvince;
+          } else {
+            const coordsPickupTarget = await this.getCoordinatesFromAddress(this.pickupLocationTarget.textContent);
+            const province = await this.getProvinceFromCoordinates(coordsPickupTarget);
+            this.fromStep3Target.textContent = province;
           }
         }
 
@@ -219,13 +223,11 @@ export default class extends Controller {
           if (this.selectedDropoff) {
             const province = await this.getProvinceFromCoordinates(this.selectedDropoff);
             this.toStep3Target.textContent = province;
-          } else if (
-            document.querySelector('.to-step-3') === null ||
-            document.querySelector('.to-step-3').textContent === ''
-          ) {
-            const dropoffLocationCoords = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
-            const dropoffLocationProvince = await this.getProvinceFromCoordinates(dropoffLocationCoords);
-            this.toStep3Target.textContent = dropoffLocationProvince;
+          } else {
+            console.log('Selected drop off: ', this.selectedDropoff);
+            const coordsDropoffTarget = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
+            const province = await this.getProvinceFromCoordinates(coordsDropoffTarget);
+            this.toStep3Target.textContent = province;
           }
         }
 
@@ -286,15 +288,20 @@ export default class extends Controller {
   }
 
   async showLocationOnMap(address) {
-    const url = `https://rsapi.goong.io/Geocode?address=${encodeURIComponent(address)}&api_key=${this.apiKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.results.length > 0) {
-      const { lat, lng } = data.results[0].geometry.location;
-      this.selectedLocation = [lng, lat];
-      this.initPositionMap();
-    } else {
-      showToast('Không tìm thấy vị trí!', 'alert');
+    try {
+      const url = `https://rsapi.goong.io/Geocode?address=${encodeURIComponent(address)}&api_key=${this.apiKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.results.length > 0) {
+        const { lat, lng } = data.results[0].geometry.location;
+        this.selectedLocation = [lng, lat];
+        this.initPositionMap();
+      } else {
+        showToast('Không tìm thấy vị trí!', 'alert');
+      }
+    } catch (error) {
+      showToast(error.message, 'alert');
     }
   }
 
@@ -324,7 +331,6 @@ export default class extends Controller {
 
     const isPickup = stopType === 'pickup';
     const normalizeText = (text) => text.normalize('NFC').toLowerCase().replace(/\s+/g, ' ').trim();
-
     const stop = this.stops.find((s) => {
       const normalizedProvince = normalizeText(s.province);
       const normalizedLocation = normalizeText(locationName);
@@ -356,6 +362,98 @@ export default class extends Controller {
     }
   }
 
+  calculateArrivalDate(departureTime, departureDate, timeRange) {
+    let [day, month, year] = departureDate.split('/');
+    let formattedDate = `${year}-${month}-${day}`; // yyyy-mm-dd
+
+    let departure = new Date(`${formattedDate}T${departureTime}:00`);
+
+    if (isNaN(departure.getTime())) {
+      throw new Error(`Invalid date: ${departureDate} ${departureTime}`);
+    }
+
+    departure.setMinutes(departure.getMinutes() + timeRange);
+
+    let newDay = departure.getDate().toString().padStart(2, '0');
+    let newMonth = (departure.getMonth() + 1).toString().padStart(2, '0');
+    let newYear = departure.getFullYear();
+
+    let newDate = `${newDay}/${newMonth}/${newYear}`;
+    let newTime = departure.toTimeString().split(' ')[0].substring(0, 5);
+
+    return { newTime, newDate };
+  }
+
+  async updatePickupDepartureAndArrivalTime() {
+    setTimeout(async () => {
+      let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
+
+      if (this.selectedPickup) {
+        const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
+
+        // Tính khoảng cách và thời gian từ minStop đến selectedPickup
+        console.log('Min stop province: ', minStop.province);
+        const distanceToPickup = await this.calculateDistance(coordsMinStopProvince, this.selectedPickup);
+        console.log('Distance: ', distanceToPickup);
+        const timeRangeToPickup = Math.ceil((distanceToPickup * 1000) / this.coachSpeed);
+        console.log(timeRangeToPickup);
+        const { newTime: pickupTime, newDate: pickupDate } = this.calculateArrivalDate(
+          minStop.departure_time,
+          minStop.departure_date,
+          timeRangeToPickup,
+        );
+        console.log(this.dropoffLocationTarget);
+        const coordsDropoffLocation = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
+        const distanceDropoff = await this.calculateDistance(this.selectedPickup, coordsDropoffLocation);
+        const timeRangeToDropoff = Math.ceil((distanceDropoff * 1000) / this.coachSpeed);
+        const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
+          pickupTime,
+          pickupDate,
+          timeRangeToDropoff,
+        );
+        this.pickupDateTimeTarget.textContent = `${pickupTime} (${pickupDate})`;
+        this.dropoffDateTimeTarget.textContent = `${dropoffTime} (${dropoffDate})`;
+        this.departureDateStep3Target.textContent = pickupDate;
+        this.departureTimeStep3Target.textContent = pickupTime;
+        this.dateBeforeDepartureTarget.textContent = this.subtractOneDay(pickupDate);
+      }
+    }, 500);
+  }
+
+  subtractOneDay(dateString) {
+    let parts = dateString.split('/');
+    let date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+
+    date.setDate(date.getDate() - 1);
+
+    let day = date.getDate().toString().padStart(2, '0');
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
+  async updateDropoffDepartureAndArrivalTime() {
+    setTimeout(async () => {
+      let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
+      if (this.selectedDropoff) {
+        const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
+
+        // Tính khoảng cách và thời gian từ minStop đến selectedDropoff
+        const distanceToDropoff = await this.calculateDistance(coordsMinStopProvince, this.selectedDropoff);
+        const timeRangeToDropoff = Math.ceil((distanceToDropoff * 1000) / this.coachSpeed);
+        const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
+          minStop.departure_time,
+          minStop.departure_date,
+          timeRangeToDropoff,
+        );
+
+        // Cập nhật thời gian trả khách
+        this.dropoffDateTimeTarget.textContent = `${dropoffDate} (${dropoffTime})`;
+      }
+    }, 500);
+  }
+
   async updateHiddenFields() {
     if (this.hasTicketPriceTarget && this.hasPriceStep3Target) {
       this.ticketPriceTarget.value = this.priceStep3Target.textContent.replace(/[^\d]/g, '') || '0';
@@ -370,6 +468,8 @@ export default class extends Controller {
       const dropoffAddress = await this.getAddressFromCoordinates(this.selectedDropoff);
       this.dropoffAddressTarget.value = dropoffAddress;
     }
+    this.departureDateTarget.value = this.departureDateStep3Target.textContent;
+    this.departureTimeTarget.value = this.departureTimeStep3Target.textContent;
 
     console.log('Updated hidden fields: ', {
       ticketPrice: this.ticketPriceTarget?.value,

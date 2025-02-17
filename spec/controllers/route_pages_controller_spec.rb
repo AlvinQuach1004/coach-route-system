@@ -35,6 +35,8 @@ RSpec.describe RoutePagesController, type: :controller do
           latitude: stop1.latitude_address,
           longitude: stop1.longitude_address,
           province: location1.name,
+          departure_date: schedule.formatted_departure_date,
+          departure_time: schedule.formatted_departure_time,
           pickup: true,
           dropoff: false
         )

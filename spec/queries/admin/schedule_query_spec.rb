@@ -34,7 +34,7 @@ RSpec.describe Admin::ScheduleQuery, type: :query do
 
     context 'when filtering by date' do
       it 'returns schedules on the specified date' do
-        result = described_class.new(scope: scope, params: { start_date: '02/03/2025' }).call
+        result = described_class.new(scope: scope, params: { departure_date: '02/03/2025' }).call
         expect(result[:schedules]).to match_array([schedule2, schedule3])
       end
     end

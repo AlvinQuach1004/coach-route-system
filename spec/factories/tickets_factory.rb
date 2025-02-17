@@ -4,6 +4,8 @@ FactoryBot.define do
     schedule
     paid_amount { Faker::Number.between(from: 100_000, to: 1_000_000) }
     status { %w[booked paid cancelled].sample }
+    departure_date { Faker::Date.forward(days: 30) }
+    departure_time { Faker::Time.forward(days: 30, period: :evening) }
 
     seat_number do
       seat_ranges = schedule.seat_rows_by_type

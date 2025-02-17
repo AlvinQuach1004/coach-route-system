@@ -4,15 +4,21 @@ html
     meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
   body.bg-gray-100
     .container.mx-auto.p-4
-      h1.text-2xl.font-bold.mb-4 Trip Departure Reminder
+      h1.text-2xl.font-bold.mb-4 = t("mailer.trip_reminder.subject")
       p.mb-4
-        | Your trip is scheduled for tomorrow with coach 
-        strong = @coach.license_plate
-        | &nbsp;with type&nbsp;
-        strong = @coach.coach_type
+        = t("mailer.trip_reminder.message", 
+            license_plate: params[:coach][:license_plate], 
+            coach_type: params[:coach][:coach_type])
+
       .bg-white.rounded-lg.shadow.p-4.mb-4
-        h2.text-xl.font-semibold.mb-2 Trip Details
+        h2.text-xl.font-semibold.mb-2 = t("mailer.trip_reminder.trip_details")
+        
         p
-          = "Departure: #{@schedule.formatted_departure_date} - #{@schedule.formatted_departure_time}"
+          = t("mailer.trip_reminder.departure", 
+              departure_date: params[:booking][:tickets].first[:formatted_departure_date], 
+              departure_time: params[:booking][:tickets].first[:formatted_departure_time])
+
         p
-          | Route: #{@schedule.route.start_location.name} to #{@schedule.route.end_location.name}
+          = t("mailer.trip_reminder.route", 
+              start_location: params[:booking][:start_stop][:location][:name],
+              end_location: params[:booking][:end_stop][:location][:name])

@@ -5,7 +5,6 @@
     .flex.flex-col.sm:flex-row.justify-between.items-center
       div.text-center.sm:text-left
         h1.text-2xl.sm:text-4xl.font-bold.text-gray-800 = t('invoice.heading')
-        p.text-gray-600.mt-1 = @booking.id
       
       .text-slate-600.h-20.w-20.sm:h-28.sm:w-28.mt-4.sm:mt-0
         = image_tag vite_asset_path('images/icons/coach_icon.png'), alt: t('invoice.icon_alt')
@@ -14,6 +13,8 @@
       .space-y-2
         p.text-gray-600.text-sm.sm:text-base = t('invoice.issued')
         p.font-medium.text-sm.sm:text-base = @booking.created_at.strftime('%d %b, %Y')
+        p.text-gray-600.text-sm.sm:text-base = t('invoice.departure')
+        p.font-medium.text-sm.sm:text-base = "#{@booking.tickets.first.formatted_departure_date} - #{@booking.tickets.first.formatted_departure_time}"
 
       .space-y-2
         p.text-gray-600.text-sm.sm:text-base = t('invoice.from')

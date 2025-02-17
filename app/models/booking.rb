@@ -72,7 +72,7 @@ class Booking < ApplicationRecord
     ->(start_date, end_date) {
       return all if start_date.blank? || end_date.blank?
 
-      joins(tickets: :schedule)
+      includes(tickets: :schedule)
         .where(schedules: { departure_date: start_date..end_date })
     }
 

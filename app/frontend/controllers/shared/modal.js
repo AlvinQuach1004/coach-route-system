@@ -8,16 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const modal = document.querySelector(`dialog.modal#${modalId}`);
 
       if (modal) {
-        // Close any other open modals
+        // Close any open modals
         document.querySelectorAll('dialog.modal[open]').forEach((m) => m.close());
 
-        // Show the modal
+        // Show the selected modal
         modal.showModal();
       }
     }
   });
 
-  // Delegate click event for modal close buttons
   document.addEventListener('click', (event) => {
     const closeButton = event.target.closest('.modal-close-button');
     if (closeButton) {

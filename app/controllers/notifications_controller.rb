@@ -5,7 +5,13 @@ class NotificationsController < ApplicationController
     @notification = current_user.notifications.find(params[:id])
     @notification.mark_as_read!
     @notifications = current_user.notifications.order(created_at: :desc).limit(20)
-    @unread_count = current_user.notifications.unread.where(type: ['DepartureCableNotifier::Notification', 'PaymentReminderCableNotifier::Notification']).count
+    @unread_count = current_user.notifications.unread.where(
+      type: [
+        'DepartureCableNotifier::Notification',
+        'PaymentReminderCableNotifier::Notification',
+        'CancelBookingCableNotifier::Notification'
+      ]
+    ).count
 
     respond_to do |format|
       format.turbo_stream do

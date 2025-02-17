@@ -472,6 +472,52 @@
   resolved "https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.29.1.tgz"
   integrity sha512-xufkSNppNOdVRCEC4WKvlR1FBDyqCSCpQeMMgv9ZyXqqtKBfkw1yfGMTUTs9Qsl6WQbJnsGboWCp7pJGkeMhKA==
 
+"@sentry-internal/browser-utils@9.1.0":
+  version "9.1.0"
+  resolved "https://registry.npmjs.org/@sentry-internal/browser-utils/-/browser-utils-9.1.0.tgz"
+  integrity sha512-S1uT+kkFlstWpwnaBTIJSwwAID8PS3aA0fIidOjNezeoUE5gOvpsjDATo9q+sl6FbGWynxMz6EnYSrq/5tuaBQ==
+  dependencies:
+    "@sentry/core" "9.1.0"
+
+"@sentry-internal/feedback@9.1.0":
+  version "9.1.0"
+  resolved "https://registry.npmjs.org/@sentry-internal/feedback/-/feedback-9.1.0.tgz"
+  integrity sha512-jTDCqkqH3QDC8m9WO4mB06hqnBRsl3p7ozoh0E774UvNB6blOEZjShhSGMMEy5jbbJajPWsOivCofUtFAwbfGw==
+  dependencies:
+    "@sentry/core" "9.1.0"
+
+"@sentry-internal/replay-canvas@9.1.0":
+  version "9.1.0"
+  resolved "https://registry.npmjs.org/@sentry-internal/replay-canvas/-/replay-canvas-9.1.0.tgz"
+  integrity sha512-gxredVe+mOgfNqDJ3dTLiRON3FK1rZ8d0LHp7TICK/umLkWFkuso0DbNeyKU+3XCEjCr9VM7ZRqTDMzmY6zyVg==
+  dependencies:
+    "@sentry-internal/replay" "9.1.0"
+    "@sentry/core" "9.1.0"
+
+"@sentry-internal/replay@9.1.0":
+  version "9.1.0"
+  resolved "https://registry.npmjs.org/@sentry-internal/replay/-/replay-9.1.0.tgz"
+  integrity sha512-E2xrUoms90qvm0BVOuaZ8QfkMoTUEgoIW/35uOeaqNcL7uOIj8c5cSEQQKit2Dr7CL6W+Ci5c6Khdyd5C0NL5w==
+  dependencies:
+    "@sentry-internal/browser-utils" "9.1.0"
+    "@sentry/core" "9.1.0"
+
+"@sentry/browser@^9.1.0":
+  version "9.1.0"
+  resolved "https://registry.npmjs.org/@sentry/browser/-/browser-9.1.0.tgz"
+  integrity sha512-G55e5j77DqRW3LkalJLAjRRfuyKrjHaKTnwIYXa6ycO+Q1+l14pEUxu+eK5Abu2rtSdViwRSb5/G6a/miSUlYA==
+  dependencies:
+    "@sentry-internal/browser-utils" "9.1.0"
+    "@sentry-internal/feedback" "9.1.0"
+    "@sentry-internal/replay" "9.1.0"
+    "@sentry-internal/replay-canvas" "9.1.0"
+    "@sentry/core" "9.1.0"
+
+"@sentry/core@9.1.0":
+  version "9.1.0"
+  resolved "https://registry.npmjs.org/@sentry/core/-/core-9.1.0.tgz"
+  integrity sha512-djWEzSBpMgqdF3GQuxO+kXCUX+Mgq42G4Uah/HSUBvPDHKipMmyWlutGRoFyVPPOnCDgpHu3wCt83wbpEyVmDw==
+
 "@stripe/stripe-js@^5.5.0":
   version "5.5.0"
   resolved "https://registry.npmjs.org/@stripe/stripe-js/-/stripe-js-5.5.0.tgz"

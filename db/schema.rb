@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_13_071014) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_16_070359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -254,6 +254,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_13_071014) do
     t.datetime "updated_at", null: false
     t.string "pick_up"
     t.string "drop_off"
+    t.date "departure_date"
+    t.time "departure_time"
     t.index ["booking_id"], name: "index_tickets_on_booking_id"
     t.index ["schedule_id", "seat_number"], name: "index_tickets_on_schedule_id_and_seat_number", unique: true
     t.index ["schedule_id"], name: "index_tickets_on_schedule_id"

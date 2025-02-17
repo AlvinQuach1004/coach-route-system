@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { locations_search_path } from './routes';
 
 export default class extends Controller {
   static targets = ['input', 'results'];
@@ -11,7 +12,7 @@ export default class extends Controller {
       return;
     }
 
-    fetch(`/locations/search?query=${query}`)
+    fetch(locations_search_path({ query }))
       .then((response) => response.json())
       .then((data) => {
         this.resultsTarget.innerHTML = '';

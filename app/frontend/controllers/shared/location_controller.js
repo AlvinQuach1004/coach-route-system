@@ -42,18 +42,22 @@ export default class extends Controller {
   }
 
   async autocomplete() {
-    const query = this.inputTarget.value.trim();
-    if (query.length < 3) {
-      this.clearSuggestions();
-      return;
-    }
+    try {
+      const query = this.inputTarget.value.trim();
+      if (query.length < 3) {
+        this.clearSuggestions();
+        return;
+      }
 
-    const url = `https://rsapi.goong.io/Place/AutoComplete?api_key=${this.apiKey}&input=${encodeURIComponent(query)}`;
-    const response = await fetch(url);
-    const data = await response.json();
+      const url = `https://rsapi.goong.io/Place/AutoComplete?api_key=${this.apiKey}&input=${encodeURIComponent(query)}`;
+      const response = await fetch(url);
+      const data = await response.json();
 
-    if (data.predictions) {
-      this.renderSuggestions(data.predictions.slice(0, this.maxResults));
+      if (data.predictions) {
+        this.renderSuggestions(data.predictions.slice(0, this.maxResults));
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -96,22 +100,32 @@ export default class extends Controller {
   }
 
   async selectSuggestion(place) {
-    this.inputTarget.value = place.description;
-    this.clearSuggestions();
+    try {
+      this.inputTarget.value = place.description;
+      this.clearSuggestions();
 
-    const url = `https://rsapi.goong.io/Place/Detail?api_key=${this.apiKey}&place_id=${place.place_id}`;
-    const response = await fetch(url);
-    const data = await response.json();
+      const url = `https://rsapi.goong.io/Place/Detail?api_key=${this.apiKey}&place_id=${place.place_id}`;
+      const response = await fetch(url);
 
-    if (data.result) {
-      const { formatted_address } = data.result;
-      const { location } = data.result.geometry;
+      if (!response.ok) {
+        throw new Error(`Failed to fetch place details: ${response.statusText}`);
+      }
 
-      this.selectedLocationCoords = [location.lng, location.lat];
-      this.selectedAddress = formatted_address;
-      this.selectedProvince = data.result.compound.province;
-      console.log(this.selectedProvince);
-      this.addMarker();
+      const data = await response.json();
+
+      if (data.result) {
+        const { formatted_address } = data.result;
+        const { location } = data.result.geometry;
+
+        this.selectedLocationCoords = [location.lng, location.lat];
+        this.selectedAddress = formatted_address;
+        this.selectedProvince = data.result.compound.province;
+        this.addMarker();
+      } else {
+        throw new Error('No result found for this place');
+      }
+    } catch (error) {
+      console.error('Error in selectSuggestion:', error);
     }
   }
 
@@ -141,13 +155,15 @@ export default class extends Controller {
     const matchedStops = stopsData.filter(
       (stop) => normalizeProvince(stop.province) === normalizeProvince(this.selectedProvince),
     );
-
+    const nextButton = document.querySelector('#next');
     if (matchedStops.length > 0) {
       this.selectedLocationTarget.classList.remove('text-red-500');
       this.calculateDistance(matchedStops);
+      nextButton.disabled = false;
     } else {
       this.selectedLocationTarget.textContent = 'Không tìm thấy điểm dừng trong cùng tỉnh!';
       this.selectedLocationTarget.classList.add('text-red-500');
+      nextButton.disabled = true;
     }
   }
 
@@ -171,17 +187,11 @@ export default class extends Controller {
   }
 
   async calculateDistance(stops) {
-    const origins = `${this.selectedLocationCoords[1]},${this.selectedLocationCoords[0]}`;
-    const destinations = await Promise.all(
-      stops.map(async (stop) => {
-        const stopLocation = await this.getCoordinatesFromAddress(stop.address);
-        return stopLocation ? `${stopLocation.lat},${stopLocation.lng}` : null;
-      }),
-    );
-
-    const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinations}&vehicle=car&api_key=${this.apiKey}`;
-
     try {
+      const origins = `${this.selectedLocationCoords[1]},${this.selectedLocationCoords[0]}`;
+      const destinations = await this.getCoordinatesFromAddress(stops[0].address);
+      const destinationsCoords = `${destinations.lat},${destinations.lng}`;
+      const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origins}&destinations=${destinationsCoords}&vehicle=hd&api_key=${this.apiKey}`;
       const response = await fetch(url);
       const data = await response.json();
 
@@ -196,13 +206,15 @@ export default class extends Controller {
         if (distances.length > 0) {
           const nearestDistance = distances[0].distance / 1000;
           const nearestStop = distances[0].stop;
-
+          const nextButton = document.querySelector('#next');
           if (nearestDistance > 30) {
             this.selectedLocationTarget.textContent = 'Điểm đón quá xa trạm !';
             this.selectedLocationTarget.classList.add('text-red-500');
+            nextButton.disabled = true;
           } else {
             this.selectedLocationTarget.textContent = `${this.selectedAddress} (${nearestDistance.toFixed(2)} km)`;
             this.selectedLocationTarget.classList.remove('text-red-500');
+            nextButton.disabled = false;
           }
 
           if (this.hasPickupPositionTarget) {

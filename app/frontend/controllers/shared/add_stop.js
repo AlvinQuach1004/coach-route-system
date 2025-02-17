@@ -59,7 +59,6 @@ function initializeStopControls() {
 
     // Add to container and update UI
     stopsContainer.appendChild(newStop);
-    updateStopOrders();
     updateAddButtonVisibility();
   }
 
@@ -75,7 +74,6 @@ function initializeStopControls() {
     if (stopCount <= 1) return;
 
     stopField.remove();
-    updateStopOrders();
     updateAddButtonVisibility();
   }
 
@@ -91,24 +89,9 @@ function initializeStopControls() {
     return button;
   }
 
-  function updateStopOrders() {
-    const actionLabel = document.querySelector('.action-label');
-    const isNewRoute = actionLabel.innerText === 'New Route';
-
-    stopsContainer.querySelectorAll('.stop-field').forEach((stop, index) => {
-      const orderInput = stop.querySelector('input[name*="[stop_order]"]');
-
-      if (orderInput.value && isNewRoute) {
-        orderInput.value = index + 2;
-      }
-    });
-  }
-
   function updateAddButtonVisibility() {
     const stopCount = stopsContainer.querySelectorAll('.stop-field').length;
     addStopButton.classList.toggle('hidden', stopCount >= MAX_STOPS);
   }
-
-  updateStopOrders();
   updateAddButtonVisibility();
 }

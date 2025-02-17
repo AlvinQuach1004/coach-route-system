@@ -13,6 +13,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.5",
     "@rails/actioncable": "^8.0.100",
+    "@sentry/browser": "^9.1.0",
     "@stripe/stripe-js": "^5.5.0",
     "chart.js": "^4.4.7",
     "chartjs-adapter-date-fns": "^3.0.0",

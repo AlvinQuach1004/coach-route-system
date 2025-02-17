@@ -3,32 +3,33 @@
     .bg-base-100.rounded-lg.shadow-xl.overflow-y-auto.transform.transition-all.sm:max-w-2xl.sm:w-full.m-3.sm:mx-auto.flex.flex-col.max-h-[90vh]
       .px-4.py-3.border-b
         h3.text-lg.leading-6.font-medium.action-label
-          = action_name.capitalize + ' Schedule'
+          = schedule.new_record? ? t("admin.schedules.form.new_schedule") : t("admin.schedules.form.edit_schedule")
+
 
       = form_with(model: [:admin, schedule], url: schedule.new_record? ? admin_schedules_path : admin_schedule_path(schedule), class: 'flex flex-col', data: { turbo: true }) do |f|
         .px-4.py-4.flex-1.overflow-y-auto.max-h-96
           .space-y-4
             .form-control
-              = f.label :route_id, 'Route', class: 'label'
-              = f.collection_select :route_id, @routes, :id, ->(route) { "#{route.start_location.name} - #{route.end_location.name}" }, { prompt: 'Select Route' }, class: 'select select-bordered w-full'
+              = f.label :route_id, t("admin.schedules.form.route"), class: 'label'
+              = f.collection_select :route_id, @routes, :id, ->(route) { "#{route.start_location.name} - #{route.end_location.name}" }, { prompt: t("admin.schedules.form.select_route") }, class: 'select select-bordered w-full'
 
             .form-control
-              = f.label :coach_id, 'Coach', class: 'label'
-              = f.collection_select :coach_id, @coaches, :id, ->(coach) { "#{coach.license_plate} - #{coach.coach_type}" }, { prompt: 'Select Coach' }, class: 'select select-bordered w-full'
+              = f.label :coach_id, t("admin.schedules.form.coach"), class: 'label'
+              = f.collection_select :coach_id, @coaches, :id, ->(coach) { "#{coach.license_plate} - #{coach.coach_type}" }, { prompt: t("admin.schedules.form.select_coach") }, class: 'select select-bordered w-full'
 
             .form-control
-              = f.label :departure_date, 'Departure Date', class: 'label'
+              = f.label :departure_date, t("admin.schedules.form.departure_date"), class: 'label'
               = f.date_field :departure_date, class: 'input input-bordered w-full'
 
             .form-control
-              = f.label :departure_time, 'Departure Time', class: 'label'
+              = f.label :departure_time, t("admin.schedules.form.departure_time"), class: 'label'
               = f.time_field :departure_time, class: 'input input-bordered w-full'
 
             .form-control
-              = f.label :price, 'Price', class: 'label'
+              = f.label :price, t("admin.schedules.form.price"), class: 'label'
               = f.number_field :price, step: 0.01, class: 'input input-bordered w-full'
 
         / Fixed Footer
         .border-t.px-4.py-3.flex.justify-end.gap-2.bg-base-100
-          = link_to 'Cancel', admin_coach_routes_path, class: 'btn btn-ghost', data: { turbo_frame: 'modal_schedules' }
-          = f.submit 'Save Schedule', class: 'btn btn-primary', data: { turbo: false }
+          = link_to t("admin.schedules.form.cancel"), admin_coach_routes_path, class: 'btn btn-ghost', data: { turbo_frame: 'modal_schedules' }
+          = f.submit t("admin.schedules.form.save"), class: 'btn btn-primary', data: { turbo: false }

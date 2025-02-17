@@ -11,6 +11,308 @@ en:
               confirmation: Password confirmation doesn't match the password
               format: Password must contain at least one letter and one number
               too_short: Password is too short (minimum is %{count} characters)
+  admin:
+    bookings:
+      destroy:
+        failure: Booking cannot be cancelled.
+        success: Booking cancelled and refunded successfully.
+      index:
+        end_date: End Date
+        heading: Bookings
+        no_bookings: No bookings found
+        no_bookings_hint: Please check again later or adjust your search criteria.
+        reset_button: Reset
+        search_button: Search
+        search_placeholder: Search route...
+        start_date: Start Date
+        status_completed: Completed
+        status_failed: Failed
+        status_pending: Pending
+        status_select: Select Status
+        title: Booking Management
+        total: Total
+      mobile_view:
+        booking_number: 'Booking #'
+        departure: 'Departure:'
+        email: 'Email:'
+        payment_method: 'Payment Method:'
+        payment_status: 'Payment Status:'
+        route: 'Route:'
+      not_found: Booking not found
+      pagination:
+        bookings: bookings
+        of: of
+        showing: Showing
+        to: to
+      payment_methods:
+        cash: Cash
+        online: Online
+      payment_statuses:
+        completed: Completed
+        failed: Failed
+        pending: Pending
+      show:
+        amount: Amount
+        back: Back
+        booking_id: Booking ID
+        booking_info: Booking Information
+        cancel: Cancel
+        cancel_booking: Cancel Booking
+        confirm: Confirm Cancel
+        confirm_cancel: Confirm Cancel
+        confirm_cancel_message: Are you sure you want to cancel this booking?
+        created_at: Created At
+        customer_info: Customer Information
+        details: Booking Details
+        email: Email
+        from: From
+        journey_details: Journey Details
+        payment_method: Payment Method
+        payment_status: Payment Status
+        phone: Phone
+        schedule: Schedule
+        seat: Seat
+        tickets: Tickets
+        time: Time
+        title: Booking %{id}
+        to: To
+      table:
+        action: Action
+        departure: Departure
+        email: Email
+        number: "#"
+        payment_method: Payment Method
+        payment_status: Payment Status
+        route: Route
+      update:
+        failure: Failed to update payment status.
+        success: Payment status updated successfully.
+    coach_routes:
+      index:
+        add_new: Add New Route
+        list_title: Routes List
+        search_placeholder: Search routes...
+        sort_by: Sort By
+        sort_options:
+          end_location: End Location
+          newest: Newest
+          oldest: Oldest
+          start_location: Start Location
+        title: Route Management
+        total: 'Total: %{count}'
+      messages:
+        already_exists: Route already exists
+        create_failure: Failed to create route
+        create_success: Route created successfully
+        delete_failure: Failed to delete route
+        delete_success: Route deleted successfully
+        not_found: Route not found
+        update_failure: Failed to update route
+        update_success: Route updated successfully
+      modal_routes:
+        cancel: Cancel
+        dropoff: Dropoff
+        edit_route: Edit Route
+        end_address: End Address
+        end_location: End Location
+        enter_end_address: Enter end address
+        enter_start_address: Enter start address
+        enter_stop_address: Enter stop address
+        estimated_minutes: Estimated (minutes)
+        new_route: New Route
+        pickup: Pickup
+        save: Save
+        select_end_location: Select end location
+        select_start_location: Select start location
+        select_stop_location: Select stop location
+        start_address: Start Address
+        start_location: Start Location
+        stop_address: Stop Address
+        stop_location: Stop Location
+        stop_order: Stop Order
+        stops: Stops
+      routes:
+        actions: Actions
+        cancel: Cancel
+        confirm_delete_message: Are you sure you want to delete this route?
+        confirm_delete_title: Confirm Delete
+        created_at: Created At
+        delete: Delete
+        edit: Edit
+        end_location: End Location
+        mobile:
+          created_at: 'Created At:'
+          end: 'End:'
+          route_number: 'Route #%{index}'
+          start: 'Start:'
+        number: "#"
+        pagination:
+          of: of
+          routes: routes
+          showing: Showing
+          to: to
+        start_location: Start Location
+    dashboard:
+      active_routes: Active Routes
+      amount: Amount
+      available_coaches: Available Coaches
+      booking_id: Booking ID
+      coach_status: Coach Status
+      customer: Customer
+      customer_email: Email
+      popular_routes: Popular Routes
+      recent_bookings: Recent Bookings
+      revenue_overview: Revenue Overview
+      route: Route
+      status: Status
+      title: Dashboard
+      todays_bookings: Today's Bookings
+      todays_overview: Today's Overview
+    navbar:
+      dashboard: Dashboard
+      log_out: Log Out
+      profile: Profile
+    schedules:
+      actions:
+        cancel: Cancel
+        delete: Delete
+      cancelled: Cancelled
+      completed: Completed
+      create:
+        failure: Failed to create schedule
+        success: Schedule was created successfully
+      delayed: Delayed
+      delete:
+        confirm_message: Are you sure you want to delete this schedule?
+        title: Delete Schedule
+      destroy:
+        failure: Failed to delete schedule
+        success: Schedule was deleted successfully
+      errors:
+        not_found: Schedule not found
+      form:
+        cancel: Cancel
+        coach: Coach
+        departure_date: Departure Date
+        departure_time: Departure Time
+        edit_schedule: Edit schedule
+        new_schedule: New schedule
+        price: Price
+        route: Route
+        save: Save Schedule
+        select_coach: Select Coach
+        select_route: Select Route
+      index:
+        buttons:
+          apply_filter: Apply Filter
+          reset: Reset
+        create_new: Create New Schedule
+        filters:
+          coach: Coach
+          end_time: Start Time
+          max_price: Max Price
+          min_price: Min Price
+          route: Route
+          start_date: Start Date
+        list_title: Schedules List
+        search: Search
+        search_placeholder: Search by location or coach
+        success: Schedule list loaded successfully
+        title: Schedule Management
+        total: 'Total: %{count}'
+      ongoing: Ongoing
+      pagination:
+        of: of
+        schedules: schedules
+        showing: Showing
+        to: to
+      scheduled: Scheduled
+      table:
+        actions: Actions
+        coach: Coach
+        departure_date: Departure Date
+        departure_time: Departure Time
+        price: Price
+        route: Route
+        status: Status
+      update:
+        failure: Failed to update schedule
+        success: Schedule was updated successfully
+    sidebar:
+      bookings: Manage Bookings
+      dashboard: Dashboard
+      routes: Manage Routes
+      schedules: Manage Schedules
+      title: Coach Route
+      users: Manage Users
+    users:
+      actions: Actions
+      buttons:
+        apply_filter: Apply Filter
+        cancel: Cancel
+        delete: Delete
+        edit: Edit
+        reset: Reset
+      confirm_delete: Confirm Delete
+      create:
+        failure: Failed to create the user.
+        success: User was successfully created.
+      created_at: Created At
+      delete_message: Are you sure you want to delete this user?
+      destroy:
+        failure: Failed to delete the user.
+        self_deletion: You cannot delete your own account.
+        success: User was successfully deleted.
+      edit:
+        cancel: Cancel
+        change_password: Change Password
+        confirm_password: Confirm New Password
+        email: Email Address
+        email_required: Required
+        leave_blank: Leave blank if you don't want to change it
+        member_since: Member since
+        new_password: New Password
+        new_password_optional: Optional
+        phone_number: Phone number
+        phone_placeholder: Phone number
+        role: Role
+        save_changes: Save Changes
+        subtitle: Update user information
+        title: Edit User
+      errors:
+        general: An error occurred. Please try again.
+        not_found: User not found.
+        role_update: 'Error updating role: %{message}'
+        update: 'Error updating user: %{message}'
+      index:
+        roles:
+          admin: Admin
+          customer: Customer
+        search_placeholder: Search users...
+        select_role: Select Role
+        select_sort: Sort By
+        sort_options:
+          email_asc: Email A-Z
+          email_desc: Email Z-A
+          newest: Newest
+          oldest: Oldest
+        title: User Management
+        total_users: 'Total: %{count}'
+        users_list: Users List
+      list_title: User List
+      pagination:
+        of: of
+        showing: Showing
+        to: to
+        users: users
+      search: Search
+      search_placeholder: Enter email to search...
+      title: User Management
+      total: 'Total: %{count}'
+      update:
+        failure: Failed to update the user.
+        success: User was successfully updated.
+      updated_at: Updated At
   common:
     create:
       exists: "%{model} already exists"
@@ -65,6 +367,7 @@ en:
     welcome: Welcome to
   invoice:
     confirm: Confirm Payment
+    departure: Departure
     due: Due Date
     from: From
     heading: Invoice Details
@@ -73,7 +376,7 @@ en:
     paid: Paid
     payment_method: Payment Method
     quantity: Quantity
-    rest: Remaining Balance
+    rest: Rest
     seat_number: Seat Number
     ticket: Ticket
     title: Invoice
@@ -81,11 +384,59 @@ en:
     total: Total
     total_quantity: Total Quantity
   language_name: English
+  mailer:
+    cancel_booking:
+      greeting: Dear %{email},
+      message: Your booking for the trip on %{departure_date} - %{departure_time}
+        has been cancelled.
+      route: 'Route: %{start_location} → %{end_location}'
+      subject: Booking Cancellation Notice
+      support_message: If you have any questions, please contact our support team.
+      trip_details: Trip Details
+    trip_reminder:
+      departure: 'Departure: %{departure_date} - %{departure_time}'
+      message: Your trip is scheduled for tomorrow with coach %{license_plate} with
+        type %{coach_type}.
+      route: 'Route: %{start_location} to %{end_location}'
+      subject: Trip Departure Reminder
+      trip_details: Trip Details
+  notifications:
+    amount_due: 'Amount Due: %{amount}'
+    booking_cancelled: Your booking has been successfully canceled.
+    departure: Coach %{license_plate} is departing.
+    departure_time: 'Departure: %{departure_date} - %{departure_time}'
+    just_now: Just now
+    mark_all_as_read: Mark all as read
+    mark_as_read: Mark all as read
+    no_notifications: No notifications
+    payment_reminder: 'Payment reminder for booking ##{booking_id} for schedule on
+      %{departure_date} - %{departure_time}'
+    route: 'Route: %{start_location} → %{end_location}'
+    seat: Seat %{seat_number} - %{price}
+    time_ago: "%{time_ago} ago"
+    title: Notifications
+    your_tickets: 'Your Tickets:'
+  profile:
+    account_created: Account Created
+    description: Manage your account information
+    email: Email
+    enter_email: Enter your email
+    enter_phone_number: Enter your phone number
+    not_provided: Not provided
+    phone_number: Phone Number
+    title: Profile
+    update_error: Failed to update %{field}
+    update_success: "%{field} updated successfully"
   route_pages:
     available: Available
     available_seats: Available Seats
     book: Book
     bookings:
+      errors:
+        invalid_booking: Invalid booking or payment session.
+        limit_reached: You can only book up to 3 times per day.
+        not_logged_in: You must login to perform this action.
+        payment_failed: Payment failed. Your booking has been cancelled.
       floors:
         lower_floor_label: Lower Floor
         upper_floor_label: Upper Floor
@@ -127,6 +478,13 @@ en:
         booked: Booked Seat
         empty: Empty Seat
         selected: Selected Seat
+      stripe:
+        product_description: 'Seat: %{seat}, Route: %{route}, Coach: %{coach}'
+        product_name: 'Ticket Booking #%{booking_id}'
+      success:
+        cancelled: Payment was cancelled.
+        created: Booking was successfully created.
+        paid: Payment successful! Your booking is now completed.
       summary:
         seats: Seats
         total: Total

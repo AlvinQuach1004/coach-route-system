@@ -99,7 +99,6 @@ export default class extends Controller {
     allPanelsInDropdown.forEach((panel) => {
       panel.classList.add('hidden');
     });
-
     // Show selected panel
     const selectedPanel = dropdownContainer.querySelector(`#${tabId}`);
     if (selectedPanel) {

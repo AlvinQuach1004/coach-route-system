@@ -34,7 +34,6 @@ export default class extends Controller {
   canProceedToNextStep() {
     // If we're on step 1 and trying to go to step 2
     if (this.currentActive === 1) {
-      // console.log(this.availableSeatsValue)
       if (this.availableSeatsValue <= 0) {
         showToast('This schedule is fully booked. Please choose another schedule.', 'alert');
         return false;

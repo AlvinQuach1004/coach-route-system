@@ -55,37 +55,37 @@ consumer.subscriptions.create('Noticed::NotificationChannel', {
        Coach ${data.coach.license_plate} is departing.
        <br>
        <span class="text-xs text-base-content/60">
-         Route: ${data.schedule.route.start_location.name} → ${data.schedule.route.end_location.name}
+         Route: ${data.booking.start_stop.location.name} → ${data.booking.end_stop.location.name}
        </span>
        <br>
        <span class="text-xs text-base-content/60">
-         Departure: ${formatDate(data.schedule.departure_date)} - ${formatTime(data.schedule.departure_time)}
+         Departure: ${formatDate(data.booking.tickets[0].departure_date)} - ${formatTime(data.booking.tickets[0].departure_time)}
        </span>
+       <span class="text-xs text-base-content/60 font-semibold">Your Tickets:</span>
+       <ul class="list-disc list-inside text-xs">
+         ${data.booking.tickets
+           .map(
+             (ticket) => `
+           <li>Seat ${ticket.seat_number} - ${this.formatCurrency(ticket.paid_amount)}</li>
+         `,
+           )
+           .join('')}
+       </ul>
      `;
-    } else if (data.type === 'payment_reminder_notification_cable') {
+    } else if (data.type === 'cancel_booking_notification_cable') {
       contentP.innerHTML = `
-      Payment reminder for booking #${data.booking.id} for schedule on ${formatDate(data.schedule.departure_date)} - ${formatTime(data.schedule.departure_time)}
+      Your booking has been successfully canceled.
       <br>
       <span class="text-xs text-base-content/60">
-        Amount Due: ${this.formatCurrency(this.sumPaidAmount(data.booking.tickets))}
+        Route: ${data.booking.start_stop.location.name} - ${data.booking.end_stop.location.name}
       </span>
       <br>
       <span class="text-xs text-base-content/60">
-        Route: ${data.schedule.route.start_location.name} → ${data.schedule.route.end_location.name}
+        Departure: ${formatDate(data.booking.tickets[0].departure_date)} - ${formatTime(data.booking.tickets[0].departure_time)}
       </span>
-      <br>
-      <span class="text-xs text-base-content/60 font-semibold">Your Tickets:</span>
-      <ul class="list-disc list-inside text-xs">
-        ${data.booking.tickets
-          .map(
-            (ticket) => `
-          <li>Seat #${ticket.seat_number} - ${this.formatCurrency(ticket.paid_amount)}</li>
-        `,
-          )
-          .join('')}
-      </ul>
       `;
     }
+
     const timeP = document.createElement('p');
     timeP.classList.add('text-xs', 'mt-1', 'text-base-content/60');
     timeP.textContent = 'Just now';

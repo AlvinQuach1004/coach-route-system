@@ -1,11 +1,11 @@
-class DepartureCableNotifier < Noticed::Event
+class CancelBookingCableNotifier < Noticed::Event
   deliver_by :action_cable do |config|
     config.channel = 'Noticed::NotificationChannel'
     config.stream = -> { recipient }
     config.message = -> {
       {
         id: id,
-        type: 'departure_notification_cable',
+        type: 'cancel_booking_notification_cable',
         booking: params[:booking].as_json(
           include: {
             tickets: {},
@@ -14,7 +14,6 @@ class DepartureCableNotifier < Noticed::Event
           }
         ),
         schedule: params[:schedule].as_json(include: { route: { include: [:start_location, :end_location] } }),
-        coach: params[:coach],
         user_id: recipient.id
       }
     }

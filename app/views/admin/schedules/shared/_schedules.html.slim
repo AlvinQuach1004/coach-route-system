@@ -3,13 +3,13 @@
     thead
       tr.bg-base-200
         th.rounded-tl-lg
-        th Route
-        th Coach
-        th Departure Date
-        th Departure Time
-        th Price
-        th Status
-        th.pl-6 Actions
+        th = t("admin.schedules.table.route")
+        th = t("admin.schedules.table.coach")
+        th = t("admin.schedules.table.departure_date")
+        th = t("admin.schedules.table.departure_time")
+        th = t("admin.schedules.table.price")
+        th = t("admin.schedules.table.status")
+        th.pl-6 = t("admin.schedules.table.actions")
     tbody
       - schedules.each_with_index do |schedule, index|
         tr[id="schedule_#{schedule.id}"]
@@ -23,15 +23,15 @@
           td
             - case schedule.status
             - when Schedule::Status::SCHEDULED
-              span.badge.badge-primary Scheduled
+              span.badge.badge-primary = t("admin.schedules.scheduled")
             - when Schedule::Status::ONGOING
-              span.badge.badge-secondary In Progress
+              span.badge.badge-secondary = t("admin.schedules.ongoing")
             - when Schedule::Status::COMPLETED
-              span.badge.badge-success Completed
+              span.badge.badge-success = t("admin.schedules.completed")
             - when Schedule::Status::CANCELLED
-              span.badge.badge-error Cancelled
+              span.badge.badge-error = t("admin.schedules.cancelled")
             - when Schedule::Status::DELAYED
-              span.badge.badge-ghost Delayed
+              span.badge.badge-ghost = t("admin.schedules.delayed")
             - else
               span.badge.badge-neutral = schedule.status.titleize
           td.flex.gap-2
@@ -43,17 +43,15 @@
                 path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"]
             dialog.modal id="delete_modal-#{schedule.id}"
               .modal-box
-                h3.text-lg.font-bold Confirm Delete
-                p.py-4 Are you sure you want to delete this schedule ?
+                h3.text-lg.font-bold = t("admin.schedules.delete.title")
+                p.py-4 = t("admin.schedules.delete.confirm_message")
                 .modal-action
-                  button.modal-close-button.btn.mr-2 Cancel
+                  button.modal-close-button.btn.mr-2 = t("admin.schedules.actions.cancel")
                   = button_to admin_schedule_path(schedule),
                     method: :delete,
                     class: "btn btn-error text-white inline",
                     data: { turbo: false } do
-                    | Delete
-
-// Mobile & Tablet View
+                    = t("admin.schedules.actions.delete")
 .flex.flex-col.gap-4.md:hidden
   - schedules.each do |schedule|
     .card.bg-base-100.shadow-md.p-4.rounded-lg
@@ -89,13 +87,13 @@
                 | Delete
 
 .mt-6.flex.flex-col.md:flex-row.md:justify-between.items-center
-  .text-sm.text-base-content/70.text-center.md:text-left
-    | Showing 
-    span.font-medium = "#{@pagy.from}"
-    |  to 
-    span.font-medium = "#{@pagy.to}"
-    |  of 
-    span.font-medium = "#{@pagy.count}"
-    |  schedules
+  .text-sm.text-center.md:text-left class="text-base-content/70"
+    = "#{t("admin.schedules.pagination.showing")} "
+    span.font-medium = "#{@pagy.from} "
+    = "#{t("admin.schedules.pagination.to")} "
+    span.font-medium = "#{@pagy.to} "
+    = "#{t("admin.schedules.pagination.of")} "
+    span.font-medium = "#{@pagy.count} "
+    = " #{t("admin.schedules.pagination.schedules")} "
   .text-center.py-4
     = pagy_nav(@pagy)

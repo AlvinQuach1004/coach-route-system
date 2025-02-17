@@ -6,7 +6,13 @@ class PaymentReminderCableNotifier < Noticed::Event
       {
         id: id,
         type: 'payment_reminder_notification_cable',
-        booking: params[:booking].as_json(include: :tickets),
+        booking: params[:booking].as_json(
+          include: {
+            tickets: {},
+            start_stop: { include: :location },
+            end_stop: { include: :location }
+          }
+        ),
         schedule: params[:schedule].as_json(include: { route: { include: [:start_location, :end_location] } }),
         user_id: recipient.id
       }
