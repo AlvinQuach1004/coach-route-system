@@ -5,6 +5,7 @@
     "node": "20.9.0"
   },
   "scripts": {
+    "build": "cp config/database.yml.sample config/database.yml && NODE_ENV=production vite build",
     "start": "concurrently -i -k --kill-others-on-fail -p none 'RUBY_DEBUG_OPEN=true bin/rails s' 'bin/vite dev'",
     "lint": "yarn run eslint app/frontend",
     "lint:fix": "yarn run eslint app/frontend --fix"
