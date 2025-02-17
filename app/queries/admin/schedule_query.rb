@@ -77,39 +77,37 @@ module Admin
       def filter_by_date(relation, start_date)
         return relation if start_date.blank?
 
-        parsed_date = parse_date(start_date)
-        parsed_date ? relation.where('DATE(departure_date) = ?', parsed_date) : relation
+        begin
+          parsed_date = Date.parse(start_date.to_s)
+          relation.where(departure_date: parsed_date)
+        rescue ArgumentError
+          relation
+        end
       end
 
       def filter_by_time(relation, departure_time)
         return relation if departure_time.blank?
 
-        parsed_time = parse_time(departure_time)
-        return relation unless parsed_time
-
-        relation.where(
-          'EXTRACT(HOUR FROM departure_time) = ? AND EXTRACT(MINUTE FROM departure_time) = ?',
-          parsed_time.hour,
-          parsed_time.min
-        )
+        begin
+          parsed_time = Time.zone.parse(departure_time.to_s)
+          relation.where(departure_time: parsed_time)
+        rescue ArgumentError
+          relation
+        end
       end
 
       def filter_by_price_range(relation, min_price, max_price)
-        return relation unless min_price.present? && max_price.present?
+        return relation if min_price.blank? && max_price.blank?
 
-        relation.where(price: min_price..max_price)
-      end
-
-      def parse_date(date_string)
-        Date.parse(date_string)
-      rescue StandardError
-        nil
-      end
-
-      def parse_time(time_string)
-        Time.zone.parse(time_string)
-      rescue StandardError
-        nil
+        if min_price.present? && max_price.present?
+          relation.where(price: min_price..max_price)
+        elsif min_price.present?
+          relation.where(price: min_price..)
+        elsif max_price.present?
+          relation.where(price: ..max_price)
+        else
+          relation
+        end
       end
     end
   end

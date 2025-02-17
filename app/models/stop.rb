@@ -35,4 +35,6 @@ class Stop < ApplicationRecord
   # Validations
   validates :stop_order, presence: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 10 }
   validates :time_range, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 360 }
+  validates :address, length: { maximum: 255 }
+  validates :is_pickup, :is_dropoff, inclusion: { in: [true, false] }
 end

@@ -9,23 +9,25 @@ class HomeController < ApplicationController
     @top_routes_of_week = Schedule
       .joins(route: [:start_location, :end_location])
       .where(departure_date: start_of_week..end_of_week)
-      .group('routes.id, locations.name, end_locations_routes.name')
       .select(
-        'locations.name AS start_location_name',
-        'end_locations_routes.name AS end_location_name',
-        'COUNT(schedules.id) AS route_count'
+        'routes.id',
+        'locations.name as start_location_name',
+        'end_locations_routes.name as end_location_name',
+        'COUNT(schedules.id) as route_count'
       )
+      .group('routes.id, locations.name, end_locations_routes.name')
       .order('route_count DESC')
       .limit(3)
 
     @most_popular_routes = Schedule
       .joins(route: [:start_location, :end_location])
-      .group('routes.id, locations.name, end_locations_routes.name')
       .select(
-        'locations.name AS start_location_name',
-        'end_locations_routes.name AS end_location_name',
-        'COUNT(schedules.id) AS route_count'
+        'routes.id',
+        'locations.name as start_location_name',
+        'end_locations_routes.name as end_location_name',
+        'COUNT(schedules.id) as route_count'
       )
+      .group('routes.id, locations.name, end_locations_routes.name')
       .order('route_count DESC')
       .limit(8)
   end

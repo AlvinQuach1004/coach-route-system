@@ -1,17 +1,21 @@
+# spec/factories/notifications.rb
 FactoryBot.define do
   factory :notification do
-    title { Faker::Lorem.sentence }
-    body { Faker::Lorem.paragraph }
-    is_read { false }
-    user
-    booking
+    recipient factory: %i[user]
+    type { ['DepartureCableNotifier::Notification', 'PaymentReminderCableNotifier::Notification'].sample }
+    params { { key: 'value' } }
+    read_at { nil }
 
     trait :read do
-      is_read { true }
+      read_at { Time.current }
     end
 
-    trait :unread do
-      is_read { false }
+    trait :departure do
+      type { 'DepartureCableNotifier::Notification' }
+    end
+
+    trait :payment_reminder do
+      type { 'PaymentReminderCableNotifier::Notification' }
     end
   end
 end

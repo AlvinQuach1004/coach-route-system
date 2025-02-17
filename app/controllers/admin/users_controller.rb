@@ -56,34 +56,29 @@ module Admin
       end
     end
 
-    def update_user_roles
-      return if params[:user][:role].blank?
-
-      @user.roles = []
-      @user.add_role(params[:user][:role].downcase)
-    rescue StandardError => e
-      @user.errors.add(:role, "Error updating role: #{e.message}")
-      raise ActiveRecord::Rollback
-    end
-
     def update_user_with_roles
       ActiveRecord::Base.transaction do
-        @user.update!(user_params.except(:role))
-        update_user_roles
+        if @user.update(user_params.except(:role))
+          update_user_roles
+          true
+        else
+          false
+        end
       end
     rescue StandardError => e
       @user.errors.add(:base, "Error updating user: #{e.message}")
       false
     end
 
-    def process_user_save(failure_action, success_message)
-      if @user.save
-        update_user_roles
-        flash[:success] = success_message
-        redirect_to admin_users_path
-      else
-        handle_failure(failure_action)
-      end
+    def update_user_roles
+      return true if params[:user][:role].blank?
+
+      @user.roles.destroy_all
+      @user.add_role(params[:user][:role].downcase)
+      true
+    rescue StandardError => e
+      @user.errors.add(:role, "Error updating role: #{e.message}")
+      raise ActiveRecord::Rollback
     end
 
     def process_user_update(success_message, failure_action)

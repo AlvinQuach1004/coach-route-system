@@ -4,7 +4,7 @@ class BookingsController < ApplicationController
   before_action :set_schedule, only: [:create]
   before_action :set_stops, only: [:create]
   before_action :check_booking_limit, only: [:create]
-  before_action :set_booking, only: [:invoice, :cancel]
+  before_action :set_booking, only: [:invoice]
 
   def create
     @booking = current_user.bookings.build(booking_params)
@@ -29,6 +29,7 @@ class BookingsController < ApplicationController
   def invoice # rubocop:disable Metrics/PerceivedComplexity
     if @booking&.stripe_session_id.present?
       session = Stripe::Checkout::Session.retrieve(@booking.stripe_session_id)
+
       if session.payment_status == 'paid'
         ActiveRecord::Base.transaction do
           @booking.completed!
@@ -38,13 +39,15 @@ class BookingsController < ApplicationController
       else
         @booking.failed!
         @booking.tickets.map(&:cancelled!)
-        redirect_to error_payment_path
+        redirect_to error_payment_bookings_path, alert: 'Payment failed. Your booking has been cancelled.'
       end
+    else
+      redirect_to root_path, alert: 'Invalid booking or payment session.'
     end
   end
 
   def cancel
-    @booking&.destroy if @booking.pending?
+    @booking&.destroy if @booking&.pending?
     redirect_to root_path, alert: 'Payment was cancelled.'
   end
 
@@ -75,8 +78,6 @@ class BookingsController < ApplicationController
           render json: { error: 'Bạn chỉ có thể đặt chỗ tối đa 3 lần trong ngày.' }, status: :unprocessable_entity
         end
       end
-    else
-      Rails.logger.info '✅ Người dùng có thể đặt chỗ.'
     end
   end
 

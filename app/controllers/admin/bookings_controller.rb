@@ -32,11 +32,10 @@ module Admin
       if @booking.update(payment_status: 'completed')
         @booking.tickets.update_all(status: 'paid') # rubocop:disable Rails/SkipsModelValidations
         flash[:success] = 'Payment status updated successfully.'
-        redirect_to admin_booking_path(@booking)
       else
         flash[:error] = 'Failed to update payment status.'
-        render :edit
       end
+      redirect_to admin_booking_path(@booking)
     end
 
     def destroy
