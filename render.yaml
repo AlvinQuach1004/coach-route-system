@@ -6,5 +6,11 @@ services:
     startCommand: "bundle exec rails server"
     envVars:
       - key: DATABASE_URL
-        value: "postgresql://coach_route_system_user:8R2RINx2Bl17evSPcR8j5gJkGVfdeNsR@dpg-cuplagdsvqrc73f31cbg-a.oregon-postgres.render.com/coach_route_system"
+        fromDatabase:
+          name: coach-route-system
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: WEB_CONCURRENCY
+        value: 2
     plan: starter
