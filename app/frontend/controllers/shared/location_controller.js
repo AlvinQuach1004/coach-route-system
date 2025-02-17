@@ -130,44 +130,40 @@ export default class extends Controller {
   }
 
   async confirmSelection(event) {
-    try {
-      event.preventDefault();
-      event.stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
 
-      if (!this.selectedAddress) {
-        return;
-      }
+    if (!this.selectedAddress) {
+      return;
+    }
 
-      this.selectedLocationTarget.textContent = this.selectedAddress;
-      this.closeModal(event);
+    this.selectedLocationTarget.textContent = this.selectedAddress;
+    this.closeModal(event);
 
-      const stopsData = JSON.parse(this.selectedLocationTarget.dataset.locationStops);
-      console.log('Stops data:', stopsData);
+    const stopsData = JSON.parse(this.selectedLocationTarget.dataset.locationStops);
+    console.log('Stops data:', stopsData);
 
-      const normalizeProvince = (province) => {
-        return province
-          ? province
-              .replace(/^TP\.?\s*/, '')
-              .trim()
-              .toLowerCase()
-          : '';
-      };
+    const normalizeProvince = (province) => {
+      return province
+        ? province
+            .replace(/^TP\.?\s*/, '')
+            .trim()
+            .toLowerCase()
+        : '';
+    };
 
-      const matchedStops = stopsData.filter(
-        (stop) => normalizeProvince(stop.province) === normalizeProvince(this.selectedProvince),
-      );
-      const nextButton = document.querySelector('#next');
-      if (matchedStops.length > 0) {
-        this.selectedLocationTarget.classList.remove('text-red-500');
-        this.calculateDistance(matchedStops);
-        nextButton.disabled = false;
-      } else {
-        this.selectedLocationTarget.textContent = 'Không tìm thấy điểm dừng trong cùng tỉnh!';
-        this.selectedLocationTarget.classList.add('text-red-500');
-        nextButton.disabled = true;
-      }
-    } catch (error) {
-      // Log the error to Sentry
+    const matchedStops = stopsData.filter(
+      (stop) => normalizeProvince(stop.province) === normalizeProvince(this.selectedProvince),
+    );
+    const nextButton = document.querySelector('#next');
+    if (matchedStops.length > 0) {
+      this.selectedLocationTarget.classList.remove('text-red-500');
+      this.calculateDistance(matchedStops);
+      nextButton.disabled = false;
+    } else {
+      this.selectedLocationTarget.textContent = 'Không tìm thấy điểm dừng trong cùng tỉnh!';
+      this.selectedLocationTarget.classList.add('text-red-500');
+      nextButton.disabled = true;
     }
   }
 
@@ -249,14 +245,12 @@ export default class extends Controller {
   }
 
   initMap() {
-    try {
-      mapboxgl.accessToken = this.mapboxToken;
-      this.map = new mapboxgl.Map({
-        container: this.mapContainerTarget,
-        style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${this.mapKey}`,
-        center: [106.7009, 10.7754],
-        zoom: 12,
-      });
-    } catch (error) {}
+    mapboxgl.accessToken = this.mapboxToken;
+    this.map = new mapboxgl.Map({
+      container: this.mapContainerTarget,
+      style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${this.mapKey}`,
+      center: [106.7009, 10.7754],
+      zoom: 12,
+    });
   }
 }

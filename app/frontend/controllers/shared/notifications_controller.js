@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus';
-import * as Sentry from '@sentry/browser';
 import { mark_all_as_read_notifications_path, mark_as_read_notification_path } from './routes';
 
 export default class extends Controller {

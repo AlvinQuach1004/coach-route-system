@@ -292,7 +292,7 @@ export default class extends Controller {
         showToast('Không tìm thấy vị trí!', 'alert');
       }
     } catch (error) {
-      showToast('Something went wrong while fetching the location. Please try again.', 'alert');
+      showToast(error.message, 'alert');
     }
   }
 
