@@ -16,7 +16,7 @@
   },
   "production": {
     "autoBuild": true,
-    "publicOutputDir": "public/vite",
-    "manifest": "public/vite/manifest.json"
+    "publicOutputDir": "vite",
+    "manifest": "vite/manifest.json"
   }
 }
