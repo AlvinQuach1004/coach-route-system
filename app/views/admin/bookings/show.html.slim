@@ -95,11 +95,11 @@
 
                       .flex.items-center.justify-between.py-1
                         span.text-gray-600.text-sm.sm:text-base = t('admin.bookings.show.schedule')
-                        span.font-medium.text-sm.sm:text-base = ticket.schedule.formatted_departure_date
+                        span.font-medium.text-sm.sm:text-base = ticket&.formatted_departure_date || ticket.schedule&.formatted_departure_date
 
                       .flex.items-center.justify-between.py-1
                         span.text-gray-600.text-sm.sm:text-base = t('admin.bookings.show.time')
-                        span.font-medium.text-sm.sm:text-base = ticket.schedule.formatted_departure_time
+                        span.font-medium.text-sm.sm:text-base = ticket.formatted_departure_time || ticket.schedule.formatted_departure_time
 
     .bg-base-100.border-t.p-8.flex.justify-end.items-center.space-x-6
       = link_to admin_bookings_path, class: 'btn btn-ghost btn-md' do
