@@ -65,7 +65,7 @@ RSpec.describe Admin::SchedulesController, type: :controller do
 
       it 'redirects back with a warning' do
         post :create, params: invalid_params
-        expect(flash[:warning]).to eq('Fail to create schedule')
+        expect(flash[:warning]).to eq(I18n.t('admin.schedules.create.failure'))
       end
     end
   end

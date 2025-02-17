@@ -8,8 +8,8 @@
 
       / Modal Header
       .mb-6
-        h3.text-lg.font-bold Edit User
-        p.text-sm.text-base-content/70 Update user information
+        h3.text-lg.font-bold = t('.title')
+        p.text-sm.text-base-content/70 = t('.subtitle')
 
       / Edit Form
       = form_with(model: [:admin, @user], url: admin_user_path(@user), method: :put, data: { turbo: true }) do |f|
@@ -21,7 +21,7 @@
           .flex-1
             p.font-medium = @user.email
             p.text-sm.text-base-content/70 
-              | Member since 
+              | #{t('.member_since')} 
               = display_datetime(@user.created_at)
 
         / Form Fields
@@ -29,8 +29,8 @@
           / Email Field
           .form-control
             label.label
-              span.label-text Email Address
-              span.label-text-alt Required
+              span.label-text = t('.email')
+              span.label-text-alt = t('.email_required')
             = f.email_field :email, class: "input input-bordered w-full #{'input-error' if @user.errors[:email].any?}", required: true
             - if @user.errors[:email].any?
               .label
@@ -39,44 +39,46 @@
           / Role Field
           .form-control
             label.label
-              span.label-text Role
+              span.label-text = t('.role')
             = f.select :role, options_for_select(['Customer', 'Admin'], @user.roles.first&.name&.capitalize), {}, class: "select select-bordered w-full"
           
           / Phone Number Field
           .form-control
             label.label
-              span.label-text Phone number
+              span.label-text = t('.phone_number')
             = f.text_field :phone_number, 
               class: "input input-bordered w-full #{'input-error' if @user.errors[:phone_number].any?}",
               required: true,
-              placeholder: 'Phone number'
+              placeholder: t('.phone_placeholder')
             - if @user.errors[:phone_number].any?
               .label
                 span.label-text-alt.text-error = @user.errors[:phone_number].join(", ")
 
-          .divider.py-8 Change Password
+          .divider.py-8 = t('.change_password')
           .form-control
             label.label
-              span.label-text New Password
-              span.label-text-alt Optional
+              span.label-text = t('.new_password')
+              span.label-text-alt = t('.new_password_optional')
             = f.password_field :password, 
               class: "input input-bordered w-full #{'input-error' if @user.errors[:password].any? && @user.password.present?}"
             - if @user.errors[:password].any? && @user.password.present?
               .label
                 span.label-text-alt.text-error = @user.errors[:password].join(", ")
             .label
-              span.label-text-alt.text-base-content/70 Leave blank if you don't want to change it
+              span.label-text-alt.text-base-content/70 = t('.leave_blank')
           
           .form-control
             label.label
-              span.label-text Confirm New Password
+              span.label-text = t('.confirm_password')
             = f.password_field :password_confirmation, 
               class: "input input-bordered w-full #{'input-error' if @user.errors[:password_confirmation].any?}"
             - if @user.errors[:password_confirmation].any?
               .label
                 span.label-text-alt.text-error = @user.errors[:password_confirmation].join(", ")
+
         / Form Actions
         .modal-action.mt-6
           .flex.gap-2
-            = link_to "Cancel", "#", class: "btn btn-ghost", data: { turbo_frame: "modal_users" }
-            = f.submit "Save Changes", class: "btn btn-primary", data: { turbo: false }
+            = link_to "#", class: "btn btn-ghost", data: { turbo_frame: "modal_users" } do
+              = t('.cancel')
+            = f.submit t('.save_changes'), class: "btn btn-primary", data: { turbo: false }  

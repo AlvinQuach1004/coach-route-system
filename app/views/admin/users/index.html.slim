@@ -1,10 +1,10 @@
-- provide(:title, "User Management")
+= provide(:title, t('admin.users.index.title'))
 .container.mx-auto.py-4
   .bg-base-100.rounded-box.shadow-lg.p-6
     / Header Section
     .flex.flex-col.sm:flex-row.items-center.mb-6
-      h2.text-2xl.font-bold.text-center.sm:text-left = "Users List"
-      span.badge.badge-primary.mt-2.sm:mt-1.ml-6 = "Total: #{@total_users}"
+      h2.text-2xl.font-bold.text-center.sm:text-left = t('admin.users.index.users_list')
+      span.badge.badge-primary.mt-2.sm:mt-1.ml-6 = t('admin.users.index.total_users', count: @total_users)
 
     div class="flex flex-col sm:flex-row gap-4 mb-6"
       = form_with url: admin_users_path, method: :get, data: { controller: "search-form", turbo_frame: "users_table" }, class:"flex flex-col md:flex-row gap-2 justify-between w-full" do |f|
@@ -12,7 +12,7 @@
           .input-group.flex.flex-row.items-center.sm:flex-row.sm:items-center.sm:gap-4
             = f.text_field :search, \
               class: "input input-bordered w-full", \
-              placeholder: "Search users...", \
+              placeholder: t('admin.users.index.search_placeholder'), \
               value: params[:search], \
               data: { action: "input->search-form#submit" }
             button.btn.btn-square.ml-2.sm:mt-0.sm:ml-4
@@ -22,9 +22,9 @@
         .flex.gap-2.mt-4.sm:mt-0
           = f.select :role, \
             options_for_select([ \
-              ['Select Role', ''], \
-              ['Customer', 'customer'], \
-              ['Admin', 'admin'] \
+              [t('admin.users.index.select_role'), ''], \
+              [t('admin.users.index.roles.customer'), 'customer'], \
+              [t('admin.users.index.roles.admin'), 'admin'] \
             ], params[:role]), \
             {}, \
             class: "select select-bordered w-full sm:w-auto", \
@@ -32,11 +32,11 @@
     
           = f.select :sort_by, \
             options_for_select([ \
-              ['Sort By', ''], \
-              ['Newest', 'newest'], \
-              ['Oldest', 'oldest'], \
-              ['Email A-Z', 'email_asc'], \
-              ['Email Z-A', 'email_desc'] \
+              [t('admin.users.index.select_sort'), ''], \
+              [t('admin.users.index.sort_options.newest'), 'newest'], \
+              [t('admin.users.index.sort_options.oldest'), 'oldest'], \
+              [t('admin.users.index.sort_options.email_asc'), 'email_asc'], \
+              [t('admin.users.index.sort_options.email_desc'), 'email_desc'] \
             ], params[:sort_by]), \
             {}, \
             class: "select select-bordered w-full sm:w-auto", \

@@ -20,6 +20,13 @@ export default class extends Controller {
     'ticketPrice',
     'pickupAddress',
     'dropoffAddress',
+    'pickupDateTime',
+    'dropoffDateTime',
+    'departureDateStep3',
+    'departureTimeStep3',
+    'departureDate',
+    'departureTime',
+    'dateBeforeDeparture',
     'next',
   ];
 
@@ -31,6 +38,7 @@ export default class extends Controller {
     this.selectedDropoff = null;
     this.stepIndex = 1;
     this.pricePerKm = 1000;
+    this.coachSpeed = 666.67;
     this.stops = JSON.parse(this.element.dataset.positionStops || '[]');
   }
 
@@ -44,6 +52,7 @@ export default class extends Controller {
       if (address) {
         this.selectedPickup = await this.getCoordinatesFromAddress(address);
         await this.calculateTotalPrice();
+        await this.updatePickupDepartureAndArrivalTime();
       }
     }, 500);
   }
@@ -58,6 +67,7 @@ export default class extends Controller {
       if (address) {
         this.selectedDropoff = await this.getCoordinatesFromAddress(address);
         await this.calculateTotalPrice();
+        await this.updateDropoffDepartureAndArrivalTime();
       }
     }, 500);
   }
@@ -168,6 +178,7 @@ export default class extends Controller {
     setTimeout(async () => {
       if (this.stepIndex === 2) {
         console.log('Đang ở Step 2: Lấy khoảng cách & tính giá vé');
+        console.log('Stops: ', this.stops);
 
         if (this.hasPickupLocationTarget && this.hasDropoffLocationTarget) {
           console.log('Lấy vị trí đón và trả');
@@ -205,13 +216,6 @@ export default class extends Controller {
           if (this.selectedPickup) {
             const province = await this.getProvinceFromCoordinates(this.selectedPickup);
             this.fromStep3Target.textContent = province;
-          } else if (
-            document.querySelector('.from-step-3') === null ||
-            document.querySelector('.from-step-3')?.textContent === ''
-          ) {
-            const pickupLocationCoords = await this.getCoordinatesFromAddress(this.pickupLocationTarget.textContent);
-            const pickupLocationProvince = await this.getProvinceFromCoordinates(pickupLocationCoords);
-            this.fromStep3Target.textContent = pickupLocationProvince;
           }
         }
 
@@ -219,13 +223,6 @@ export default class extends Controller {
           if (this.selectedDropoff) {
             const province = await this.getProvinceFromCoordinates(this.selectedDropoff);
             this.toStep3Target.textContent = province;
-          } else if (
-            document.querySelector('.to-step-3') === null ||
-            document.querySelector('.to-step-3').textContent === ''
-          ) {
-            const dropoffLocationCoords = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
-            const dropoffLocationProvince = await this.getProvinceFromCoordinates(dropoffLocationCoords);
-            this.toStep3Target.textContent = dropoffLocationProvince;
           }
         }
 
@@ -324,7 +321,6 @@ export default class extends Controller {
 
     const isPickup = stopType === 'pickup';
     const normalizeText = (text) => text.normalize('NFC').toLowerCase().replace(/\s+/g, ' ').trim();
-
     const stop = this.stops.find((s) => {
       const normalizedProvince = normalizeText(s.province);
       const normalizedLocation = normalizeText(locationName);
@@ -356,6 +352,112 @@ export default class extends Controller {
     }
   }
 
+  calculateArrivalDate(departureTime, departureDate, timeRange) {
+    try {
+      // Chuyển departureDate từ dd/mm/yyyy -> yyyy-mm-dd để đảm bảo Date() hoạt động đúng
+      let [day, month, year] = departureDate.split('/');
+      let formattedDate = `${year}-${month}-${day}`; // yyyy-mm-dd
+
+      // Tạo Date object từ departureDate và departureTime
+      let departure = new Date(`${formattedDate}T${departureTime}:00`);
+
+      if (isNaN(departure.getTime())) {
+        throw new Error(`Invalid date: ${departureDate} ${departureTime}`);
+      }
+
+      departure.setMinutes(departure.getMinutes() + timeRange); // Cộng thêm thời gian di chuyển
+
+      // Lấy ngày, tháng, năm từ đối tượng Date
+      let newDay = departure.getDate().toString().padStart(2, '0');
+      let newMonth = (departure.getMonth() + 1).toString().padStart(2, '0');
+      let newYear = departure.getFullYear();
+
+      let newDate = `${newDay}/${newMonth}/${newYear}`; // Format dd/mm/yyyy
+      let newTime = departure.toTimeString().split(' ')[0].substring(0, 5); // Lấy HH:MM
+
+      console.log('Updated Date:', newDate);
+      console.log('Updated Time:', newTime);
+
+      return { newTime, newDate };
+    } catch (error) {
+      console.error('Error in calculateArrivalDate:', error.message);
+      return { newTime: '00:00', newDate: '01/01/1970' }; // Trả về giá trị mặc định nếu có lỗi
+    }
+  }
+
+  async updatePickupDepartureAndArrivalTime() {
+    setTimeout(async () => {
+      let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
+
+      if (this.selectedPickup) {
+        const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
+
+        // Tính khoảng cách và thời gian từ minStop đến selectedPickup
+        console.log('Min stop province: ', minStop.province);
+        const distanceToPickup = await this.calculateDistance(coordsMinStopProvince, this.selectedPickup);
+        console.log('Distance: ', distanceToPickup);
+        const timeRangeToPickup = Math.ceil((distanceToPickup * 1000) / this.coachSpeed);
+        console.log(timeRangeToPickup);
+        const { newTime: pickupTime, newDate: pickupDate } = this.calculateArrivalDate(
+          minStop.departure_time,
+          minStop.departure_date,
+          timeRangeToPickup,
+        );
+        console.log(this.dropoffLocationTarget);
+        const coordsDropoffLocation = await this.getCoordinatesFromAddress(this.dropoffLocationTarget.textContent);
+        const distanceDropoff = await this.calculateDistance(this.selectedPickup, coordsDropoffLocation);
+        const timeRangeToDropoff = Math.ceil((distanceDropoff * 1000) / this.coachSpeed);
+        const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
+          pickupTime,
+          pickupDate,
+          timeRangeToDropoff,
+        );
+        this.pickupDateTimeTarget.textContent = `${pickupTime} (${pickupDate})`;
+        this.dropoffDateTimeTarget.textContent = `${dropoffTime} (${dropoffDate})`;
+        this.departureDateStep3Target.textContent = pickupDate;
+        this.departureTimeStep3Target.textContent = pickupTime;
+        this.dateBeforeDepartureTarget.textContent = this.subtractOneDay(pickupDate);
+      }
+    }, 500);
+  }
+
+  subtractOneDay(dateString) {
+    // Chuyển đổi từ dd/mm/yyyy sang YYYY-MM-DD để tạo đối tượng Date
+    let parts = dateString.split('/'); // Tách ngày, tháng, năm
+    let date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // YYYY-MM-DD
+
+    // Trừ đi 1 ngày
+    date.setDate(date.getDate() - 1);
+
+    // Format lại về dd/mm/yyyy
+    let day = date.getDate().toString().padStart(2, '0');
+    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+    let year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
+  async updateDropoffDepartureAndArrivalTime() {
+    setTimeout(async () => {
+      let minStop = this.stops.reduce((min, stop) => (stop.stop_order < min.stop_order ? stop : min), this.stops[0]);
+      if (this.selectedDropoff) {
+        const coordsMinStopProvince = await this.getCoordinatesFromAddress(minStop.province);
+
+        // Tính khoảng cách và thời gian từ minStop đến selectedDropoff
+        const distanceToDropoff = await this.calculateDistance(coordsMinStopProvince, this.selectedDropoff);
+        const timeRangeToDropoff = Math.ceil((distanceToDropoff * 1000) / this.coachSpeed);
+        const { newTime: dropoffTime, newDate: dropoffDate } = this.calculateArrivalDate(
+          minStop.departure_time,
+          minStop.departure_date,
+          timeRangeToDropoff,
+        );
+
+        // Cập nhật thời gian trả khách
+        this.dropoffDateTimeTarget.textContent = `${dropoffDate} (${dropoffTime})`;
+      }
+    }, 500);
+  }
+
   async updateHiddenFields() {
     if (this.hasTicketPriceTarget && this.hasPriceStep3Target) {
       this.ticketPriceTarget.value = this.priceStep3Target.textContent.replace(/[^\d]/g, '') || '0';
@@ -370,6 +472,8 @@ export default class extends Controller {
       const dropoffAddress = await this.getAddressFromCoordinates(this.selectedDropoff);
       this.dropoffAddressTarget.value = dropoffAddress;
     }
+    this.departureDateTarget.value = this.departureDateStep3Target.textContent;
+    this.departureTimeTarget.value = this.departureTimeStep3Target.textContent;
 
     console.log('Updated hidden fields: ', {
       ticketPrice: this.ticketPriceTarget?.value,

@@ -141,13 +141,15 @@ export default class extends Controller {
     const matchedStops = stopsData.filter(
       (stop) => normalizeProvince(stop.province) === normalizeProvince(this.selectedProvince),
     );
-
+    const nextButton = document.querySelector('#next');
     if (matchedStops.length > 0) {
       this.selectedLocationTarget.classList.remove('text-red-500');
       this.calculateDistance(matchedStops);
+      nextButton.disabled = false;
     } else {
       this.selectedLocationTarget.textContent = 'Không tìm thấy điểm dừng trong cùng tỉnh!';
       this.selectedLocationTarget.classList.add('text-red-500');
+      nextButton.disabled = true;
     }
   }
 
@@ -196,13 +198,15 @@ export default class extends Controller {
         if (distances.length > 0) {
           const nearestDistance = distances[0].distance / 1000;
           const nearestStop = distances[0].stop;
-
+          const nextButton = document.querySelector('#next');
           if (nearestDistance > 30) {
             this.selectedLocationTarget.textContent = 'Điểm đón quá xa trạm !';
             this.selectedLocationTarget.classList.add('text-red-500');
+            nextButton.disabled = true;
           } else {
             this.selectedLocationTarget.textContent = `${this.selectedAddress} (${nearestDistance.toFixed(2)} km)`;
             this.selectedLocationTarget.classList.remove('text-red-500');
+            nextButton.disabled = false;
           }
 
           if (this.hasPickupPositionTarget) {

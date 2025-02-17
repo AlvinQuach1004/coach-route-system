@@ -2,16 +2,18 @@
 #
 # Table name: tickets
 #
-#  id          :uuid             not null, primary key
-#  drop_off    :string
-#  paid_amount :decimal(, )
-#  pick_up     :string
-#  seat_number :string
-#  status      :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  booking_id  :uuid             not null
-#  schedule_id :uuid             not null
+#  id             :uuid             not null, primary key
+#  departure_date :date
+#  departure_time :time
+#  drop_off       :string
+#  paid_amount    :decimal(, )
+#  pick_up        :string
+#  seat_number    :string
+#  status         :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  booking_id     :uuid             not null
+#  schedule_id    :uuid             not null
 #
 # Indexes
 #
@@ -50,4 +52,12 @@ class Ticket < ApplicationRecord
   # Validations
   validates :paid_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :seat_number, presence: true, uniqueness: { scope: :schedule_id, message: 'is already booked for this schedule' }
+
+  def formatted_departure_date
+    departure_date.strftime('%d/%m/%Y') if departure_date.present?
+  end
+
+  def formatted_departure_time
+    departure_time.strftime('%H:%M') if departure_time.present?
+  end
 end

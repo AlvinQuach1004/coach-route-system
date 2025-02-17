@@ -30,7 +30,7 @@ RSpec.describe Admin::BookingsController, type: :controller do
         patch :update, params: { id: booking.id }
         booking.reload
         expect(booking.payment_status).to eq('completed')
-        expect(response).to redirect_to(admin_booking_path(booking))
+        expect(response).to redirect_to(admin_bookings_path)
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe Admin::BookingsController, type: :controller do
       it 'sets flash error and redirects to booking page' do
         patch :update, params: { id: booking.id }
         expect(flash[:error]).to eq('Failed to update payment status.')
-        expect(response).to redirect_to(admin_booking_path(booking))
+        expect(response).to redirect_to(admin_bookings_path)
       end
     end
   end

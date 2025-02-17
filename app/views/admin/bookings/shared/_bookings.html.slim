@@ -2,36 +2,34 @@
   table.table.table-zebra.w-full
     thead.bg-base-200
       tr
-        th #
-        th Email
-        th Route
-        th Departure
-        th Payment Method
-        th Payment Status
-        th Action  
+        th = t('admin.bookings.table.number')
+        th = t('admin.bookings.table.email')
+        th = t('admin.bookings.table.route')
+        th = t('admin.bookings.table.departure')
+        th = t('admin.bookings.table.payment_method')
+        th = t('admin.bookings.table.payment_status')
+        th = t('admin.bookings.table.action')
     tbody
       - @bookings.each_with_index do |booking, index|
         tr
           td.font-bold = index + 1
           td = booking.user.email
-          td 
-            = "#{booking.start_stop.location.name} - #{booking.end_stop.location.name}"
-          td
-            = "#{booking.tickets.first&.schedule&.formatted_departure_date} - #{booking.tickets.first&.schedule&.formatted_departure_time}"
+          td = "#{booking.start_stop.location.name} - #{booking.end_stop.location.name}"
+          td = "#{booking.tickets.first&.schedule&.formatted_departure_date} - #{booking.tickets.first&.schedule&.formatted_departure_time}"
           td
             - case booking.payment_method
             - when 'cash'
-              span.badge.badge-primary Cash
+              span.badge.badge-primary = t('admin.bookings.payment_methods.cash')
             - when 'online'
-              span.badge.badge-accent Online
+              span.badge.badge-accent = t('admin.bookings.payment_methods.online')
           td
             - case booking.payment_status
             - when 'pending'
-              span.badge.badge-warning Pending
+              span.badge.badge-warning = t('admin.bookings.payment_statuses.pending')
             - when 'completed'
-              span.badge.badge-success Completed
+              span.badge.badge-success = t('admin.bookings.payment_statuses.completed')
             - when 'failed'
-              span.badge.badge-error Failed
+              span.badge.badge-error = t('admin.bookings.payment_statuses.failed')
           td.flex.space-x-2
             = link_to admin_booking_path(booking), class: 'btn btn-sm', data: { turbo: false } do
               svg.lucide.lucide-eye xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -52,36 +50,36 @@ div class="bg-base-100 rounded-lg mt-10 block md:hidden"
           span.font-semibold Email:
           = booking.user.email
         .flex.gap-2
-          span.font-semibold Route:
-          = "#{booking.start_stop.location.name} - #{booking.end_stop.location.name}"
+          span.font-semibold
+          = "#{t('admin.bookings.table.route')}: #{booking.start_stop.location.name} - #{booking.end_stop.location.name}"
         .flex.gap-2
-          span.font-semibold Departure:
-          = " #{booking.tickets.first&.schedule&.formatted_departure_date} - #{booking.tickets.first&.schedule&.formatted_departure_time}"
+          span.font-semibold
+          = "#{t('admin.bookings.table.departure')}: #{booking.tickets.first&.schedule&.formatted_departure_date} - #{booking.tickets.first&.schedule&.formatted_departure_time}"
         .flex.gap-2
-          span.font-semibold Payment Method:
+          span.font-semibold
           - case booking.payment_method
           - when 'cash'
-            span.badge.badge-primary Cash
+            span.badge.badge-primary = t('admin.bookings.payment_methods.cash')
           - when 'online'
-            span.badge.badge-accent Online
+            span.badge.badge-accent = t('admin.bookings.payment_methods.online')
         .flex.gap-2
-          span.font-semibold Payment Status:
+          span.font-semibold
           - case booking.payment_status
           - when 'pending'
-            span.badge.badge-warning Pending
+            span.badge.badge-warning = t('admin.bookings.payment_statuses.pending')
           - when 'completed'
-            span.badge.badge-success Completed
+            span.badge.badge-success = t('admin.bookings.payment_statuses.completed')
           - when 'failed'
-            span.badge.badge-error Failed
+            span.badge.badge-error = t('admin.bookings.payment_statuses.failed')
 
 .div class="mt-6 flex justify-between items-center"
   .text-sm.text-base-content/70
-    | Showing
+    | #{t('admin.bookings.pagination.showing')}
     span.font-medium = " #{@pagy.from} "
-    | to
+    | #{t('admin.bookings.pagination.to')}
     span.font-medium = " #{@pagy.to} "
-    | of
+    | #{t('admin.bookings.pagination.of')}
     span.font-medium = " #{@pagy.count} "
-    | bookings
+    | #{t('admin.bookings.pagination.bookings')}
   .text-center.py-4
     = pagy_nav(@pagy)

@@ -8,6 +8,8 @@
     = f.hidden_field :start_stop_id, data: { position_target: "startStopId", default_value: departure_search.present? ? schedule.route.stops.find_by(location_id: departure_search.id, is_pickup: true)&.id : schedule.route.stops.first&.id }
     = f.hidden_field :end_stop_id, data: { position_target: "endStopId", default_value: destination_search.present? ? schedule.route.stops.find_by(location_id: destination_search.id, is_dropoff: true)&.id : schedule.route.stops.last&.id }
     = f.hidden_field :ticket_price, data: { position_target: "ticketPrice" }
+    = f.hidden_field :departure_date, data: { position_target: "departureDate"}
+    = f.hidden_field :departure_time, data: { position_target: "departureTime"}
     = f.hidden_field :pickup_address, data: { position_target: "pickupAddress" }
     = f.hidden_field :dropoff_address, data: { position_target: "dropoffAddress" }
 
@@ -157,19 +159,24 @@
 
                               button.px-3.py-2.text-sm.text-white.bg-blue-600.border.border-transparent.rounded-md.shadow-sm.hover:bg-blue-700 type="button" data-action="click->location#confirmSelection click->position#updatePickup" = t('route_pages.bookings.locations.confirm')
                 - location_address = 'Không có địa chỉ'
+                - departure_time = schedule.departure_time
                 - if schedule.route.stops.any? && departure_search.blank?
                   - location_address = schedule.route.stops.first.address
                 - elsif departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
                   - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
                   - if stop.present?
                     - location_address = stop.address
+                    - location_address = stop.address
+                    - min_stop_order = schedule.route.stops.minimum(:stop_order)
+                    - total_time_range = schedule.route.stops.select { |s| s.stop_order >= min_stop_order && s.stop_order <= stop.stop_order }.sum(&:time_range)
+                    - departure_time += total_time_range.minutes
                   - else
                     | Không có địa chỉ
                 - else
                   | Không có địa chỉ
                 .mt-4
                   .flex.items-center.gap-2
-                    span.text-xl.font-bold = schedule.departure_time.strftime("%H:%M")
+                    span.text-lg.font-bold data-position-target="pickupDateTime" = departure_time.strftime("%H:%M")
                     span •
                     span.text-gray-600 = location_address
 
@@ -259,31 +266,31 @@
                               button.px-3.py-2.text-sm.text-gray-700.bg-white.border.border-gray-300.rounded-md.shadow-sm.hover:bg-gray-50[
                                 data-action="click->location#closeModal"
                               ] = t('route_pages.bookings.locations.cancel')
-
                               button.px-3.py-2.text-sm.text-white.bg-blue-600.border.border-transparent.rounded-md.shadow-sm.hover:bg-blue-700 type="button" data-action="click->location#confirmSelection click->position#updateDropoff" = t('route_pages.bookings.locations.confirm')
                 .mt-4
                   .flex.items-center.gap-2
-                    span.text-lg.font-bold
+                    span.text-lg.font-bold data-position-target="dropoffDateTime"
                       - if schedule.route.stops.any? && destination_search.blank?
                         - last_stop = schedule.route.stops.order(:stop_order).last
                         - if last_stop
-                          - # Add time_range (in minutes) to schedule.departure_time
-                          - adjusted_time = schedule.departure_time + (10 * last_stop.time_range * 60)
-                          - adjusted_date = schedule.departure_date
-                          - # Check if adjusted_time is earlier than departure_time and adjust the date accordingly
-                          - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
-                            - adjusted_date = adjusted_date + 1.day
-                          | #{adjusted_time.strftime("%H:%M")} (#{adjusted_date.strftime("%d/%m/%Y")})
+                          - total_time_range = schedule.route.stops.select { |s| s.stop_order >= schedule.route.stops.minimum(:stop_order) }.sum(&:time_range)
+                          - arrival_time = schedule.departure_time + total_time_range.minutes
+                          - arrival_date = schedule.departure_date
+                          - if arrival_time.hour < schedule.departure_time.hour || (arrival_time.hour == schedule.departure_time.hour && arrival_time.min < schedule.departure_time.min)
+                            - arrival_date += 1.day
+                          | #{arrival_time.strftime("%H:%M")} (#{arrival_date.strftime("%d/%m/%Y")})
                         - else
                           | No stops available
                       - elsif departure_search.present? && destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
                         - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
                         - if stop
-                          - adjusted_time = schedule.departure_time + (10 * stop.time_range * 60)
-                          - adjusted_date = schedule.departure_date
-                          - if adjusted_time.hour < schedule.departure_time.hour || (adjusted_time.hour == schedule.departure_time.hour && adjusted_time.min < schedule.departure_time.min)
-                            - adjusted_date = adjusted_date + 1.day
-                          | #{adjusted_time.strftime("%H:%M")} (#{adjusted_date.strftime("%d/%m/%Y")})
+                          - min_stop_order = schedule.route.stops.minimum(:stop_order)
+                          - total_time_range = schedule.route.stops.select { |s| s.stop_order >= min_stop_order && s.stop_order <= stop.stop_order }.sum(&:time_range)
+                          - arrival_time = schedule.departure_time + total_time_range.minutes
+                          - arrival_date = schedule.departure_date
+                          - if arrival_time.hour < schedule.departure_time.hour || (arrival_time.hour == schedule.departure_time.hour && arrival_time.min < schedule.departure_time.min)
+                            - arrival_date += 1.day
+                          | #{arrival_time.strftime("%H:%M")} (#{arrival_date.strftime("%d/%m/%Y")})
                         - else
                           | No stops available - #{stop.address}
                     span •
@@ -356,37 +363,38 @@
 
                   / From Row
                   / From Row (Tỉnh của điểm đón)
+                  - from_location = ''
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.from')
-                    span.text-gray-900 data-position-target="fromStep3"
                     - if departure_search.present? && schedule.route.stops.map(&:location_id).include?(departure_search.id)
                       - stop = schedule.route.stops.find { |s| s.location_id == departure_search.id && s.is_pickup }
                       - if stop.present?
-                        span.from-step-3 = stop.location.name
+                        - from_location = stop.location.name
+                    span.text-gray-900 data-position-target="fromStep3" = from_location
                   
                   / To Row (Tỉnh của điểm trả)
+                  - to_location = ''
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.to')
-                    span.text-gray-900 data-position-target="toStep3"
                     - if destination_search.present? && schedule.route.stops.map(&:location_id).include?(destination_search.id)
                       - stop = schedule.route.stops.find { |s| s.location_id == destination_search.id && s.is_dropoff }
                       - if stop.present?
-                        span.to-step-3 = stop.location.name
-
+                        - to_location = stop.location.name
+                    span.text-gray-900 data-position-target="toStep3" = to_location
 
                   / Departure Time Row
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.departure_time')
-                    span.text-gray-900 = schedule.departure_time.strftime("%H:%M")
+                    span.text-gray-900 data-position-target="departureTimeStep3" = schedule.departure_time.strftime("%H:%M")
                   
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.departure_date')
-                    span.text-gray-900 = schedule.departure_date.strftime("%d/%m/%Y")
+                    span.text-gray-900 data-position-target="departureDateStep3" = schedule.departure_date.strftime("%d/%m/%Y")
 
                   / Pay Before Row
                   .flex.justify-between.items-center
                     span.text-gray-600 = t('route_pages.bookings.payment.summary.pay_before')
-                    span.text-gray-900 =  (schedule.departure_date - 1).strftime("%d/%m/%Y")
+                    span.text-gray-900 data-position-target="dateBeforeDeparture" =  (schedule.departure_date - 1).strftime("%d/%m/%Y")
 
                   / Total Row
                   .flex.justify-between.items-center.pt-4.border-t.mt-4

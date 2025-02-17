@@ -14,6 +14,8 @@
       .space-y-2
         p.text-gray-600.text-sm.sm:text-base = t('invoice.issued')
         p.font-medium.text-sm.sm:text-base = @booking.created_at.strftime('%d %b, %Y')
+        p.text-gray-600.text-sm.sm:text-base = t('invoice.departure')
+        p.font-medium.text-sm.sm:text-base = "#{@booking.tickets.first.formatted_departure_date} - #{@booking.tickets.first.formatted_departure_time}"
 
       .space-y-2
         p.text-gray-600.text-sm.sm:text-base = t('invoice.from')

@@ -51,9 +51,13 @@ div class='bg-base-100 header-container sticky justify-around text-base-content 
                 .bg-neutral-focus.text-neutral-content.rounded-full.w-8.h-8.flex.items-center.justify-center
                   span.text-xs.md:text-base = current_user.email[0].upcase
           ul class='mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52' tabindex='0'
+            - if current_user.admin?
+              li 
+                = link_to admin_dashboard_path, class: 'justify-between' do
+                  = t('admin.sidebar.dashboard')
             li
               = link_to profile_path, class: 'justify-between' do
-                |  Profile
+                = t('header.profile')
             li
-              = button_to 'Log out', destroy_user_session_path, method: :delete, data: { turbo: false }
+              = button_to t('header.log_out'), destroy_user_session_path, method: :delete, data: { turbo: false }
               

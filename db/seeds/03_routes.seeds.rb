@@ -19,6 +19,8 @@ ninh_thuan = locations.find { |location| location.name == "Ninh Thuận" }
 kien_giang = locations.find { |location| location.name == "Kiên Giang" }
 bac_lieu = locations.find { |location| location.name == "Bạc Liêu" }
 nghe_an = locations.find { |location| location.name == "Nghệ An" }
+ninh_binh = locations.find { |location| location.name == "Ninh Bình" }
+
 
 # Thêm dữ liệu vào bảng routes
 ca_mau.start_routes.create(end_location: tp_ho_chi_minh)
@@ -38,9 +40,13 @@ can_tho.start_routes.create(end_location: tp_ho_chi_minh)
 can_tho.start_routes.create(end_location: ca_mau)
 ca_mau.start_routes.create(end_location: can_tho)
 tien_giang.start_routes.create(end_location: hau_giang)
+hau_giang.start_routes.create(end_location: tien_giang)
 long_an.start_routes.create(end_location: tra_vinh)
+tra_vinh.start_routes.create(end_location: long_an)
 tp_ho_chi_minh.start_routes.create(end_location: vung_tau)
+vung_tau.start_routes.create(end_location: tp_ho_chi_minh)
 tp_ho_chi_minh.start_routes.create(end_location: an_giang)
+an_giang.start_routes.create(end_location: tp_ho_chi_minh)
 binh_thuan.start_routes.create(end_location: ninh_thuan)
 ninh_thuan.start_routes.create(end_location: binh_thuan)
 binh_thuan.start_routes.create(end_location: khanh_hoa)
@@ -52,3 +58,6 @@ kien_giang.start_routes.create(end_location: tp_ho_chi_minh)
 kien_giang.start_routes.create(end_location: bac_lieu)
 bac_lieu.start_routes.create(end_location: kien_giang)
 thanh_hoa.start_routes.create(end_location: nghe_an)
+nghe_an.start_routes.create(end_location: thanh_hoa)
+ha_noi.start_routes.create(end_location: ninh_binh)
+ninh_binh.start_routes.create(end_location: ha_noi)

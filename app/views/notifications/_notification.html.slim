@@ -1,4 +1,4 @@
-- if notification.type == 'DepartureCableNotifier::Notification' || notification.type == 'PaymentReminderCableNotifier::Notification'
+- if notification.type == 'DepartureCableNotifier::Notification' || notification.type == 'PaymentReminderCableNotifier::Notification' || notification.type == 'CancelBookingCableNotifier::Notification'
   li.notification-item.list-none.p-2[
     class="#{'bg-base-200' unless notification.read?}"
     id="notification_#{notification.id}"
@@ -10,28 +10,31 @@
         p.text-sm
           - case notification.type
           - when 'DepartureCableNotifier::Notification'
-            | Coach #{notification.params[:coach].license_plate} is departing.
+            = t('notifications.departure', license_plate: notification.params[:coach][:license_plate])
             br
             span.text-xs.text-base-content/60 
-              | Route: #{notification.params[:schedule].route.start_location.name} → #{notification.params[:schedule].route.end_location.name}
+              = t('notifications.route', start_location: notification.params[:booking][:start_stop][:location][:name], end_location: notification.params[:booking][:end_stop][:location][:name])
             br
             span.text-xs.text-base-content/60 
-              | Departure: #{notification.params[:schedule].formatted_departure_date} - #{notification.params[:schedule].formatted_departure_time}
-          - when 'PaymentReminderCableNotifier::Notification'
-            = "Payment reminder for booking ##{notification.params[:booking].id} for schedule on #{notification.params[:schedule].formatted_departure_date} - #{notification.params[:schedule].formatted_departure_time}"
+              = t('notifications.departure_time', 
+                  departure_date: notification.params[:booking][:tickets].first[:formatted_departure_date], 
+                  departure_time: notification.params[:booking][:tickets].first[:formatted_departure_time])
             br
-            span.text-xs.text-base-content/60 
-              | Amount Due: #{format_currency_vnd(notification.params[:booking].tickets.sum(&:paid_amount))}
-            br
-            span.text-xs.text-base-content/60 
-              | Route: #{notification.params[:schedule].route.start_location.name} → #{notification.params[:schedule].route.end_location.name}
-            br
-            span.text-xs.text-base-content/60.font-semibold Your Tickets:
+            span.text-xs.text-base-content/60.font-semibold = t('notifications.your_tickets')
             ul.list-disc.list-inside.text-xs
-              - notification.params[:booking].tickets.each do |ticket|
-                li Seat ##{ticket.seat_number} - #{format_currency_vnd(ticket.paid_amount)}
+              - notification.params[:booking][:tickets].each do |ticket|
+                li = t('notifications.seat', seat_number: ticket[:seat_number], price: format_currency_vnd(ticket[:paid_amount]))
+          - when 'CancelBookingCableNotifier::Notification'
+            = t('notifications.booking_cancelled')
+            br
+            span.text-xs.text-base-content/60 
+              = t('notifications.route', start_location:  notification.params[:booking][:start_stop][:location][:name], end_location: notification.params[:booking][:end_stop][:location][:name])
+            br
+            span.text-xs.text-base-content/60 
+              - ticket = notification.params[:booking][:tickets].first
+              = t('notifications.departure_time', departure_date: ticket[:formatted_departure_date], departure_time: ticket[:formatted_departure_time])
         p.text-xs.mt-1.text-base-content/60
-          = "#{time_ago_in_words(notification.created_at)} ago"
+          = t('notifications.time_ago', time_ago: time_ago_in_words(notification.created_at))
       - unless notification.read?
         .unread-indicator.w-2.h-2.bg-primary.rounded-full
   .divider.my-0

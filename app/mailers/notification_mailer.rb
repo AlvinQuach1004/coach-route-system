@@ -1,11 +1,11 @@
 class NotificationMailer < ApplicationMailer
   helper :mailers
-  default from: ENV['GMAIL_SENDER_EMAIL']
 
   def departure_notification
     @recipient = params[:recipient]
     @schedule = params[:schedule]
     @coach = params[:coach]
+    @booking = params[:booking]
 
     mail(
       to: @recipient.email,
@@ -21,6 +21,16 @@ class NotificationMailer < ApplicationMailer
     mail(
       to: @recipient.email,
       subject: "Payment Reminder for Tomorrow's Trip"
+    )
+  end
+
+  def cancel_booking_notification
+    @recipient = params[:recipient]
+    @schedule = params[:schedule]
+
+    mail(
+      to: @recipient.email,
+      subject: 'Booking Cancellation Notice'
     )
   end
 end

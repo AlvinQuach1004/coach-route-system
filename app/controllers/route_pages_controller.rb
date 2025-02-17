@@ -24,9 +24,12 @@ class RoutePagesController < ApplicationController
           address: stop.address,
           latitude: stop.latitude_address,
           longitude: stop.longitude_address,
-          province: stop.location_name, # Sử dụng alias để lấy tên location
+          province: stop.location_name,
           pickup: stop.is_pickup,
-          dropoff: stop.is_dropoff
+          dropoff: stop.is_dropoff,
+          departure_date: schedule.formatted_departure_date,
+          departure_time: schedule.formatted_departure_time,
+          stop_order: stop.stop_order
         }
       end
     end.flatten

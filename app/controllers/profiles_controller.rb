@@ -1,11 +1,13 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
+  layout :choose_layout
 
   def show; end
 
   def update_field
+    field = user_params.keys.first
     if current_user.update(user_params)
-      flash.now[:success] = "#{user_params.keys.first.humanize} updated successfully"
+      flash.now[:success] = t('profile.update_success', field: t("profile.#{field}"))
 
       render json: {
         success: true,
@@ -14,10 +16,10 @@ class ProfilesController < ApplicationController
           locals: { message: flash[:success], type: 'success' },
           formats: [:html]
         ),
-        new_value: current_user.send(user_params.keys.first)
+        new_value: current_user.send(field)
       }
     else
-      error_message = current_user.errors.full_messages.to_sentence
+      error_message = t('profile.update_error', field: t("profile.#{field}"))
 
       render json: {
                success: false,
@@ -32,6 +34,10 @@ class ProfilesController < ApplicationController
   end
 
   private
+
+  def choose_layout
+    current_user.admin? ? 'admin' : 'application'
+  end
 
   def user_params
     params.require(:user).permit(:email, :phone_number)

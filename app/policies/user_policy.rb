@@ -20,8 +20,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    return false if user.id == record.id
-
     user.admin?
   end
 

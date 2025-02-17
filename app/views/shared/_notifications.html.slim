@@ -23,18 +23,18 @@
             span.badge.badge-primary.badge-sm.indicator-item.badge-notifications-count data-notifications-target="badge" 
               = @unread_count
 
-    .dropdown-content.shadow.bg-base-100.rounded-box.max-w-80.w-80[
+    .dropdown-content.absolute.z-30.shadow.bg-base-100.rounded-box.max-w-80.w-80[
       data-notifications-target="content"
       class="hidden"
       tabindex="0"
     ]
       .border-b.bg-base-100.rounded-t-box
         .menu-title.flex.justify-between.items-center.px-4.py-2
-          span.mx-auto Notifications
+          span.mx-auto = t('notifications.title')
           - if @unread_count > 0
             button.mark-as-all-read-btn.btn.btn-ghost.btn-xs[
               data-action="notifications#markAllAsRead"
-            ] Mark all as read
+            ] = t('notifications.mark_as_read')
 
       .overflow-y-auto.max-h-96
         = turbo_frame_tag 'notifications_list' do
@@ -42,4 +42,4 @@
             - if @notifications.any?
               = render partial: 'notifications/notification', collection: @notifications
             - else
-              .no-notifications-text.text-center.py-4.text-base-content/60 No notifications
+              .no-notifications-text.text-center.py-4.text-base-content/60 = t('notifications.no_notifications')

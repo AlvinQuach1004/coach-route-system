@@ -35,8 +35,14 @@ class ApplicationController < ActionController::Base
   private
 
   def set_notifications_count
-    @notifications = current_user.notifications.order(created_at: :desc)
-    @unread_count = current_user.notifications.unread.where(type: ['DepartureCableNotifier::Notification', 'PaymentReminderCableNotifier::Notification']).count
+    @notifications = current_user.notifications.includes(:event).order(created_at: :desc)
+    @unread_count = current_user.notifications.includes(:event).unread.where(
+      type: [
+        'DepartureCableNotifier::Notification',
+        'PaymentReminderCableNotifier::Notification',
+        'CancelBookingCableNotifier::Notification'
+      ]
+    ).count
   end
 
   def set_locale

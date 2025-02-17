@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
+  body.bg-gray-100
+    .container.mx-auto.p-4
+      h1.text-2xl.font-bold.mb-4 = t("mailer.cancel_booking.subject")
+      p.mb-4
+        = t("mailer.cancel_booking.greeting", email: @recipient.email)
+      p.mb-4
+        = t("mailer.cancel_booking.message", 
+            departure_date: @schedule.formatted_departure_date, 
+            departure_time: @schedule.formatted_departure_time)
+      .bg-white.rounded-lg.shadow.p-4.mb-4
+        h2.text-xl.font-semibold.mb-2 = t("mailer.cancel_booking.trip_details")
+        p
+          = t("mailer.cancel_booking.route", 
+              start_location: @booking.start_stop.location.name, 
+              end_location: @booking.end_stop.location.name)
+      p.mt-4
+        = t("mailer.cancel_booking.support_message")

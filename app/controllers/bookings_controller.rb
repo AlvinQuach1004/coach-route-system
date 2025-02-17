@@ -34,21 +34,21 @@ class BookingsController < ApplicationController
         ActiveRecord::Base.transaction do
           @booking.completed!
           @booking.tickets.map(&:paid!)
-          raise ActiveRecord::Rollback, 'Not all tickets are marked as paid' if @booking.tickets.any? { |ticket| !ticket.paid? }
+          raise ActiveRecord::Rollback, t('route_pages.bookings.errors.payment_failed') if @booking.tickets.any? { |ticket| !ticket.paid? }
         end
       else
         @booking.failed!
         @booking.tickets.map(&:cancelled!)
-        redirect_to error_payment_bookings_path, alert: 'Payment failed. Your booking has been cancelled.'
+        redirect_to error_payment_bookings_path, alert: t('route_pages.bookings.errors.payment_failed')
       end
     else
-      redirect_to root_path, alert: 'Invalid booking or payment session.'
+      redirect_to root_path, alert: t('route_pages.bookings.errors.invalid_booking')
     end
   end
 
   def cancel
     @booking&.destroy if @booking&.pending?
-    redirect_to root_path, alert: 'Payment was cancelled.'
+    redirect_to root_path, alert: t('route_pages.bookings.success.cancelled')
   end
 
   private
@@ -57,7 +57,7 @@ class BookingsController < ApplicationController
     unless user_signed_in?
       respond_to do |format|
         format.json do
-          render json: { error: 'You must login to perform this action.' }, status: :unprocessable_entity
+          render json: { error: t('route_pages.bookings.errors.not_logged_in') }, status: :unprocessable_entity
         end
       end
     end
@@ -75,7 +75,7 @@ class BookingsController < ApplicationController
     if booking_limit_reached?
       respond_to do |format|
         format.json do
-          render json: { error: 'Bạn chỉ có thể đặt chỗ tối đa 3 lần trong ngày.' }, status: :unprocessable_entity
+          render json: { error: t('route_pages.bookings.errors.limit_reached') }, status: :unprocessable_entity
         end
       end
     end
@@ -98,7 +98,7 @@ class BookingsController < ApplicationController
     @booking = current_user.bookings.find_by(id: params[:id])
   end
 
-  def create_tickets
+  def create_tickets # rubocop:disable Metrics/AbcSize
     selected_seats = JSON.parse(params[:booking][:selected_seats])
     selected_seats.each do |seat_number|
       @booking.tickets.create!(
@@ -107,7 +107,9 @@ class BookingsController < ApplicationController
         status: Ticket::Status::BOOKED,
         paid_amount: params[:booking][:ticket_price].present? ? params[:booking][:ticket_price].to_f : @schedule.price,
         pick_up: params[:booking][:pickup_address].presence || @booking.start_stop.address,
-        drop_off: params[:booking][:dropoff_address].presence || @booking.end_stop.address
+        drop_off: params[:booking][:dropoff_address].presence || @booking.end_stop.address,
+        departure_date: params[:booking][:departure_date],
+        departure_time: params[:booking][:departure_time]
       )
     end
   end
@@ -137,8 +139,13 @@ class BookingsController < ApplicationController
           currency: 'vnd',
           unit_amount: params[:booking][:ticket_price].present? ? params[:booking][:ticket_price].to_i : @schedule.price.to_i,
           product_data: {
-            name: "Ticket Booking ##{@booking.id}",
-            description: "Seat: #{seat_number}, Route: #{start_location.location.name} - #{end_location.location.name}, Coach: #{@schedule.coach.coach_type}"
+            name: t('route_pages.bookings.stripe.product_name', booking_id: @booking.id),
+            description: t(
+              'route_pages.bookings.stripe.product_description',
+              seat: seat_number,
+              route: "#{start_location.location.name} - #{end_location.location.name}",
+              coach: @schedule.coach.coach_type,
+            )
           }
         },
         quantity: 1

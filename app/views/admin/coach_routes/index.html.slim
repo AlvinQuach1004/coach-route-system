@@ -1,18 +1,18 @@
-- provide(:title, "Route Management")
+- provide(:title, t('admin.coach_routes.index.title'))
 
 .container.mx-auto.py-4
   .bg-base-100.rounded-lg.shadow-lg.p-6
     / Header Section
     .flex.justify-between.items-center.mb-6
       .flex.items-center.flex-col.justify-start.gap-3.md:flex-row
-          h2.text-2xl.font-bold Routes List
-          span.badge.badge-primary.mr-auto = "Total: #{@total_routes}"
-    
+        h2.text-2xl.font-bold = t('admin.coach_routes.index.list_title')
+        span.badge.badge-primary.mr-auto = t('admin.coach_routes.index.total', count: @total_routes)
+
       = link_to new_admin_coach_route_path, class: "btn btn-primary mt-4 sm:mt-0", data: { turbo_frame: "modal_routes" }
         svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"
           path d="M5 12h14"
           path d="M12 5v14"
-        | Add New Route
+        | #{t('admin.coach_routes.index.add_new')}
 
     / Search and Filters Section
     div class="flex flex-col sm:flex-row gap-4 mb-6"
@@ -21,7 +21,7 @@
           .input-group.flex.flex-row.items-center.sm:flex-row.sm:items-center.sm:gap-4
             = f.text_field :search, \
               class: "input input-bordered w-full", \
-              placeholder: "Search routes...", \
+              placeholder: t('admin.coach_routes.index.search_placeholder'), \
               value: params[:search], \
               data: { action: "input->search-form#submit" }
             button.btn.btn-square.ml-2.sm:mt-0.sm:ml-4
@@ -31,11 +31,11 @@
         .flex.gap-2.mt-4.sm:mt-0
           = f.select :sort_by, \
             options_for_select([ \
-              ['Sort By', ''], \
-              ['Newest', 'newest'], \
-              ['Oldest', 'oldest'], \
-              ['Start Location', 'start_location'], \
-              ['End Location', 'end_location'] \
+              [t('admin.coach_routes.index.sort_by'), ''], \
+              [t('admin.coach_routes.index.sort_options.newest'), 'newest'], \
+              [t('admin.coach_routes.index.sort_options.oldest'), 'oldest'], \
+              [t('admin.coach_routes.index.sort_options.start_location'), 'start_location'], \
+              [t('admin.coach_routes.index.sort_options.end_location'), 'end_location'] \
             ], params[:sort_by]), \
             {}, \
             class: "select select-bordered w-full sm:w-auto", \

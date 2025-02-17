@@ -67,7 +67,7 @@ RSpec.describe BookingsController, type: :controller do
       it 'returns unauthorized error' do
         post :create, params: valid_params, format: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body['error']).to eq('You must login to perform this action.')
+        expect(response.parsed_body['error']).to eq(I18n.t('route_pages.bookings.errors.not_logged_in'))
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe BookingsController, type: :controller do
       it 'returns error message' do
         post :create, params: valid_params, format: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body['error']).to eq('Bạn chỉ có thể đặt chỗ tối đa 3 lần trong ngày.')
+        expect(response.parsed_body['error']).to eq(I18n.t('route_pages.bookings.errors.limit_reached'))
       end
     end
   end

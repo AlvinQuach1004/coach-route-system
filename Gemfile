@@ -14,7 +14,6 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 gem 'vite_rails', '~> 3.0'
 gem 'image_processing'
 gem 'enumerize'
-gem 'geocoder'
 gem 'stripe', '~> 13.3'
 gem 'chartkick'
 gem 'groupdate'
@@ -89,3 +88,4 @@ end
 
 gem 'noticed', '~> 2.6'
 gem 'js-routes'
+gem 'i18n-js'

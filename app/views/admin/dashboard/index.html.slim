@@ -1,55 +1,57 @@
-- provide(:title, "Dashboard")
+- provide(:title, t("admin.dashboard.title"))
 .drawer.lg:drawer-open
   input#my-drawer-2.drawer-toggle type="checkbox"
   .drawer-content.flex.flex-col
     .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
       / Line Chart to show revenue
       .lg:col-span-2.bg-base-100.p-4.rounded-box.shadow-lg
-        h2.text-xl.font-bold.mb-4 Revenue Overview
+        h2.text-xl.font-bold.mb-4 = t("admin.dashboard.revenue_overview")
         = line_chart @revenue_data,
           colors: ["#36A2EB"],
           thousands: ",",
           suffix: "đ",
           points: false,
-          curve: true
+          curve: true,
+          library: { animation: { duration: 800, easing: "out" } }
 
       / Donut chart with amount of coach's status
       .bg-base-100.p-4.rounded-box.shadow-lg
-        h2.text-xl.font-bold.mb-4 Coach Status
+        h2.text-xl.font-bold.mb-4 = t("admin.dashboard.coach_status")
         = pie_chart @coach_status_amount,
           colors: ["#36A2EB", "#FF6384", "#4BC0C0"],
-          donut: true
+          donut: true,
+          library: { animation: { duration: 800, easing: "out" } }
 
       / Popular Routes Chart
       .lg:col-span-2.bg-base-100.p-4.rounded-box.shadow-lg
-        h2.text-xl.font-bold.mb-4 Popular Routes
+        h2.text-xl.font-bold.mb-4 = t("admin.dashboard.popular_routes")
         - routes_data = @bookings_by_route.map { |route| ["#{route.start_location_name} - #{route.end_location_name}", route.ticket_count.to_i] }
-        = bar_chart routes_data, colors: ["#36A2EB"]
-      
+        = bar_chart routes_data, colors: ["#36A2EB"], library: { animation: { duration: 800, easing: "out" } }
+
       .bg-base-100.p-4.rounded-box.shadow-lg
-        h2.text-xl.font-bold.mb-4 Today's Overview
+        h2.text-xl.font-bold.mb-4 = t("admin.dashboard.todays_overview")
         .stats.stats-vertical.w-full
           .stat
-            .stat-title Active Routes
+            .stat-title = t("admin.dashboard.active_routes")
             .stat-value = @daily_stats[:active_routes]
           .stat
-            .stat-title Today's Bookings
+            .stat-title = t("admin.dashboard.todays_bookings")
             .stat-value = @daily_stats[:todays_bookings]
           .stat
-            .stat-title Available Coaches
+            .stat-title = t("admin.dashboard.available_coaches")
             .stat-value = @daily_stats[:available_coaches]
 
       .lg:col-span-3.bg-base-100.p-4.rounded-box.shadow-lg
-        h2.text-xl.font-bold.mb-4 Recent Bookings
+        h2.text-xl.font-bold.mb-4 = t("admin.dashboard.recent_bookings")
         .hidden.overflow-x-auto.md:block
           table.table
             thead
               tr
-                th Booking ID
-                th Customer
-                th Route
-                th Amount
-                th Status
+                th = t("admin.dashboard.booking_id")
+                th = t("admin.dashboard.customer")
+                th = t("admin.dashboard.route")
+                th = t("admin.dashboard.amount")
+                th = t("admin.dashboard.status")
             tbody
               - @recent_bookings.each do |booking|
                 tr
@@ -60,18 +62,28 @@
                     = "#{route.start_location.name} - #{route.end_location.name}"
                   td.text-green-600.font-semibold = format_currency_vnd(booking.tickets.sum(&:paid_amount))
                   td
-                    .badge class="badge-#{booking.payment_status == Booking::PaymentStatus::COMPLETED  ? 'success' : 'warning'}"
-                      = booking.payment_status.titleize
+                    - case booking.payment_status
+                    - when 'pending'
+                      span.badge.badge-warning = t('admin.bookings.payment_statuses.pending')
+                    - when 'completed'
+                      span.badge.badge-success = t('admin.bookings.payment_statuses.completed')
+                    - when 'failed'
+                      span.badge.badge-error = t('admin.bookings.payment_statuses.failed')
         .block.md:hidden
           - @recent_bookings.each do |booking|
             .card.bg-base-200.shadow-md.mb-4
               .card-body
-                h3.font-bold.text-lg = "Booking ID: #{booking.id.first(8)}"
-                p.text-sm.text-gray-600 = "Email: #{booking.user.email}"
+                h3.font-bold.text-lg = "#{t('admin.dashboard.booking_id')}: #{booking.id.first(8)}"
+                p.text-sm.text-gray-600 = "#{t('admin.dashboard.customer_email')}: #{booking.user.email}"
                 p.text-sm.text-gray-600
                   - route = booking.tickets.first.schedule.route
-                  = "Route: #{route.start_location.name} - #{route.end_location.name}"
+                  = "#{t('admin.dashboard.route')}: #{route.start_location.name} - #{route.end_location.name}"
                 span.font-semibold.text-green-600 = "#{format_currency_vnd(booking.tickets.sum(&:paid_amount))}"
                 p.text-sm.text-gray-600
-                  .badge class="badge-#{booking.payment_status == Booking::PaymentStatus::COMPLETED  ? 'success' : 'warning'}"
-                    = booking.payment_status.titleize
+                  - case booking.payment_status
+                  - when 'pending'
+                    span.badge.badge-warning = t('admin.bookings.payment_statuses.pending')
+                  - when 'completed'
+                    span.badge.badge-success = t('admin.bookings.payment_statuses.completed')
+                  - when 'failed'
+                    span.badge.badge-error = t('admin.bookings.payment_statuses.failed')
