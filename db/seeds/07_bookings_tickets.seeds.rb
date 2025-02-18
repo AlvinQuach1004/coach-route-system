@@ -1,4 +1,4 @@
-schedules = Schedule.all
+schedules = Schedule.includes(:coach, :tickets, route: :stops).all
 users = User.all
 
 50.times do
@@ -7,10 +7,8 @@ users = User.all
   coach = schedule.coach
   route = schedule.route
 
-  # Kiểm tra route có tồn tại không trước khi tạo booking
   next unless route.present? && route.stops.any?
 
-  # Xác định start_stop và end_stop dựa trên route
   start_stop = route.stops.first
   end_stop = route.stops.last
 
@@ -28,17 +26,32 @@ users = User.all
                else 1..20
                end
 
-  rand(1..3).times do
-    row = ['A', 'B'].sample
-    seat_number = "#{row}#{Faker::Number.between(from: seat_range.min, to: seat_range.max)}"
+  booked_seats = schedule.tickets.pluck(:seat_number).to_set
 
-    # Kiểm tra seat number có khả dụng không trước khi tạo vé
+  available_seats = []
+
+  ['A', 'B'].each do |row|
+    seat_range.each do |num|
+      seat = "#{row}#{num}"
+      available_seats << seat unless booked_seats.include?(seat)
+    end
+  end
+
+  rand(1..[available_seats.size, 3].min).times do
+    break if available_seats.empty?
+
+    seat_number = available_seats.sample
+
     next unless schedule.seat_available?(seat_number)
+
     booking.tickets.create!(
       schedule: schedule,
       seat_number: seat_number,
       status: Ticket::Status::PAID,
       paid_amount: schedule.price
     )
+
+    booked_seats.add(seat_number)
+    available_seats.delete(seat_number)
   end
 end

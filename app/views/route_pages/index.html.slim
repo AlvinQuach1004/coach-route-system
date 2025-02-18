@@ -8,9 +8,6 @@
       .space-y-3
         - if @keywords.present?
           = render 'route_pages/shared/keywords_filter', locals: @keywords
-      h2.text-lg.font-semibold.mt-6.mb-4 = t('route_pages.filter_label')
-      .space-y-3
-        = render 'route_pages/shared/checkbox'
       .flex.items-center.justify-between.mt-6.mb-4
         h2.text-lg.font-semibold.my-auto = t('route_pages.price_label')
         span.text-md.my-auto.font-bold = "#{number_to_currency(params[:price] || 500000, unit: 'đ', precision: 0)}"
