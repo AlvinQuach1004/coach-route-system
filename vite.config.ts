@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [
     ViteRails({
       envVars: {
-        RAILS_ENV: process.env.NODE_ENV || "development"
+        RAILS_ENV: process.env.RAILS_ENV || "development"
       },
       envOptions: { defineOn: "import.meta.env" },
       fullReload: {
