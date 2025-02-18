@@ -10,6 +10,8 @@ services:
           name: coach-route-system
           property: connectionString
       - key: RAILS_MASTER_KEY
+      - key: RAILS_ENV
+        value: 'production'
         sync: false
       - key: WEB_CONCURRENCY
         value: 2
