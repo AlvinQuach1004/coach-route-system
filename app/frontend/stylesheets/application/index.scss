@@ -104,10 +104,10 @@
     display: block;
     content: '';
     width: 100%;
-    padding-top: ($height / $width) * 100%;
+    padding-top: calc($height / $width) * 100%;
   }
 
-  > img {
+  img {
     position: absolute;
     top: 0;
     left: 0;
@@ -215,7 +215,7 @@ section {
   }
 
   div {
-    @include aspect-ratio(3, 2);
+    aspect-ratio: 3 / 2;
     width: 100%;
   }
 
@@ -267,7 +267,7 @@ section {
 
   label {
     display: block;
-    @include aspect-ratio(1, 1);
+    aspect-ratio: 1 / 1;
     height: 100px;
 
     &:hover,
